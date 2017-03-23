@@ -1,0 +1,22 @@
+#ifndef __APPLICATION
+#define __APPLICATION
+
+#include <GLFW/glfw3.h>
+
+class Scene;
+
+class Application {
+    static void errorCallBack(int error, const char* desc);
+    static void keyboardCallback(GLFWwindow* window, int key,
+                                 int scancode, int action, int mods);
+public:
+    static const int width = 800;
+    static const int height = 600;
+    static void setup(void);
+    static void mainLoop(void);
+    static void run(void);
+    static void setScene(Scene *);
+    static void setClose(void);
+};
+
+#endif
