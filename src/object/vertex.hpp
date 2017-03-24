@@ -10,7 +10,16 @@ typedef struct {
     glm::vec3 acceleration;
 } Vertex;
 
-constexpr int vertexSize = 1000;
-constexpr int vertexDirections = 10;
+constexpr int vertexSize = 1200;
+constexpr int vertexDirections = 6;
+
+const glm::vec3 vertexDir[] = {
+    glm::vec3( 1.0f,  0.0f,  0.0f),
+    glm::vec3(-1.0f,  0.0f,  0.0f),
+    glm::vec3( 0.0f,  1.0f,  0.0f),
+    glm::vec3( 0.0f, -1.0f,  0.0f),
+    glm::vec3( 0.0f,  0.0f,  1.0f),
+    glm::vec3( 0.0f,  0.0f, -1.0f),
+};
 
 #endif

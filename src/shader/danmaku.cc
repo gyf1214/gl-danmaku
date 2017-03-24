@@ -8,12 +8,15 @@ static const char *vsh = R"(
 
     in vec4 time;
     in vec3 position;
+    in vec3 velocity;
     out int show;
+    out vec4 velocityOut;
     uniform mat4 vMat;
 
     void main(void) {
         show = time.x <= 0.0 && time.y > 0.0 ? 1 : 0;
         gl_Position = vMat * vec4(position, 1.0);
+        velocityOut = vMat * vec4(velocity, 0.0);
     }
 )";
 
@@ -25,6 +28,7 @@ static const char *gsh = R"(
     layout(triangle_strip, max_vertices = 4) out;
 
     in int show[];
+    in vec4 velocityOut[];
     out vec2 uv;
 
     uniform vec2 size;
@@ -34,9 +38,13 @@ static const char *gsh = R"(
         for (int i = 0; i < gl_in.length(); ++i) {
             if (show[i] == 1) {
                 vec4 vPosition = gl_in[i].gl_Position;
+                vec2 dir = normalize(velocityOut[i].xy);
+                vec2 norm = vec2(-dir.y, dir.x);
                 for (int j = 0; j < 4; ++j) {
                     uv = vec2(j % 2, j / 2);
-                    gl_Position = pMat * (vPosition + vec4((uv - vec2(0.5)) * size, 0.0, 0.0));
+                    vec2 offset = (uv - vec2(0.5)) * size;
+                    offset = offset.x * dir + offset.y * norm;
+                    gl_Position = pMat * (vPosition + vec4(offset, 0.0, 0.0));
                     EmitVertex();
                 }
                 EndPrimitive();

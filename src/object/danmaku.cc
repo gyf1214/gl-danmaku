@@ -8,7 +8,7 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-static const GLfloat pointSize[] = { 0.2f, 0.5f };
+static const GLfloat pointSize[] = { 0.5f, 0.2f };
 
 proto(Danmaku, Shader::danmaku);
 

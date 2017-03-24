@@ -33,7 +33,7 @@ static void setupVertices() {
     constexpr int roundSize = vertexSize / vertexDirections;
     int cnt = 0;
     for (int k = 0; k < vertexDirections; ++k) {
-        glm::vec3 rnd2 = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+        glm::vec3 rnd2 = vertexDir[k];
         glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
 
         for (int i = 0; i < roundSize; ++i) {
