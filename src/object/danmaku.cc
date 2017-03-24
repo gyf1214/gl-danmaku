@@ -8,27 +8,18 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-static const GLfloat pointSize[] = { 0.5f, 0.5f };
-
-static const GLfloat uvData[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-};
+static const GLfloat pointSize[] = { 0.2f, 0.5f };
 
 proto(Danmaku, Shader::danmaku);
 
 protoBuffer = {
-    { sizeof(uvData), uvData },
+    // { sizeof(uvData), uvData },
 };
 
 protoAttrib = {
     { "time"    , Offset(Vertex, time[0])    , 4, sizeof(Vertex) },
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
-    { "uv"      , (void *)0                  , 2, 0 },
+    { "velocity", Offset(Vertex, velocity[0]), 3, sizeof(Vertex) },
 };
 
 protoUnifom = { "size", "vMat", "pMat", "texture0" };
@@ -58,14 +49,9 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture0);
 
-        bindAttribute(transform -> outputBuffer(), 0);
-        glVertexAttribDivisor(attribute[0], 1);
-        bindAttribute(transform -> outputBuffer(), 1);
-        glVertexAttribDivisor(attribute[1], 1);
-        bindAttribute(buffer[0], 2);
+        bindBuffer(transform -> outputBuffer());
 
-
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, vertexSize);
+        glDrawArrays(GL_POINTS, 0, vertexSize);
     }
 };
 

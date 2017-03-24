@@ -2,8 +2,7 @@
 #include "util.hpp"
 
 GLuint Shader::compileShader(GLenum type, const char *src) {
-    LOG << "load " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment")
-        << " shader:\n" << src;
+    LOG << "load shader:\n" << src;
 
     GLuint shader = glCreateShader(type);
     int length = strlen(src);

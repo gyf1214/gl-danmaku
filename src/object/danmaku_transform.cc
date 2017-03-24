@@ -28,18 +28,22 @@ protoUnifom = {};
 
 static void setupVertices() {
     LOG << "setup vertices";
+    srand(time(NULL));
 
-    for (int i = 0; i < vertexSize; ++i) {
-        float angle = (float)i / (float)vertexSize * M_PI * 2.0f;
-
-        glm::vec3 x = glm::vec3(cos(angle), sin(angle), 0.0f);
-        // glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+    constexpr int roundSize = vertexSize / vertexDirections;
+    int cnt = 0;
+    for (int k = 0; k < vertexDirections; ++k) {
         glm::vec3 rnd2 = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+        glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
 
-        vertexData[i].time = glm::vec4(0.0f, 0.0f, 1.0f, INFINITY);
-        vertexData[i].position = x;
-        vertexData[i].velocity = rnd2 * 0.2f;
-        vertexData[i].acceleration = x;
+        for (int i = 0; i < roundSize; ++i) {
+            float t = (float)i * 0.1f;
+
+            vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
+            vertexData[cnt].position = rnd2 * 0.2f;
+            vertexData[cnt].velocity = rnd2 * 10.0f;
+            vertexData[cnt++].acceleration = zero;
+        }
     }
 
     LOG << "done setup vertices";
