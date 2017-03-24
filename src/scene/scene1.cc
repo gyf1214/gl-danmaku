@@ -4,6 +4,7 @@
 #include "util.hpp"
 #include <glm/gtx/transform.hpp>
 #include <cmath>
+#include <cstdio>
 
 class Scene1 : public Scene {
     double timer;
@@ -39,6 +40,13 @@ public:
             LOG << "fps: " << tick;
             tick = 0;
         }
+
+        static char str[100];
+        static int second = 0;
+        sprintf(str, "tmp/s_%04d.png", second++);
+        LOG << str;
+        
+        Application::screenShot(str);
     }
 };
 

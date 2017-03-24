@@ -61,6 +61,7 @@ GLuint Texture::loadTexture(const char *name) {
 
     png_destroy_read_struct(&png, &info, 0);
     delete []data;
+    fclose(fp);
     return texture;
 }
 

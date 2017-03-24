@@ -17,6 +17,7 @@ public:
     static void run(void);
     static void setScene(Scene *);
     static void setClose(void);
+    static void screenShot(const char *name);
 };
 
 #endif

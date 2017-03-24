@@ -1,4 +1,6 @@
 #include <GL/glew.h>
+#include <cstdio>
+#include <png.h>
 #include "application.hpp"
 #include "scene_box.hpp"
 #include "util.hpp"
@@ -63,7 +65,7 @@ void Application::setClose() {
 void Application::mainLoop() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        
+
         if (newScene != currentScene) {
             LOG << "change scene";
             SceneBox::release(currentScene);
@@ -86,4 +88,37 @@ void Application::mainLoop() {
 void Application::run() {
     setup();
     mainLoop();
+}
+
+void Application::screenShot(const char *name) {
+    int bufferHeight, bufferWidth;
+    int rect[4];
+    glGetIntegerv(GL_VIEWPORT, rect);
+    bufferWidth = rect[2];
+    bufferHeight = rect[3];
+
+    FILE *fp;
+    CHECK(fp = fopen(name, "wb")) << "open " << name << " failed!";
+    png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
+                                                  NULL, NULL, NULL);
+    png_infop info = png_create_info_struct(png);
+    CHECK(!setjmp(png_jmpbuf(png))) << "write " << name << " data failed!";
+
+    png_init_io(png, fp);
+    png_set_IHDR(png, info, bufferWidth, bufferHeight, 8,
+                 PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+    png_write_info(png, info);
+
+    unsigned char *imageBuffer = new unsigned char[bufferWidth * bufferHeight * 3];
+
+    glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGB, GL_UNSIGNED_BYTE, imageBuffer);
+
+    for (int y = 0; y < bufferHeight; ++y) {
+        png_write_row(png, imageBuffer + y * bufferWidth * 3);
+    }
+    png_write_end(png, NULL);
+
+    png_destroy_write_struct(&png, &info);
+    fclose(fp);
 }
