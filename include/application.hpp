@@ -12,6 +12,7 @@ class Application {
 public:
     static const int width = 800;
     static const int height = 600;
+    static int bufferWidth, bufferHeight;
     static void setup(void);
     static void mainLoop(void);
     static void run(void);
