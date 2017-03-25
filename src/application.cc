@@ -9,6 +9,9 @@ static Scene *currentScene = NULL;
 static Scene *newScene = NULL;
 static GLFWwindow *window = NULL;
 
+int Application::bufferWidth;
+int Application::bufferHeight;
+
 void Application::errorCallBack(int error, const char* description) {
     FAIL << "glfw error " << error << ": " << description;
 }
@@ -49,6 +52,13 @@ void Application::setup() {
     glGetIntegerv(GL_MINOR_VERSION, &minor);
     LOG << "opengl version: " << major << "." << minor;
     CHECK(major >= 3) << "not supporting gl version below 3";
+
+    int rect[4];
+    glGetIntegerv(GL_VIEWPORT, rect);
+    bufferWidth = rect[2];
+    bufferHeight = rect[3];
+
+    LOG << "framebuffer: " << bufferWidth << "x" << bufferHeight;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -91,12 +101,6 @@ void Application::run() {
 }
 
 void Application::screenShot(const char *name) {
-    int bufferHeight, bufferWidth;
-    int rect[4];
-    glGetIntegerv(GL_VIEWPORT, rect);
-    bufferWidth = rect[2];
-    bufferHeight = rect[3];
-
     FILE *fp;
     CHECK(fp = fopen(name, "wb")) << "open " << name << " failed!";
     png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
