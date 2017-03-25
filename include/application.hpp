@@ -10,8 +10,8 @@ class Application {
     static void keyboardCallback(GLFWwindow* window, int key,
                                  int scancode, int action, int mods);
 public:
-    static const int width = 800;
-    static const int height = 600;
+    static const int width = 1024;
+    static const int height = 768;
     static int bufferWidth, bufferHeight;
     static void setup(void);
     static void mainLoop(void);
