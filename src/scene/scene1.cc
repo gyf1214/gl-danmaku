@@ -41,12 +41,12 @@ public:
             tick = 0;
         }
 
-        static char str[100];
-        static int second = 0;
-        sprintf(str, "tmp/s_%04d.png", second++);
-        LOG << str;
-        
-        Application::screenShot(str);
+        // static char str[100];
+        // static int second = 0;
+        // sprintf(str, "tmp/s_%04d.png", second++);
+        // LOG << str;
+
+        // Application::screenShot(str);
     }
 };
 
