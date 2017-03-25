@@ -62,7 +62,7 @@ static void setupVertices() {
         float angle = (float)k / (float)vertexDirections * 2.0f * M_PI;
         for (int i = 0; i < roundSize; ++i) {
             float t = (float)i * 0.1f;
-            float aa = angle + M_PI / 3.0f * sin(t);
+            float aa = angle + M_PI * cos(t);
             glm::vec3 dir = glm::vec3(cos(aa), sin(aa), 0.0f);
             vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
             vertexData[cnt].position = dir * 0.2f;

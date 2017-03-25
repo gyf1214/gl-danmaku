@@ -43,10 +43,12 @@ public:
 
         // static char str[100];
         // static int second = 0;
-        // sprintf(str, "tmp/s_%04d.png", second++);
-        // LOG << str;
-        //
-        // Application::screenShot(str);
+        // if (!(second % 2)) {
+        //     sprintf(str, "tmp/s_%04d.png", second / 2);
+        //     LOG << str;
+        //     Application::screenShot(str);
+        // }
+        // second++;
     }
 };
 
