@@ -30,8 +30,9 @@ static void setupVertices() {
     LOG << "setup vertices";
     srand(time(NULL));
 
-    // constexpr int roundSize = vertexSize / vertexDirections;
-    // int cnt = 0;
+    constexpr int roundSize = vertexSize / vertexDirections;
+    glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
+    int cnt = 0;
     // for (int k = 0; k < vertexDirections; ++k) {
     //     glm::vec3 rnd2 = vertexDir[k];
     //     glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -45,17 +46,29 @@ static void setupVertices() {
     //         vertexData[cnt++].acceleration = zero;
     //     }
     // }
-    for (int i = 0; i < vertexSize; ++i) {
-        float t = (float)i / (float)vertexSize;
-        float angle = t * 2.0f * M_PI;
-
-        glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
-        glm::vec3 dir = glm::vec3(cos(angle), sin(angle), 0.0f);
-
-        vertexData[i].time = glm::vec4(t, INFINITY, 2.0f, INFINITY);
-        vertexData[i].position = dir;
-        vertexData[i].velocity = rnd * 0.2f;
-        vertexData[i].acceleration = dir;
+    // for (int i = 0; i < vertexSize; ++i) {
+    //     float t = (float)i / (float)vertexSize;
+    //     float angle = t * 2.0f * M_PI;
+    //
+    //     glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+    //     glm::vec3 dir = glm::vec3(cos(angle), sin(angle), 0.0f);
+    //
+    //     vertexData[i].time = glm::vec4(t, INFINITY, 2.0f, INFINITY);
+    //     vertexData[i].position = dir;
+    //     vertexData[i].velocity = rnd * 0.2f;
+    //     vertexData[i].acceleration = dir;
+    // }
+    for (int k = 0; k < vertexDirections; ++k) {
+        float angle = (float)k / (float)vertexDirections * 2.0f * M_PI;
+        for (int i = 0; i < roundSize; ++i) {
+            float t = (float)i * 0.1f;
+            float aa = angle + M_PI / 3.0f * sin(t);
+            glm::vec3 dir = glm::vec3(cos(aa), sin(aa), 0.0f);
+            vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
+            vertexData[cnt].position = dir * 0.2f;
+            vertexData[cnt].velocity = dir * 5.0f;
+            vertexData[cnt++].acceleration = zero;
+        }
     }
 
     LOG << "done setup vertices";
