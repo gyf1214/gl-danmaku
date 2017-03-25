@@ -120,7 +120,8 @@ void Application::screenShot(const char *name) {
     glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGB, GL_UNSIGNED_BYTE, imageBuffer);
 
     for (int y = 0; y < bufferHeight; ++y) {
-        png_write_row(png, imageBuffer + y * bufferWidth * 3);
+        int yy = bufferHeight - y - 1;
+        png_write_row(png, imageBuffer + yy * bufferWidth * 3);
     }
     png_write_end(png, NULL);
 
