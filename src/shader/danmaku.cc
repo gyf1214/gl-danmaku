@@ -9,14 +9,17 @@ static const char *vsh = R"(
     in vec4 time;
     in vec3 position;
     in vec3 velocity;
+    in vec4 uvIndex;
     out int show;
     out vec4 velocityOut;
+    out vec4 uvOut;
     uniform mat4 vMat;
 
     void main(void) {
         show = time.x <= 0.0 && time.y > 0.0 ? 1 : 0;
         gl_Position = vMat * vec4(position, 1.0);
         velocityOut = vMat * vec4(velocity, 0.0);
+        uvOut = uvIndex;
     }
 )";
 
@@ -29,6 +32,7 @@ static const char *gsh = R"(
 
     in int show[];
     in vec4 velocityOut[];
+    in vec4 uvOut[];
     out vec2 uv;
 
     uniform vec2 size;
@@ -43,7 +47,8 @@ static const char *gsh = R"(
                 for (int j = 0; j < 4; ++j) {
                     uv = vec2(j % 2, j / 2);
                     vec2 offset = (uv - vec2(0.5)) * size;
-                    offset = offset.x * dir + offset.y * norm;
+                    uv = uv * uvOut[i].zw + uvOut[i].xy;
+                    offset = offset.y * dir + offset.x * norm;
                     gl_Position = pMat * (vPosition + vec4(offset, 0.0, 0.0));
                     EmitVertex();
                 }

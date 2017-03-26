@@ -8,9 +8,10 @@ typedef struct {
     glm::vec3 position;
     glm::vec3 velocity;
     glm::vec3 acceleration;
+    glm::vec4 uvIndex;
 } Vertex;
 
-constexpr int vertexSize = 720;
+constexpr int vertexSize = 240;
 constexpr int vertexDirections = 6;
 
 const glm::vec3 vertexDir[] = {

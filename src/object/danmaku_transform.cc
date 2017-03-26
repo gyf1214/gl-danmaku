@@ -22,6 +22,7 @@ protoAttrib = {
     { "position0"    , Offset(Vertex, position[0])    , 3, sizeof(Vertex) },
     { "velocity0"    , Offset(Vertex, velocity[0])    , 3, sizeof(Vertex) },
     { "acceleration0", Offset(Vertex, acceleration[0]), 3, sizeof(Vertex) },
+    { "uvIndex0"     , Offset(Vertex, uvIndex[0])     , 4, sizeof(Vertex) },
 };
 
 protoUnifom = {};
@@ -58,17 +59,29 @@ static void setupVertices() {
     //     vertexData[i].velocity = rnd * 0.2f;
     //     vertexData[i].acceleration = dir;
     // }
-    for (int k = 0; k < vertexDirections; ++k) {
-        float angle = (float)k / (float)vertexDirections * 2.0f * M_PI;
-        for (int i = 0; i < roundSize; ++i) {
-            float t = (float)i * 0.1f;
-            float aa = angle + M_PI * cos(t);
-            glm::vec3 dir = glm::vec3(cos(aa), sin(aa), 0.0f);
-            vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
-            vertexData[cnt].position = dir * 0.2f;
-            vertexData[cnt].velocity = dir * 5.0f;
-            vertexData[cnt++].acceleration = zero;
-        }
+    // for (int k = 0; k < vertexDirections; ++k) {
+    //     float angle = (float)k / (float)vertexDirections * 2.0f * M_PI;
+    //     for (int i = 0; i < roundSize; ++i) {
+    //         float t = (float)i * 0.1f;
+    //         float aa = angle + M_PI * cos(t);
+    //         glm::vec3 dir = glm::vec3(cos(aa), sin(aa), 0.0f);
+    //         vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
+    //         vertexData[cnt].position = dir * 0.2f;
+    //         vertexData[cnt].velocity = dir * 5.0f;
+    //         vertexData[cnt++].acceleration = zero;
+    //     }
+    // }
+    glm::vec3 target = glm::vec3(0.0f, -1.0f, 0.0f);
+    for (int i = 0; i < vertexSize; ++i) {
+        float t = (float)i / (float)vertexSize;
+        float x = t * 10.0f - 5.0f;
+        glm::vec3 pos = glm::vec3(0.0f, -x, 0.0f);
+        glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+        vertexData[i].time = glm::vec4(t * 0.2f, INFINITY, t * 0.2f, INFINITY);
+        vertexData[i].position = pos - rnd * 0.2f;
+        vertexData[i].velocity = 3.0f * (target + rnd);
+        vertexData[i].acceleration = zero;
+        vertexData[i].uvIndex = glm::vec4(6.0f / 16.0f, 14.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
     }
 
     LOG << "done setup vertices";

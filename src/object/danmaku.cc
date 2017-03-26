@@ -20,6 +20,7 @@ protoAttrib = {
     { "time"    , Offset(Vertex, time[0])    , 4, sizeof(Vertex) },
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "velocity", Offset(Vertex, velocity[0]), 3, sizeof(Vertex) },
+    { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
 };
 
 protoUnifom = { "size", "vMat", "pMat", "texture0" };
@@ -35,7 +36,7 @@ public:
         ProgramRenderer::setup();
 
         glUniform1i(uniform[3], 0);
-        texture0 = Texture::small();
+        texture0 = Texture::etama();
 
         glUniform2fv(uniform[0], 1, pointSize);
     }

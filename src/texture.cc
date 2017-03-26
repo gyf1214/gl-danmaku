@@ -38,11 +38,9 @@ GLuint Texture::loadTexture(const char *name) {
     int n = 0;
 
     for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            unsigned char *base = rows[i] + 4 * j;
-            for (int k = 0; k < 4; ++k) {
-                data[n++] = base[k];
-            }
+        unsigned char *base = rows[height - i - 1];
+        for (int j = 0; j < width * 4; ++j) {
+            data[n++] = base[j];
         }
     }
 
@@ -65,8 +63,5 @@ GLuint Texture::loadTexture(const char *name) {
     return texture;
 }
 
-static GLuint texSmall = 0;
-GLuint Texture::small() {
-    if (!texSmall) texSmall = loadTexture("assets/small.png");
-    return texSmall;
-}
+defineTexture(small, "assets/small.png");
+defineTexture(etama, "assets/etama.png");
