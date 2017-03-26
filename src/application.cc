@@ -41,7 +41,7 @@ void Application::setup() {
     window = glfwCreateWindow(width, height, "Test", NULL, NULL);
     CHECK(window) << "fail to create window";
     glfwMakeContextCurrent(window);
-    // glfwSwapInterval(0);
+    glfwSwapInterval(1);
     glfwSetKeyCallback(window, keyboardCallback);
 
     LOG << "init GLEW";

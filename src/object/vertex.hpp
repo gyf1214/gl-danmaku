@@ -11,7 +11,7 @@ typedef struct {
     glm::vec4 uvIndex;
 } Vertex;
 
-constexpr int vertexSize = 240;
+constexpr int vertexSize = 144;
 constexpr int vertexDirections = 6;
 
 const glm::vec3 vertexDir[] = {
