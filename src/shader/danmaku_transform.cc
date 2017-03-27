@@ -33,17 +33,16 @@ static const char *vsh = R"(
         uvIndex = uvIndex0;
         if (time0.z <= 0.0 && time0.w > 0.0) {
             velocity = velocity0 + acceleration0 * elapse;
-            if (time0.z > -elapse) {
-                velocity -= acceleration0 * time0.z;
-            }
-            vec3 vel = (velocity0 + velocity) * 0.5;
-            position = position0 + vel * elapse;
-            if (time0.z > -elapse) {
-                position -= vel * time0.z;
-            }
+            position = position0 + (velocity0 + velocity) * 0.5 * elapse;
         } else {
             velocity = velocity0;
+            if (time0.z < elapse) {
+                velocity += acceleration0 * (elapse - time0.z);
+            }
             position = position0;
+            if (time0.z < elapse) {
+                position += (velocity0 + velocity) * 0.5 * (elapse - time0.z);
+            }
         }
     }
 )";

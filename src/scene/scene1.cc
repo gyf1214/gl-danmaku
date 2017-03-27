@@ -15,10 +15,16 @@ public:
         objects.push_back(transform);
         objects.push_back(ObjectBox::danmaku(this, transform));
 
+        // _vMat = glm::lookAt(
+        //     glm::vec3(8.0f, 8.0f, 8.0f),
+        //     glm::vec3(0.0f, 0.0f, 0.0f),
+        //     glm::vec3(0.0f, 0.0f, 1.0f)
+        // );
+
         _vMat = glm::lookAt(
-            glm::vec3(8.0f, 8.0f, 8.0f),
+            glm::vec3(0.0f, 0.0f, 20.0f),
             glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 0.0f, 1.0f)
+            glm::vec3(0.0f, 1.0f, 0.0f)
         );
 
         GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
@@ -43,8 +49,8 @@ public:
 
         // static char str[100];
         // static int second = 0;
-        // if (!(second % 2)) {
-        //     sprintf(str, "tmp/s_%04d.png", second / 2);
+        // if (!(second % 1)) {
+        //     sprintf(str, "tmp/s_%04d.png", second / 1);
         //     LOG << str;
         //     Application::screenShot(str);
         // }
