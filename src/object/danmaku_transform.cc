@@ -31,7 +31,7 @@ static void setupVertices() {
     LOG << "setup vertices";
     srand(time(NULL));
 
-    constexpr int roundSize = vertexSize / vertexDirections;
+    // constexpr int roundSize = vertexSize / vertexDirections;
     glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
     int cnt = 0;
     // for (int k = 0; k < vertexDirections; ++k) {
