@@ -6,6 +6,7 @@
 #include "object_box.hpp"
 #include "shader.hpp"
 #include "util.hpp"
+#include "builder.hpp"
 
 static Vertex vertexData[vertexSize];
 
@@ -27,13 +28,15 @@ protoAttrib = {
 
 protoUnifom = {};
 
+using namespace Builder;
+
 static void setupVertices() {
     LOG << "setup vertices";
     srand(time(NULL));
 
     // constexpr int roundSize = vertexSize / vertexDirections;
-    glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
-    int cnt = 0;
+    // glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
+    // int cnt = 0;
     // for (int k = 0; k < vertexDirections; ++k) {
     //     glm::vec3 rnd2 = vertexDir[k];
     //     glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -71,22 +74,48 @@ static void setupVertices() {
     //         vertexData[cnt++].acceleration = zero;
     //     }
     // }
-    glm::vec3 target = glm::vec3(0.0f, -5.0f, 0.0f);
-    for (int i = 0; i < vertexSize / 3; ++i) {
-        for (int k = 0; k < 3; ++k) {
-            float t = (float)i / (float)(vertexSize / 3);
-            float x = t * 10.0f - 5.0f;
-            glm::vec3 pos = glm::vec3(x, 5.0f, ((float)k - 1.0f));
-            // glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
-            vertexData[cnt].time = glm::vec4(((float)k / 3.0f + t) * 0.3f, INFINITY, ((float)k / 3.0f + t) * 0.3f, INFINITY);
-            // vertexData[i].position = pos - rnd * 0.2f;
-            vertexData[cnt].position = pos;
-            // vertexData[i].velocity = 3.0f * (target + rnd);
-            vertexData[cnt].velocity = 8.0f * normalize(target - pos);
-            vertexData[cnt].acceleration = zero;
-            vertexData[cnt++].uvIndex = glm::vec4(6.0f / 16.0f, 14.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
-        }
-    }
+    // glm::vec3 target = glm::vec3(0.0f, -5.0f, 0.0f);
+    // for (int i = 0; i < vertexSize / 3; ++i) {
+    //     for (int k = 0; k < 3; ++k) {
+    //         float t = (float)i / (float)(vertexSize / 3);
+    //         float x = t * 10.0f - 5.0f;
+    //         glm::vec3 pos = glm::vec3(x, 5.0f, ((float)k - 1.0f));
+    //         // glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
+    //         vertexData[cnt].time = glm::vec4(((float)k / 3.0f + t) * 0.3f, INFINITY, ((float)k / 3.0f + t) * 0.3f, INFINITY);
+    //         // vertexData[i].position = pos - rnd * 0.2f;
+    //         vertexData[cnt].position = pos;
+    //         // vertexData[i].velocity = 3.0f * (target + rnd);
+    //         vertexData[cnt].velocity = 8.0f * normalize(target - pos);
+    //         vertexData[cnt].acceleration = zero;
+    //         vertexData[cnt++].uvIndex = glm::vec4(6.0f / 16.0f, 14.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
+    //     }
+    // }
+
+    Base *src = source(vertexData, vertexSize) -> set();
+
+    Chain emitter = Chain(generator(0.0f, 0.1f, vertexSize / 6))
+        << point(0.0f, 0.0f, 0.0f)
+        << type(14, 0);
+
+    emitter << direction(5.0f, 0.0f, 0.0f)
+            << src << Emit();
+
+    emitter << direction(0.0f, 5.0f, 0.0f)
+            << src << Emit();
+
+    emitter << direction(0.0f, 0.0f, 5.0f)
+            << src << Emit();
+
+    emitter << direction(-5.0f, 0.0f, 0.0f)
+            << src << Emit();
+
+    emitter << direction(0.0f, -5.0f, 0.0f)
+            << src << Emit();
+
+    emitter << direction(0.0f, 0.0f, -5.0f)
+            << src << Emit();
+
+    src -> reset();
 
     LOG << "done setup vertices";
 }

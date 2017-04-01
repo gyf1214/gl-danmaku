@@ -44,8 +44,8 @@ public:
     void render() {
         bindProgram();
 
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, scene -> vMat());
-        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, scene -> pMat());
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> vMat()[0][0]);
+        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture0);

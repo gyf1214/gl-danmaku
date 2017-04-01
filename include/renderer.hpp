@@ -9,20 +9,19 @@ class Renderer {
 protected:
     Scene *scene;
 public:
-    Renderer(Scene *scene) : scene(scene) {}
-    virtual ~Renderer() {}
-    virtual void setup(void) {}
-    virtual void update(void) {}
+    Renderer(Scene *scene);
+    virtual ~Renderer();
+    virtual void setup(void);
+    virtual void update(void);
     virtual void render(void) = 0;
-    virtual void reset(void) {}
+    virtual void reset(void);
 };
 
 class Transformer : public Renderer {
 public:
-    Transformer(Scene *scene) : Renderer(scene) {}
-
+    Transformer(Scene *scene);
     virtual GLuint outputBuffer() = 0;
-    void render() {}
+    void render();
 };
 
 #endif

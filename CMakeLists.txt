@@ -7,6 +7,7 @@ aux_source_directory(src SRCS)
 aux_source_directory(src/object SRCS)
 aux_source_directory(src/scene SRCS)
 aux_source_directory(src/shader SRCS)
+aux_source_directory(src/builder SRCS)
 add_executable(${TARGET} ${SRCS})
 
 file (GLOB ASSETS_FULL assets/*)

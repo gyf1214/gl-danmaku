@@ -15,21 +15,6 @@ public:
         objects.push_back(transform);
         objects.push_back(ObjectBox::danmaku(this, transform));
 
-        // _vMat = glm::lookAt(
-        //     glm::vec3(8.0f, 8.0f, 8.0f),
-        //     glm::vec3(0.0f, 0.0f, 0.0f),
-        //     glm::vec3(0.0f, 0.0f, 1.0f)
-        // );
-
-        _vMat = glm::lookAt(
-            glm::vec3(0.0f, 0.0f, 20.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 1.0f, 0.0f)
-        );
-
-        GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
-        _pMat = glm::perspective(glm::radians(45.0f), wh, 1.0f, 100.0f);
-
         Scene::setup();
 
         timer = glfwGetTime();
@@ -55,6 +40,19 @@ public:
         //     Application::screenShot(str);
         // }
         // second++;
+    }
+
+    glm::mat4 vMat() {
+        return glm::lookAt(
+            glm::vec3(8.0f, 8.0f, 8.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, 1.0f)
+        );
+    }
+
+    glm::mat4 pMat() {
+        GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
+        return glm::perspective(glm::radians(45.0f), wh, 1.0f, 100.0f);
     }
 };
 

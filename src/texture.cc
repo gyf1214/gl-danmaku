@@ -63,5 +63,11 @@ GLuint Texture::loadTexture(const char *name) {
     return texture;
 }
 
+#define defineTexture(name, path) static GLuint tex_##name = 0;\
+GLuint Texture::name() {\
+    if (!tex_##name) tex_##name = loadTexture(path);\
+    return tex_##name;\
+}
+
 defineTexture(small, "assets/small.png");
 defineTexture(etama, "assets/etama.png");
