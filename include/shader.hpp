@@ -11,6 +11,8 @@ protected:
 public:
     static GLuint danmaku(void);
     static GLuint danmakuTransform(void);
+    static GLuint base(void);
+    static GLuint lambert(void);
 };
 
 #endif

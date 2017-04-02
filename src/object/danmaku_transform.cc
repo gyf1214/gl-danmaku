@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <algorithm>
 #include "transform_renderer.hpp"
-#include "vertex.hpp"
+#include "vertex/danmaku.hpp"
 #include "object_box.hpp"
 #include "shader.hpp"
 #include "util.hpp"
@@ -34,86 +34,39 @@ static void setupVertices() {
     LOG << "setup vertices";
     srand(time(NULL));
 
-    // constexpr int roundSize = vertexSize / vertexDirections;
-    // glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
-    // int cnt = 0;
-    // for (int k = 0; k < vertexDirections; ++k) {
-    //     glm::vec3 rnd2 = vertexDir[k];
-    //     glm::vec3 zero = glm::vec3(0.0f, 0.0f, 0.0f);
-    //
-    //     for (int i = 0; i < roundSize; ++i) {
-    //         float t = (float)i * 0.1f;
-    //
-    //         vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
-    //         vertexData[cnt].position = rnd2 * 0.2f;
-    //         vertexData[cnt].velocity = rnd2 * 10.0f;
-    //         vertexData[cnt++].acceleration = zero;
-    //     }
-    // }
-    // for (int i = 0; i < vertexSize; ++i) {
-    //     float t = (float)i / (float)vertexSize;
-    //     float angle = t * 2.0f * M_PI;
-    //
-    //     glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
-    //     glm::vec3 dir = glm::vec3(cos(angle), sin(angle), 0.0f);
-    //
-    //     vertexData[i].time = glm::vec4(t, INFINITY, 2.0f, INFINITY);
-    //     vertexData[i].position = dir;
-    //     vertexData[i].velocity = rnd * 0.2f;
-    //     vertexData[i].acceleration = dir;
-    // }
-    // for (int k = 0; k < vertexDirections; ++k) {
-    //     float angle = (float)k / (float)vertexDirections * 2.0f * M_PI;
-    //     for (int i = 0; i < roundSize; ++i) {
-    //         float t = (float)i * 0.1f;
-    //         float aa = angle + M_PI * cos(t);
-    //         glm::vec3 dir = glm::vec3(cos(aa), sin(aa), 0.0f);
-    //         vertexData[cnt].time = glm::vec4(t, INFINITY, t, INFINITY);
-    //         vertexData[cnt].position = dir * 0.2f;
-    //         vertexData[cnt].velocity = dir * 5.0f;
-    //         vertexData[cnt++].acceleration = zero;
-    //     }
-    // }
-    // glm::vec3 target = glm::vec3(0.0f, -5.0f, 0.0f);
-    // for (int i = 0; i < vertexSize / 3; ++i) {
-    //     for (int k = 0; k < 3; ++k) {
-    //         float t = (float)i / (float)(vertexSize / 3);
-    //         float x = t * 10.0f - 5.0f;
-    //         glm::vec3 pos = glm::vec3(x, 5.0f, ((float)k - 1.0f));
-    //         // glm::vec3 rnd = normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
-    //         vertexData[cnt].time = glm::vec4(((float)k / 3.0f + t) * 0.3f, INFINITY, ((float)k / 3.0f + t) * 0.3f, INFINITY);
-    //         // vertexData[i].position = pos - rnd * 0.2f;
-    //         vertexData[cnt].position = pos;
-    //         // vertexData[i].velocity = 3.0f * (target + rnd);
-    //         vertexData[cnt].velocity = 8.0f * normalize(target - pos);
-    //         vertexData[cnt].acceleration = zero;
-    //         vertexData[cnt++].uvIndex = glm::vec4(6.0f / 16.0f, 14.0f / 16.0f, 1.0f / 16.0f, 1.0f / 16.0f);
-    //     }
-    // }
-
     Base *src = source(vertexData, vertexSize) -> set();
+    Multi dirs = Multi() << direction( 5.0f,  0.0f,  0.0f)
+                         << direction( 0.0f,  5.0f,  0.0f)
+                         << direction( 0.0f,  0.0f,  5.0f)
+                         << direction(-5.0f,  0.0f,  0.0f)
+                         << direction( 0.0f, -5.0f,  0.0f)
+                         << direction( 0.0f,  0.0f, -5.0f);
 
-    Chain emitter = Chain(generator(0.0f, 0.1f, vertexSize / 6))
-        << point(0.0f, 0.0f, 0.0f)
-        << type(14, 0);
+    Chain(generator(10))
+        << emitter(0.0f, 0.1f)
+        << point(2.0f, 0.0f, 2.0f)
+        << type(12, 0) << dirs << src << Emit();
 
-    emitter << direction(5.0f, 0.0f, 0.0f)
-            << src << Emit();
+    Chain(generator(10))
+        << emitter(0.5f, 0.1f)
+        << point(-2.0f, 0.0f, 2.0f)
+        << type(12, 0) << dirs << src << Emit();
 
-    emitter << direction(0.0f, 5.0f, 0.0f)
-            << src << Emit();
+    Multi tars = Multi()
+        << targetNorm(glm::vec3(-5.0f, -5.0f, 2.0f), 10.0f)
+        << targetNorm(glm::vec3(0.0f, -5.0f, 2.0f), 10.0f)
+        << targetNorm(glm::vec3(5.0f, -5.0f, 2.0f), 10.0f)
+        << targetNorm(glm::vec3(-5.0f, -5.0f, -2.0f), 10.0f)
+        << targetNorm(glm::vec3(0.0f, -5.0f, -2.0f), 10.0f)
+        << targetNorm(glm::vec3(5.0f, -5.0f, -2.0f), 10.0f);
 
-    emitter << direction(0.0f, 0.0f, 5.0f)
-            << src << Emit();
-
-    emitter << direction(-5.0f, 0.0f, 0.0f)
-            << src << Emit();
-
-    emitter << direction(0.0f, -5.0f, 0.0f)
-            << src << Emit();
-
-    emitter << direction(0.0f, 0.0f, -5.0f)
-            << src << Emit();
+    Chain(generator(5))
+        << line(glm::vec3(-2.0f, 4.0f, 0.0f),
+                glm::vec3( 4.0f, 0.0f, 0.0f) / 5.0f)
+        << generator(20)
+        << emitter(2.0f, 0.1f)
+        << tars
+        << type(14, 2) << src << Emit();
 
     src -> reset();
 

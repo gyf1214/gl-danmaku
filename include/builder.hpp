@@ -2,7 +2,7 @@
 #define __DANMAKU_BUILDER
 
 #include <vector>
-#include "vertex.hpp"
+#include "vertex/danmaku.hpp"
 #include "util.hpp"
 
 namespace Builder {
@@ -18,8 +18,8 @@ namespace Builder {
         void reset();
 
         virtual void generate(void);
-        virtual void pass(const Vertex &v);
-        virtual void emit(const Vertex &v);
+        virtual void pass(Vertex &v, int i);
+        virtual void emit(Vertex &v, int i);
         virtual void chain(Base *b);
     };
 
@@ -37,30 +37,43 @@ namespace Builder {
         void operator <<(const Emit &e) const;
     };
 
-    class Multi : public Base {
-        std::vector<Base *>base;
+    class MultiBase;
+    class Multi {
+        MultiBase *base;
     public:
+        Multi();
+        Multi(const Multi &);
+        ~Multi();
 
+        const Multi &operator <<(Base *b) const;
+        operator Base *() const;
     };
 
-    // Source
+    // Misc
     Base *source(Vertex *vertex, int cnt);
     Base *type(int type, int color);
 
     // Generators
-    Base *generator(float start, float interval, int cnt);
+    Base *generator(int cnt);
+
+    // Time Pass
+    Base *emitter(float start, float interval);
 
     // Position Pass
     Base *point(const glm::vec3 &pos);
-    inline Base *point(float x, float y, float z) {
-        return point(glm::vec3(x, y, z));
-    }
+    Base *line(const glm::vec3 &start, const glm::vec3 &dir);
 
-    // Speed Pass
+    // Motion Pass
     Base *direction(const glm::vec3 &dir);
-    inline Base *direction(float x, float y, float z) {
-        return direction(glm::vec3(x, y, z));
-    }
+    Base *targetTime(const glm::vec3 &pos, float time);
+    Base *targetNorm(const glm::vec3 &pos, float speed);
+
+#define inlineVec3(name) inline Base *name(float x, float y, float z) {\
+    return name(glm::vec3(x, y, z));\
+}
+
+    inlineVec3(point);
+    inlineVec3(direction);
 }
 
 #endif

@@ -5,7 +5,7 @@
 
 static const int PNG_BYTES_TO_CHECK = 4;
 
-GLuint Texture::loadTexture(const char *name) {
+GLuint Texture::loadTexture(const char *name, GLint wrap) {
     FILE *fp;
     char buf[PNG_BYTES_TO_CHECK];
 
@@ -50,8 +50,8 @@ GLuint Texture::loadTexture(const char *name) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -63,11 +63,14 @@ GLuint Texture::loadTexture(const char *name) {
     return texture;
 }
 
-#define defineTexture(name, path) static GLuint tex_##name = 0;\
+#define defineTexture(name, path, wrap) static GLuint tex_##name = 0;\
 GLuint Texture::name() {\
-    if (!tex_##name) tex_##name = loadTexture(path);\
+    if (!tex_##name) tex_##name = loadTexture(path, wrap);\
     return tex_##name;\
 }
 
-defineTexture(small, "assets/small.png");
-defineTexture(etama, "assets/etama.png");
+defineTexture(small, "assets/small.png", GL_CLAMP);
+defineTexture(etama, "assets/etama.png", GL_CLAMP);
+defineTexture(rockNormal, "assets/rock_normal.png", GL_REPEAT);
+defineTexture(sceneWall, "assets/scene_wall4.png", GL_REPEAT);
+defineTexture(sceneFloor, "assets/lava2.png", GL_CLAMP);

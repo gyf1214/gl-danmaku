@@ -12,6 +12,7 @@ class Scene1 : public Scene {
 public:
     void setup() {
         Transformer *transform = ObjectBox::danmakuTransform(this);
+        objects.push_back(ObjectBox::skybox(this));
         objects.push_back(transform);
         objects.push_back(ObjectBox::danmaku(this, transform));
 
@@ -44,15 +45,20 @@ public:
 
     glm::mat4 vMat() {
         return glm::lookAt(
-            glm::vec3(8.0f, 8.0f, 8.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(1.0f, -7.0f, 2.0f),
+            glm::vec3(0.0f, 0.0f, 2.0f),
             glm::vec3(0.0f, 0.0f, 1.0f)
         );
+        // return glm::lookAt(
+        //     glm::vec3(0.0f, 0.0f, 20.0f),
+        //     glm::vec3(0.0f, 0.0f, 0.0f),
+        //     glm::vec3(0.0f, 1.0f, 0.0f)
+        // );
     }
 
     glm::mat4 pMat() {
         GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
-        return glm::perspective(glm::radians(45.0f), wh, 1.0f, 100.0f);
+        return glm::perspective(glm::radians(90.0f), wh, 1.0f, 100.0f);
     }
 };
 

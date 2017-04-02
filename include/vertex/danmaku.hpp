@@ -1,5 +1,5 @@
-#ifndef __VERTEX
-#define __VERTEX
+#ifndef __VERTEX_DANMAKU
+#define __VERTEX_DANMAKU
 
 #include <glm/glm.hpp>
 
@@ -11,6 +11,6 @@ typedef struct {
     glm::vec4 uvIndex;
 } Vertex;
 
-constexpr int vertexSize = 144;
+constexpr int vertexSize = 1440;
 
 #endif
