@@ -9,6 +9,15 @@
 class Scene1 : public Scene {
     double timer;
     int tick;
+    glm::vec3 position, dir, left;
+    float horizonAngle, verticalAngle;
+    float fov;
+
+    static constexpr float speed = 10.0f;
+    static constexpr float scrollSpeed = 5.0f;
+    static constexpr float mouseSpeed = 0.1f;
+    static constexpr double centerX = Application::width / 2;
+    static constexpr double centerY = Application::height / 2;
 public:
     void setup() {
         Transformer *transform = ObjectBox::danmakuTransform(this);
@@ -20,6 +29,12 @@ public:
 
         timer = glfwGetTime();
         tick = 0;
+
+        position = glm::vec3(1.0f, -5.0f, 2.0f);
+        horizonAngle = M_PI / 2.0f;
+        verticalAngle = 0.0f;
+        fov = 45.0f;
+        Application::setCursor(centerX, centerY);
     }
 
     void render() {
@@ -43,22 +58,63 @@ public:
         // second++;
     }
 
+    void update() {
+        double posX, posY;
+        Application::getCursor(posX, posY);
+        Application::setCursor(centerX, centerY);
+
+        horizonAngle += mouseSpeed * Application::elapse * (centerX - posX);
+        verticalAngle += mouseSpeed * Application::elapse * (centerY - posY);
+
+        dir = glm::vec3(cos(verticalAngle) * cos(horizonAngle),
+                        cos(verticalAngle) * sin(horizonAngle),
+                        sin(verticalAngle));
+
+        left = glm::vec3(-sin(horizonAngle), cos(horizonAngle), 0.0f);
+
+        if (Application::getKey(GLFW_KEY_W) == GLFW_PRESS){
+            position += dir * Application::elapse * speed;
+        }
+
+        if (Application::getKey(GLFW_KEY_S) == GLFW_PRESS){
+            position -= dir * Application::elapse * speed;
+        }
+
+        if (Application::getKey(GLFW_KEY_D) == GLFW_PRESS){
+            position -= left * Application::elapse * speed;
+        }
+
+        if (Application::getKey(GLFW_KEY_A) == GLFW_PRESS){
+            position += left * Application::elapse * speed;
+        }
+
+        if (Application::getKey(GLFW_KEY_E) == GLFW_PRESS) {
+            fov -= scrollSpeed * Application::elapse;
+        }
+
+        if (Application::getKey(GLFW_KEY_Q) == GLFW_PRESS) {
+            fov += scrollSpeed * Application::elapse;
+        }
+    }
+
     glm::mat4 vMat() {
-        return glm::lookAt(
-            glm::vec3(1.0f, -7.0f, 2.0f),
-            glm::vec3(0.0f, 0.0f, 2.0f),
-            glm::vec3(0.0f, 0.0f, 1.0f)
-        );
         // return glm::lookAt(
-        //     glm::vec3(0.0f, 0.0f, 20.0f),
-        //     glm::vec3(0.0f, 0.0f, 0.0f),
+        //     glm::vec3(1.0f, -7.0f, 2.0f),
+        //     glm::vec3(0.0f, 0.0f, 2.0f),
+        //     glm::vec3(0.0f, 0.0f, 1.0f)
+        // );
+        // return glm::lookAt(
+        //     glm::vec3(0.0f, 0.0f, 50.0f),
+        //     glm::vec3(0.0f, 0.0f, -100.0f),
         //     glm::vec3(0.0f, 1.0f, 0.0f)
         // );
+
+        return glm::lookAt(position, position + dir, cross(dir, left));
     }
 
     glm::mat4 pMat() {
         GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
-        return glm::perspective(glm::radians(90.0f), wh, 1.0f, 100.0f);
+        return glm::perspective(glm::radians(fov), wh, 1.0f, 100.0f);
     }
 };
 

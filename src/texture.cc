@@ -72,5 +72,5 @@ GLuint Texture::name() {\
 defineTexture(small, "assets/small.png", GL_CLAMP);
 defineTexture(etama, "assets/etama.png", GL_CLAMP);
 defineTexture(rockNormal, "assets/rock_normal.png", GL_REPEAT);
-defineTexture(sceneWall, "assets/scene_wall4.png", GL_REPEAT);
+defineTexture(sceneWall, "assets/scene_wall6.png", GL_REPEAT);
 defineTexture(sceneFloor, "assets/lava2.png", GL_CLAMP);

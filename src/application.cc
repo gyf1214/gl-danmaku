@@ -43,6 +43,7 @@ void Application::setup() {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, keyboardCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     LOG << "init GLEW";
     glewExperimental = GL_TRUE;
@@ -60,9 +61,6 @@ void Application::setup() {
     bufferHeight = rect[3];
 
     LOG << "framebuffer: " << bufferWidth << "x" << bufferHeight;
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Application::setScene(Scene *scene) {
@@ -127,4 +125,16 @@ void Application::screenShot(const char *name) {
 
     png_destroy_write_struct(&png, &info);
     fclose(fp);
+}
+
+void Application::setCursor(double x, double y) {
+    glfwSetCursorPos(window, x, y);
+}
+
+void Application::getCursor(double &x, double &y) {
+    glfwGetCursorPos(window, &x, &y);
+}
+
+int Application::getKey(int key) {
+    return glfwGetKey(window, key);
 }

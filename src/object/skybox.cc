@@ -8,19 +8,21 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-static const int circleSize = 6;
+static const int circleSize = 128;
 static const int wallSize = 6 * circleSize;
 static const int floorSize = 4;
 static const int vertexSize = wallSize + floorSize;
 static const float radius = 20.0f;
-static const float height = radius * 2.0f;
+static const float heightScale = 0.5f;
+static const float height = radius * M_PI * heightScale;
+static const float uvScale = 10.0f;
 
 static const float ambient[] = { 0.0f, 0.0f, 0.0f };
-static const float lightColor[] = { 800.0f, 240.0f, 80.0f };
+static const float lightColor[] = { 800.0f, 480.0f, 320.0f };
 static const float lightPosition[] = { 0.0f, 0.0f, - height, 1.0f };
 static const float lightColor2[] = { 3.0f, 0.9f, 0.3f };
 static const float lightPosition2[] = { 0.0f, 0.0f, -1.0f, 0.0f };
-static const float material[] = { 1.0f, 0.2f };
+static const float material[] = { 1.0f, 0.0f };
 
 static Vertex vertices[vertexSize];
 static int cnt;
@@ -44,10 +46,11 @@ protoUnifom = {
 };
 
 static void push(int x, int y, float norm) {
-    float angle = (float)x / (float)circleSize * M_PI * 2.0f;
+    float t = (float)x / (float)circleSize;
+    float angle = t * M_PI * 2.0f;
     float yy = y * height;
 
-    vertices[cnt].uv = glm::vec2(x, y);
+    vertices[cnt].uv = glm::vec2(t * uvScale, y * uvScale / 4.0f * heightScale);
     vertices[cnt].position = glm::vec3(radius * cos(angle), radius * sin(angle), yy);
     vertices[cnt].normal = glm::vec3(-cos(norm), -sin(norm), 0.0f);
     ++cnt;
@@ -55,16 +58,17 @@ static void push(int x, int y, float norm) {
 
 static void setupVertices() {
     cnt = 0;
-    const float angle2 = M_PI / (float)circleSize;
+    const float angle2 = 2.0f * M_PI / (float)circleSize;
 
     for (int i = 0; i < circleSize; ++i) {
-        float angle = ((float)i * 2.0f + 1.0f) * angle2;
-        push(i    ,  1, angle);
-        push(i    , -1, angle);
-        push(i + 1,  1, angle);
-        push(i + 1,  1, angle);
-        push(i    , -1, angle);
-        push(i + 1, -1, angle);
+        float angle0 = (float)i * angle2;
+        float angle1 = (float)(i + 1) * angle2;
+        push(i    ,  1, angle0);
+        push(i    , -1, angle0);
+        push(i + 1,  1, angle1);
+        push(i + 1,  1, angle1);
+        push(i    , -1, angle0);
+        push(i + 1, -1, angle1);
     }
 
     for (int i = 0; i < 2; ++i) {

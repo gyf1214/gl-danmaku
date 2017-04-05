@@ -44,6 +44,11 @@ public:
     void render() {
         bindProgram();
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> vMat()[0][0]);
         glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
@@ -53,6 +58,10 @@ public:
         bindBuffer(transform -> outputBuffer());
 
         glDrawArrays(GL_POINTS, 0, vertexSize);
+
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
     }
 };
 
