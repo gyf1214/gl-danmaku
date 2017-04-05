@@ -95,20 +95,11 @@ public:
         if (Application::getKey(GLFW_KEY_Q) == GLFW_PRESS) {
             fov += scrollSpeed * Application::elapse;
         }
+
+        Scene::update();
     }
 
     glm::mat4 vMat() {
-        // return glm::lookAt(
-        //     glm::vec3(1.0f, -7.0f, 2.0f),
-        //     glm::vec3(0.0f, 0.0f, 2.0f),
-        //     glm::vec3(0.0f, 0.0f, 1.0f)
-        // );
-        // return glm::lookAt(
-        //     glm::vec3(0.0f, 0.0f, 50.0f),
-        //     glm::vec3(0.0f, 0.0f, -100.0f),
-        //     glm::vec3(0.0f, 1.0f, 0.0f)
-        // );
-
         return glm::lookAt(position, position + dir, cross(dir, left));
     }
 
