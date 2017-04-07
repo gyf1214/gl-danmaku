@@ -5,7 +5,7 @@
 
 static const int PNG_BYTES_TO_CHECK = 4;
 
-GLuint Texture::loadTexture(const char *name, GLint wrap) {
+GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
     FILE *fp;
     char buf[PNG_BYTES_TO_CHECK];
 
@@ -50,8 +50,8 @@ GLuint Texture::loadTexture(const char *name, GLint wrap) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wraps);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapt);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -63,14 +63,16 @@ GLuint Texture::loadTexture(const char *name, GLint wrap) {
     return texture;
 }
 
-#define defineTexture(name, path, wrap) static GLuint tex_##name = 0;\
+#define defineTexture(name, path, wraps, wrapt) static GLuint tex_##name = 0;\
 GLuint Texture::name() {\
-    if (!tex_##name) tex_##name = loadTexture(path, wrap);\
+    if (!tex_##name) tex_##name = loadTexture(path, wraps, wrapt);\
     return tex_##name;\
 }
 
-defineTexture(small, "assets/small.png", GL_CLAMP);
-defineTexture(etama, "assets/etama.png", GL_CLAMP);
-defineTexture(rockNormal, "assets/rock_normal.png", GL_REPEAT);
-defineTexture(sceneWall, "assets/scene_wall6.png", GL_REPEAT);
-defineTexture(sceneFloor, "assets/lava2.png", GL_CLAMP);
+defineTexture(small, "assets/small.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+defineTexture(etama, "assets/etama.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+defineTexture(wallNormal, "assets/rock_normal.png", GL_REPEAT, GL_REPEAT);
+defineTexture(wall, "assets/scene_wall6.png", GL_REPEAT, GL_REPEAT);
+defineTexture(lava, "assets/lava2.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
+defineTexture(wallLava, "assets/lava3.png", GL_MIRRORED_REPEAT, GL_CLAMP_TO_BORDER);
+defineTexture(white, "assets/white.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);

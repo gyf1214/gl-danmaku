@@ -4,13 +4,15 @@
 #include <GL/glew.h>
 
 class Texture {
-    static GLuint loadTexture(const char *name, GLint wrap);
+    static GLuint loadTexture(const char *name, GLuint wraps, GLuint wrapt);
 public:
     static GLuint small();
     static GLuint etama();
-    static GLuint rockNormal();
-    static GLuint sceneWall();
-    static GLuint sceneFloor();
+    static GLuint wallNormal();
+    static GLuint wall();
+    static GLuint lava();
+    static GLuint wallLava();
+    static GLuint white();
 };
 
 #endif

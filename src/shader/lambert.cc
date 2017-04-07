@@ -8,6 +8,7 @@ static const char *vsh = R"(
 
     in vec3 position;
     in vec3 normal;
+    in vec3 tangent;
     in vec2 uv;
 
     uniform mat4 vMat;
@@ -15,6 +16,7 @@ static const char *vsh = R"(
     uniform vec4 lightPosition;
 
     out vec3 normalOut;
+    out vec3 tangentOut;
     out vec2 uvOut;
     out vec4 vPos;
     out vec4 lPos;
@@ -24,6 +26,7 @@ static const char *vsh = R"(
         gl_Position = pMat * vPos;
 
         normalOut = normalize((vMat * vec4(normal, 0.0)).xyz);
+        tangentOut = normalize((vMat * vec4(tangent, 0.0)).xyz);
         uvOut = uv;
 
         lPos = vMat * lightPosition;
@@ -40,38 +43,52 @@ static const char *fsh = R"(
     precision highp float;
 
     in vec3 normalOut;
+    in vec3 tangentOut;
     in vec4 vPos;
     in vec4 lPos;
     in vec2 uvOut;
 
     uniform vec3 lightColor;
     uniform vec3 ambient;
-    uniform sampler2D texture0;
-    uniform vec2 material;
+    uniform vec4 lightMaterial;
+    uniform vec4 material;
+    uniform sampler2D diffuse;
+    uniform sampler2D normal;
+    uniform sampler2D specular;
+    uniform sampler2D emission;
 
     out vec4 fragColor;
 
     void main(void) {
-        vec3 color = texture(texture0, uvOut).rgb;
+        vec3 color = texture(diffuse, uvOut).rgb;
         vec3 c = ambient * color * material.x;
 
         vec3 N = normalize(normalOut);
         vec3 L = normalize(lPos.xyz);
-        vec3 H = normalize(lPos.xyz - vPos.xyz);
+        vec3 H = normalize(L - normalize(vPos.xyz));
 
-        if (dot(N, vPos.xyz) > 0) discard;
+        if (length(tangentOut) > 0.0) {
+            vec3 T = normalize(tangentOut);
+            vec3 B = cross(N, T);
+            vec3 map = 2.0 * texture(normal, uvOut).xyz - 1.0;
+            N = normalize(map.x * T + map.y * B + map.z * N);
+        }
 
         float scalar = 1.0;
         if (lPos.w != 0.0) {
             float dis = length(lPos.xyz);
-            scalar /= dis * dis;
+            scalar /= dot(lightMaterial.xyz, vec3(1.0, dis, dis * dis));
         }
 
-        float diffuse = scalar * max(dot(L, N), 0.0);
-        float specular = scalar * pow(max(dot(N, H), 0.0), 20.0);
+        float diff = scalar * material.x * max(dot(L, N), 0.0);
+        c += lightColor * color * diff;
 
-        c += lightColor * color * diffuse * material.x;
-        c += specular * lightColor * material.y;
+        float spec = scalar * material.y * pow(max(dot(N, H), 0.0), material.w);
+        color = texture(specular, uvOut).rgb;
+        c += lightColor * color * spec;
+
+        color = texture(emission, uvOut).rgb;
+        c += material.z * lightMaterial.w * color;
 
         fragColor = vec4(c, 1.0);
     }

@@ -96,6 +96,13 @@ public:
             fov += scrollSpeed * Application::elapse;
         }
 
+        if (Application::getKey(GLFW_KEY_Z) == GLFW_PRESS) {
+            LOG << "position: " << position.x << " "
+                << position.y << " " << position.z;
+            LOG << "direction: " << dir.x << " " << dir.y << " " << dir.z;
+            LOG << "fov: " << fov;
+        }
+
         Scene::update();
     }
 
@@ -106,6 +113,15 @@ public:
     glm::mat4 pMat() {
         GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
         return glm::perspective(glm::radians(fov), wh, 1.0f, 100.0f);
+    }
+
+    Light light() {
+        return Light(
+            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            glm::vec3(1.0f, 0.6f, 0.2f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec4(0.3f, 0.0f, 0.3f / 10.0f / 10.0f, 1.0f)
+        );
     }
 };
 

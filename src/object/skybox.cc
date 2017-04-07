@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include "light.hpp"
 #include "vertex/light.hpp"
 #include "program_renderer.hpp"
 #include "scene.hpp"
@@ -12,17 +13,13 @@ static const int circleSize = 128;
 static const int wallSize = 6 * circleSize;
 static const int floorSize = 4;
 static const int vertexSize = wallSize + floorSize;
-static const float radius = 20.0f;
-static const float heightScale = 0.5f;
-static const float height = radius * M_PI * heightScale;
+static const float radius = 10.0f;
+static const float heightScale = 1.0f;
+static const float height = radius * M_PI * 2.0f * heightScale;
 static const float uvScale = 10.0f;
 
-static const float ambient[] = { 0.0f, 0.0f, 0.0f };
-static const float lightColor[] = { 800.0f, 480.0f, 320.0f };
-static const float lightPosition[] = { 0.0f, 0.0f, - height, 1.0f };
-static const float lightColor2[] = { 3.0f, 0.9f, 0.3f };
-static const float lightPosition2[] = { 0.0f, 0.0f, -1.0f, 0.0f };
-static const float material[] = { 1.0f, 0.0f };
+static const float wallMaterial[]  = { 1.0f, 0.5f, 1.0f, 50.0f };
+static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static Vertex vertices[vertexSize];
 static int cnt;
@@ -36,13 +33,14 @@ protoBuffer = {
 protoAttrib = {
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "normal"  , Offset(Vertex, normal[0])  , 3, sizeof(Vertex) },
+    { "tangent" , Offset(Vertex, tangent[0]) , 3, sizeof(Vertex) },
     { "uv"      , Offset(Vertex, uv[0])      , 2, sizeof(Vertex) },
 };
 
 protoUnifom = {
-    "texture0", "vMat", "pMat",
-    "lightPosition", "lightColor", "ambient",
-    "material",
+    "vMat", "pMat",
+    "lightPosition", "lightColor", "ambient", "lightMaterial",
+    "material", "diffuse", "normal", "specular", "emission"
 };
 
 static void push(int x, int y, float norm) {
@@ -50,9 +48,11 @@ static void push(int x, int y, float norm) {
     float angle = t * M_PI * 2.0f;
     float yy = y * height;
 
-    vertices[cnt].uv = glm::vec2(t * uvScale, y * uvScale / 4.0f * heightScale);
-    vertices[cnt].position = glm::vec3(radius * cos(angle), radius * sin(angle), yy);
-    vertices[cnt].normal = glm::vec3(-cos(norm), -sin(norm), 0.0f);
+    vertices[cnt].uv = glm::vec2(t * uvScale, y * uvScale * heightScale);
+    vertices[cnt].position = glm::vec3(radius * cos(angle), -radius * sin(angle), yy);
+    vertices[cnt].normal = glm::vec3(-cos(norm), sin(norm), 0.0f);
+    vertices[cnt].tangent = glm::vec3(-sin(norm), -cos(norm), 0.0f);
+    // vertices[cnt].tangent = glm::vec3(0.0f, 0.0f, 0.0f);
     ++cnt;
 }
 
@@ -64,26 +64,27 @@ static void setupVertices() {
         float angle0 = (float)i * angle2;
         float angle1 = (float)(i + 1) * angle2;
         push(i    ,  1, angle0);
-        push(i    , -1, angle0);
+        push(i    ,  0, angle0);
         push(i + 1,  1, angle1);
         push(i + 1,  1, angle1);
-        push(i    , -1, angle0);
-        push(i + 1, -1, angle1);
+        push(i    ,  0, angle0);
+        push(i + 1,  0, angle1);
     }
 
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j) {
             float xx = ((float)i * 2.0f - 1.0f) * radius;
             float yy = ((float)j * 2.0f - 1.0f) * radius;
-            vertices[cnt].position = glm::vec3(xx, yy, -height);
+            vertices[cnt].position = glm::vec3(xx, yy, 0.0f);
             vertices[cnt].normal = glm::vec3(0.0f, 0.0f, 1.0f);
+            vertices[cnt].tangent = glm::vec3(0.0f, 0.0f, 0.0f);
             vertices[cnt++].uv = glm::vec2((float)i, (float)j);
         }
     }
 }
 
 class Skybox : public ProgramRenderer<Proto> {
-    GLuint wallTex, floorTex;
+    GLuint lava, wall, wallLava, normal, white;
 public:
     Skybox(Scene *scene) : ProgramRenderer(scene) {}
 
@@ -94,14 +95,15 @@ public:
 
         bindBuffer(buffer[0]);
 
-        glUniform4fv(uniform[3], 1, lightPosition);
-        glUniform3fv(uniform[4], 1, lightColor);
-        glUniform3fv(uniform[5], 1, ambient);
-        glUniform2fv(uniform[6], 1, material);
-
-        glUniform1i(uniform[0], 0);
-        wallTex = Texture::sceneWall();
-        floorTex = Texture::sceneFloor();
+        glUniform1i(uniform[7],  0);
+        glUniform1i(uniform[8],  1);
+        glUniform1i(uniform[9],  2);
+        glUniform1i(uniform[10], 3);
+        wall = Texture::wall();
+        lava = Texture::lava();
+        wallLava = Texture::wallLava();
+        normal = Texture::wallNormal();
+        white = Texture::white();
     }
 
     void render() {
@@ -109,21 +111,33 @@ public:
 
         glEnable(GL_DEPTH_TEST);
 
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> vMat()[0][0]);
-        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, floorTex);
-        glUniform4fv(uniform[3], 1, lightPosition2);
-        glUniform3fv(uniform[4], 1, lightColor2);
+        Light light = scene -> light();
 
+        glUniform4fv(uniform[2], 1, &light.position[0]);
+        glUniform3fv(uniform[3], 1, &light.color[0]);
+        glUniform3fv(uniform[4], 1, &light.ambient[0]);
+        glUniform4fv(uniform[5], 1, &light.material[0]);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, lava);
+
+        glUniform4fv(uniform[6], 1, floorMaterial);
         glDrawArrays(GL_TRIANGLE_STRIP, wallSize, 4);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, wallTex);
-        glUniform4fv(uniform[3], 1, lightPosition);
-        glUniform3fv(uniform[4], 1, lightColor);
+        glBindTexture(GL_TEXTURE_2D, wall);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normal);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, white);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, wallLava);
 
+
+        glUniform4fv(uniform[6], 1, wallMaterial);
         glDrawArrays(GL_TRIANGLES, 0, wallSize);
 
         glDisable(GL_DEPTH_TEST);

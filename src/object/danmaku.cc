@@ -60,8 +60,8 @@ public:
         glDrawArrays(GL_POINTS, 0, vertexSize);
 
         glDisable(GL_BLEND);
-        glDisable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 
