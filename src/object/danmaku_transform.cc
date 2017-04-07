@@ -44,29 +44,39 @@ static void setupVertices() {
 
     Chain(generator(10))
         << emitter(0.0f, 0.1f)
-        << point(2.0f, 0.0f, 2.0f)
+        << point(2.0f, 0.0f, 5.0f)
         << type(12, 0) << dirs << src << Emit();
 
     Chain(generator(10))
         << emitter(0.5f, 0.1f)
-        << point(-2.0f, 0.0f, 2.0f)
+        << point(-2.0f, 0.0f, 5.0f)
         << type(12, 0) << dirs << src << Emit();
 
     Multi tars = Multi()
-        << targetNorm(glm::vec3(-5.0f, -5.0f, 2.0f), 10.0f)
-        << targetNorm(glm::vec3(0.0f, -5.0f, 2.0f), 10.0f)
-        << targetNorm(glm::vec3(5.0f, -5.0f, 2.0f), 10.0f)
-        << targetNorm(glm::vec3(-5.0f, -5.0f, -2.0f), 10.0f)
-        << targetNorm(glm::vec3(0.0f, -5.0f, -2.0f), 10.0f)
-        << targetNorm(glm::vec3(5.0f, -5.0f, -2.0f), 10.0f);
+        << targetNorm(glm::vec3(-5.0f, -5.0f, 7.0f), 10.0f)
+        << targetNorm(glm::vec3(0.0f, -5.0f, 7.0f), 10.0f)
+        << targetNorm(glm::vec3(5.0f, -5.0f, 7.0f), 10.0f)
+        << targetNorm(glm::vec3(-5.0f, -5.0f, 3.0f), 10.0f)
+        << targetNorm(glm::vec3(0.0f, -5.0f, 3.0f), 10.0f)
+        << targetNorm(glm::vec3(5.0f, -5.0f, 3.0f), 10.0f);
 
     Chain(generator(5))
-        << line(glm::vec3(-2.0f, 4.0f, 0.0f),
+        << line(glm::vec3(-2.0f, 4.0f, 5.0f),
                 glm::vec3( 4.0f, 0.0f, 0.0f) / 5.0f)
         << generator(20)
         << emitter(2.0f, 0.1f)
         << tars
         << type(14, 2) << src << Emit();
+
+    Chain(generator(5))
+        << line(glm::vec3(2.0f, 5.0f, 10.0f),
+                glm::vec3(4.0f, 0.0f, 0.0f) / 5.0f)
+        << emitter(3.0f, 0.05f)
+        << type(12, 0)
+        << direction(0.0f, 0.0f, -1.0f)
+        << generator(20)
+        << linearSpeed(0.1f, 0.5f)
+        << src << Emit();
 
     src -> reset();
 

@@ -34,6 +34,7 @@ namespace Builder {
         ~Chain();
 
         Chain operator <<(Base *b) const;
+        Chain operator <<(const Chain &c) const;
         void operator <<(const Emit &e) const;
     };
 
@@ -67,6 +68,7 @@ namespace Builder {
     Base *direction(const glm::vec3 &dir);
     Base *targetTime(const glm::vec3 &pos, float time);
     Base *targetNorm(const glm::vec3 &pos, float speed);
+    Base *linearSpeed(float base, float k);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
     return name(glm::vec3(x, y, z));\

@@ -24,6 +24,11 @@ namespace Builder {
         return Chain(start, b);
     }
 
+    Chain Chain::operator <<(const Chain &c) const {
+        end -> chain(c.start);
+        return Chain(start, c.end);
+    }
+
     void Chain::operator <<(const Emit &e) const {
         start -> generate();
     }

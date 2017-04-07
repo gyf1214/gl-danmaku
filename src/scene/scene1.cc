@@ -30,7 +30,7 @@ public:
         timer = glfwGetTime();
         tick = 0;
 
-        position = glm::vec3(1.0f, -5.0f, 2.0f);
+        position = glm::vec3(1.0f, -5.0f, 10.0f);
         horizonAngle = M_PI / 2.0f;
         verticalAngle = 0.0f;
         fov = 45.0f;

@@ -29,6 +29,17 @@ namespace Builder {
         }
     };
 
+    class LinearSpeed : public Base {
+        float base, k;
+    public:
+        LinearSpeed(float base, float k) : base(base), k(k) {}
+        void pass(Vertex &v, int i) {
+            float speed = base + k  * (float)i;
+            v.velocity = normalize(v.velocity) * speed;
+            emit(v, i);
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -37,5 +48,8 @@ namespace Builder {
     }
     Base *line(const glm::vec3 &pos, const glm::vec3 &dir) {
         return new Line(pos, dir);
+    }
+    Base *linearSpeed(float base, float k) {
+        return new LinearSpeed(base, k);
     }
 }
