@@ -52,7 +52,7 @@ namespace Builder {
 
     // Misc
     Base *source(Vertex *vertex, int cnt);
-    Base *type(int type, int color);
+    Base *type(int type, int color, int scale, float size);
 
     // Generators
     Base *generator(int cnt);

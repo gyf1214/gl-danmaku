@@ -65,14 +65,16 @@ namespace Builder {
     };
 
     class Type : public Base {
+        static const int maxSize = 32;
         glm::vec4 uv;
     public:
-        Type(int type, int color) {
-            CHECK(type >= 4 && type < 16 && color >= 0 && color < 16)
+        Type(int type, int color, int scale, float size) {
+            CHECK(type >= 0 && type + scale <= maxSize
+                  && color >= 0 && color + scale <= maxSize)
                 << "danmaku type not supported!";
 
-            uv = glm::vec4((float)color / 16.0f, (float)type / 16.0f,
-                           1.0f / 16.0f, 1.0f / 16.0f);
+            uv = glm::vec4((float)color / 32.0f, (float)type / 32.0f,
+                           (float)scale / 32.0f, size);
         }
         void pass(Vertex &v, int i) {
             v.uvIndex = uv;
@@ -87,5 +89,7 @@ namespace Builder {
     }
     Base *point(const glm::vec3 &pos) { return new Point(pos); }
     Base *direction(const glm::vec3 &dir) { return new Direction(dir); }
-    Base *type(int type, int color) { return new Type(type, color); }
+    Base *type(int type, int color, int scale, float size) {
+        return new Type(type, color, scale, size);
+    }
 }

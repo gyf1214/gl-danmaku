@@ -35,7 +35,6 @@ static const char *gsh = R"(
     in vec4 uvOut[];
     out vec2 uv;
 
-    uniform vec2 size;
     uniform mat4 pMat;
 
     void main(void) {
@@ -46,8 +45,8 @@ static const char *gsh = R"(
                 vec2 norm = vec2(-dir.y, dir.x);
                 for (int j = 0; j < 4; ++j) {
                     uv = vec2(j % 2, j / 2);
-                    vec2 offset = (uv - vec2(0.5)) * size;
-                    uv = uv * uvOut[i].zw + uvOut[i].xy;
+                    vec2 offset = (uv - vec2(0.5)) * uvOut[i].w;
+                    uv = uv * uvOut[i].z + uvOut[i].xy;
                     offset = offset.y * dir + offset.x * norm;
                     gl_Position = pMat * (vPosition + vec4(offset, 0.0, 0.0));
                     EmitVertex();

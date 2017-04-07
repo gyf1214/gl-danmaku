@@ -45,12 +45,12 @@ static void setupVertices() {
     Chain(generator(10))
         << emitter(0.0f, 0.1f)
         << point(2.0f, 0.0f, 5.0f)
-        << type(12, 0) << dirs << src << Emit();
+        << type(12, 0, 1, 0.2f) << dirs << src << Emit();
 
     Chain(generator(10))
         << emitter(0.5f, 0.1f)
         << point(-2.0f, 0.0f, 5.0f)
-        << type(12, 0) << dirs << src << Emit();
+        << type(12, 0, 1, 0.2f) << dirs << src << Emit();
 
     Multi tars = Multi()
         << targetNorm(glm::vec3(-5.0f, -5.0f, 7.0f), 10.0f)
@@ -66,13 +66,13 @@ static void setupVertices() {
         << generator(20)
         << emitter(2.0f, 0.1f)
         << tars
-        << type(14, 2) << src << Emit();
+        << type(14, 2, 1, 0.2f) << src << Emit();
 
     Chain(generator(5))
-        << line(glm::vec3(2.0f, 5.0f, 10.0f),
+        << line(glm::vec3(2.0f, 5.0f, 20.0f),
                 glm::vec3(4.0f, 0.0f, 0.0f) / 5.0f)
         << emitter(3.0f, 0.05f)
-        << type(12, 0)
+        << type(0, 16, 16, 1.0f)
         << direction(0.0f, 0.0f, -1.0f)
         << generator(20)
         << linearSpeed(0.1f, 0.5f)

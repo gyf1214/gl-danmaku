@@ -8,8 +8,6 @@
 #include "shader.hpp"
 #include "texture.hpp"
 
-static const GLfloat pointSize[] = { 0.2f, 0.2f };
-
 proto(Danmaku, Shader::danmaku);
 
 protoBuffer = {
@@ -23,7 +21,7 @@ protoAttrib = {
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
 };
 
-protoUnifom = { "size", "vMat", "pMat", "texture0" };
+protoUnifom = { "vMat", "pMat", "texture0" };
 
 class Danmaku : public ProgramRenderer<Proto> {
     GLuint texture0;
@@ -35,22 +33,20 @@ public:
     void setup() {
         ProgramRenderer::setup();
 
-        glUniform1i(uniform[3], 0);
+        glUniform1i(uniform[2], 0);
         texture0 = Texture::etama();
-
-        glUniform2fv(uniform[0], 1, pointSize);
     }
 
     void render() {
         bindProgram();
 
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_FALSE);
 
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> vMat()[0][0]);
-        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture0);
