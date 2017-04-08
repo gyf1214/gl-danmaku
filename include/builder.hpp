@@ -59,6 +59,7 @@ namespace Builder {
 
     // Time Pass
     Base *emitter(float start, float interval);
+    Base *dieAfter(float delta);
 
     // Position Pass
     Base *point(const glm::vec3 &pos);
@@ -69,6 +70,7 @@ namespace Builder {
     Base *targetTime(const glm::vec3 &pos, float time);
     Base *targetNorm(const glm::vec3 &pos, float speed);
     Base *linearSpeed(float base, float k);
+    Base *sphere(int split, int height);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
     return name(glm::vec3(x, y, z));\

@@ -11,6 +11,6 @@ typedef struct {
     glm::vec4 uvIndex;
 } Vertex;
 
-constexpr int vertexSize = 1440;
+constexpr int vertexSize = 14400;
 
 #endif

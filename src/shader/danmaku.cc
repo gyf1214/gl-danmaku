@@ -67,7 +67,7 @@ static const char *fsh = R"(
 
     void main(void) {
         vec4 color = texture(texture0, uv);
-        fragColor = vec4(color.rgb * color.a, color.a / 2.0);
+        fragColor = vec4(color.rgb * color.a, color.a / 2.0f);
     }
 )";
 

@@ -82,6 +82,16 @@ namespace Builder {
         }
     };
 
+    class DieAfter : public Base {
+        float delta;
+    public:
+        DieAfter(float delta) : delta(delta) {}
+        void pass(Vertex &v, int i) {
+            v.time[1] = v.time[3] = v.time[0] + delta;
+            emit(v, i);
+        }
+    };
+
     Base *source(Vertex *now, int cnt) { return new Source(now, cnt); }
     Base *generator(int cnt) { return new Generator(cnt); }
     Base *emitter(float start, float interval) {
@@ -92,4 +102,5 @@ namespace Builder {
     Base *type(int type, int color, int scale, float size) {
         return new Type(type, color, scale, size);
     }
+    Base *dieAfter(float delta) { return new DieAfter(delta); }
 }

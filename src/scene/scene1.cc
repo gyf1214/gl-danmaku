@@ -30,7 +30,7 @@ public:
         timer = glfwGetTime();
         tick = 0;
 
-        position = glm::vec3(1.0f, -5.0f, 10.0f);
+        position = glm::vec3(9.0f, 0.0f, 25.0f);
         horizonAngle = M_PI / 2.0f;
         verticalAngle = 0.0f;
         fov = 45.0f;
@@ -48,14 +48,14 @@ public:
             tick = 0;
         }
 
-        // static char str[100];
-        // static int second = 0;
-        // if (!(second % 1)) {
-        //     sprintf(str, "tmp/s_%04d.png", second / 1);
-        //     LOG << str;
-        //     Application::screenShot(str);
-        // }
-        // second++;
+        static char str[100];
+        static int second = 0;
+        if (!(second % 2) && Application::getKey(GLFW_KEY_X) == GLFW_PRESS) {
+            sprintf(str, "tmp/s_%04d.png", second / 2);
+            LOG << str;
+            Application::screenShot(str);
+        }
+        second++;
     }
 
     void update() {

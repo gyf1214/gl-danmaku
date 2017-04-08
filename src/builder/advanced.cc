@@ -40,6 +40,28 @@ namespace Builder {
         }
     };
 
+    class Sphere : public Base {
+        int split, height;
+    public:
+        Sphere(int split, int height) : split(split), height(height) {}
+        void pass(Vertex &v, int t) {
+            for (int i = -height; i <= height; ++i) {
+                float a0 = (float)i / (float)(height + 1) * M_PI / 2.0f;
+                int k = 4 * round(1.0f + (float)split * cos(a0));
+                float a1 = 2.0f * M_PI / (float)k;
+                for (int j = 0; j < k; ++j) {
+                    float a2 = a1 * (float)j;
+                    v.velocity = glm::vec3(
+                        cos(a0) * cos(a2),
+                        cos(a0) * sin(a2),
+                        sin(a0)
+                    );
+                    emit(v, t);
+                }
+            }
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -51,5 +73,8 @@ namespace Builder {
     }
     Base *linearSpeed(float base, float k) {
         return new LinearSpeed(base, k);
+    }
+    Base *sphere(int split, int height) {
+        return new Sphere(split, height);
     }
 }
