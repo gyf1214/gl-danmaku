@@ -22,7 +22,7 @@ protoAttrib = {
     { "time0"        , Offset(Vertex, time[0])        , 4, sizeof(Vertex) },
     { "position0"    , Offset(Vertex, position[0])    , 3, sizeof(Vertex) },
     { "velocity0"    , Offset(Vertex, velocity[0])    , 3, sizeof(Vertex) },
-    { "acceleration0", Offset(Vertex, acceleration[0]), 3, sizeof(Vertex) },
+    { "acceleration0", Offset(Vertex, acceleration[0]), 4, sizeof(Vertex) },
     { "uvIndex0"     , Offset(Vertex, uvIndex[0])     , 4, sizeof(Vertex) },
 };
 

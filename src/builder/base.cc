@@ -59,7 +59,6 @@ namespace Builder {
         Direction(const glm::vec3 &dir) : dir(dir) {}
         void pass(Vertex &v, int i) {
             v.velocity = dir;
-            v.acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
             emit(v, i);
         }
     };
