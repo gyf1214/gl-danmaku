@@ -68,11 +68,11 @@ static void setupVertices() {
         << tars
         << type(14, 2, 1, 0.2f) << src << Emit();
 
-    Chain(generator(5))
-        << line(glm::vec3(2.0f, 5.0f, 20.0f),
+    Chain(generator(10))
+        << line(glm::vec3(-2.0f, 5.0f, 20.0f),
                 glm::vec3(4.0f, 0.0f, 0.0f) / 5.0f)
-        << emitter(3.0f, 0.05f)
-        << type(0, 16, 16, 1.0f)
+        << emitter(3.0f, 0.1f)
+        << type(0, 24, 8, 1.0f)
         << direction(0.0f, 0.0f, -1.0f)
         << generator(20)
         << linearSpeed(0.1f, 0.5f)

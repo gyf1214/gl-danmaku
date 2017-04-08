@@ -66,9 +66,8 @@ static const char *fsh = R"(
     uniform sampler2D texture0;
 
     void main(void) {
-        // if (gl_FragCoord.z > 1.0) discard;
-        fragColor = texture(texture0, uv);
-        // fragColor.x -= gl_FragCoord.z;
+        vec4 color = texture(texture0, uv);
+        fragColor = vec4(color.rgb * color.a, color.a / 2.0);
     }
 )";
 
