@@ -62,6 +62,18 @@ namespace Builder {
         }
     };
 
+    class CircleMotion : public Base {
+        glm::vec3 center;
+    public:
+        CircleMotion(const glm::vec3 &center) : center(center) {}
+        void pass(Vertex &v, int i) {
+            float r = length(v.position - center);
+            float a = dot(v.velocity, v.velocity) / r;
+            v.acceleration = glm::vec4(center, a);
+            emit(v, i);
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -71,10 +83,9 @@ namespace Builder {
     Base *line(const glm::vec3 &pos, const glm::vec3 &dir) {
         return new Line(pos, dir);
     }
-    Base *linearSpeed(float base, float k) {
-        return new LinearSpeed(base, k);
-    }
-    Base *sphere(int split, int height) {
-        return new Sphere(split, height);
+    Base *linearSpeed(float base, float k) { return new LinearSpeed(base, k); }
+    Base *sphere(int split, int height) { return new Sphere(split, height); }
+    Base *circleMotion(const glm::vec3 &center) {
+        return new CircleMotion(center);
     }
 }

@@ -70,6 +70,9 @@ namespace Builder {
     Base *targetTime(const glm::vec3 &pos, float time);
     Base *targetNorm(const glm::vec3 &pos, float speed);
     Base *linearSpeed(float base, float k);
+    Base *circleMotion(const glm::vec3 &center);
+
+    // both
     Base *sphere(int split, int height);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
@@ -78,6 +81,7 @@ namespace Builder {
 
     inlineVec3(point);
     inlineVec3(direction);
+    inlineVec3(circleMotion);
 }
 
 #endif

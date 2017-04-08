@@ -57,6 +57,15 @@ static void setupVertices() {
         << dieAfter(3.0f)
         << src << Emit();
 
+    Chain(generator(1))
+        << point(0.0f, 0.0f, 20.0f)
+        << direction(5.0f, 0.0f, 0.0f)
+        << circleMotion(0.0f, 10.0f, 20.0f)
+        << generator(20)
+        << emitter(2.0f, 0.05f)
+        << type(0, 16, 8, 0.3f)
+        << src << Emit();
+
     src -> reset();
 
     LOG << "done setup vertices";
