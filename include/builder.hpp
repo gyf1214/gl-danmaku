@@ -33,6 +33,7 @@ namespace Builder {
         Chain(const Chain &c);
         ~Chain();
 
+        void emit(Vertex &v, int i) const;
         Chain operator <<(Base *b) const;
         Chain operator <<(const Chain &c) const;
         void operator <<(const Emit &e) const;
@@ -47,6 +48,7 @@ namespace Builder {
         ~Multi();
 
         const Multi &operator <<(Base *b) const;
+        const Multi &operator <<(const Chain &m) const;
         operator Base *() const;
     };
 

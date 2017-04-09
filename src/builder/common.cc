@@ -33,14 +33,17 @@ namespace Builder {
         start -> generate();
     }
 
-    class MultiBase : public Base {
-        std::vector<Base *>base;
-    public:
-        ~MultiBase() { for (auto x : base) { x -> reset(); } }
+    void Chain::emit(Vertex &v, int i) const {
+        start -> pass(v, i);
+    }
 
-        void push(Base *b) { base.push_back(b -> set()); }
-        void pass(Vertex &v, int i) { for (auto x : base) x -> pass(v, i); }
-        void chain(Base *b) { for (auto x : base) x -> chain(b); }
+    class MultiBase : public Base {
+        std::vector<Chain>base;
+    public:
+        void push(const Chain &c) { base.push_back(c); }
+        void push(Base *b) { base.push_back(Chain(b)); }
+        void pass(Vertex &v, int i) { for (const auto &x : base) x.emit(v, i); }
+        void chain(Base *b) { for (const auto &x : base) x << b; }
     };
 
     Multi::Multi() : base(new MultiBase()) { base -> set(); }
@@ -48,6 +51,11 @@ namespace Builder {
     Multi::~Multi() { base -> reset(); }
 
     const Multi &Multi::operator <<(Base *b) const {
+        base -> push(b);
+        return *this;
+    }
+
+    const Multi &Multi::operator <<(const Chain &b) const {
         base -> push(b);
         return *this;
     }
