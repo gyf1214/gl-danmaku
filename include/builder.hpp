@@ -71,6 +71,7 @@ namespace Builder {
     Base *targetNorm(const glm::vec3 &pos, float speed);
     Base *linearSpeed(float base, float k);
     Base *circleMotion(const glm::vec3 &center);
+    Base *crossBias(const glm::vec3 &base);
 
     // both
     Base *sphere(int split, int height);
@@ -82,6 +83,7 @@ namespace Builder {
     inlineVec3(point);
     inlineVec3(direction);
     inlineVec3(circleMotion);
+    inlineVec3(crossBias);
 }
 
 #endif

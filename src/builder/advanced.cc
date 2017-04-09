@@ -74,6 +74,16 @@ namespace Builder {
         }
     };
 
+    class CrossBias : public Base {
+        glm::vec3 base;
+    public:
+        CrossBias(const glm::vec3 &base) : base(base) {}
+        void pass(Vertex &v, int i) {
+            v.acceleration = glm::vec4(cross(base, v.velocity), 0.0f);
+            emit(v, i);
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -88,4 +98,5 @@ namespace Builder {
     Base *circleMotion(const glm::vec3 &center) {
         return new CircleMotion(center);
     }
+    Base *crossBias(const glm::vec3 &base) { return new CrossBias(base); }
 }
