@@ -84,6 +84,18 @@ namespace Builder {
         }
     };
 
+    class Circle : public Base {
+        glm::vec3 x, y;
+        float angle;
+    public:
+        Circle(const glm::vec3 &x, const glm::vec3 &y, float angle)
+            : x(x), y(y), angle(angle) {}
+        void pass(Vertex &v, int i) {
+            v.velocity = x * (float)cos(angle * i) + y * (float)sin(angle * i);
+            emit(v, i);
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -99,4 +111,7 @@ namespace Builder {
         return new CircleMotion(center);
     }
     Base *crossBias(const glm::vec3 &base) { return new CrossBias(base); }
+    Base *circle(const glm::vec3 &x, const glm::vec3 &y, float angle) {
+        return new Circle(x, y, angle);
+    }
 }

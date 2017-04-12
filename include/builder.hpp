@@ -74,6 +74,7 @@ namespace Builder {
     Base *linearSpeed(float base, float k);
     Base *circleMotion(const glm::vec3 &center);
     Base *crossBias(const glm::vec3 &base);
+    Base *circle(const glm::vec3 &x, const glm::vec3 &y, float angle);
 
     // both
     Base *sphere(int split, int height);
