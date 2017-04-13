@@ -76,8 +76,12 @@ namespace Builder {
     Base *crossBias(const glm::vec3 &base);
     Base *circle(const glm::vec3 &x, const glm::vec3 &y, float angle);
 
-    // both
+    // Both
     Base *sphere(int split, int height);
+
+    // Additive
+    Base *addPosition(const glm::vec3 &p);
+    Base *addVelocity(const glm::vec3 &v);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
     return name(glm::vec3(x, y, z));\
@@ -87,6 +91,8 @@ namespace Builder {
     inlineVec3(direction);
     inlineVec3(circleMotion);
     inlineVec3(crossBias);
+    inlineVec3(addPosition);
+    inlineVec3(addVelocity);
 }
 
 #endif

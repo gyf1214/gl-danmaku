@@ -96,6 +96,19 @@ namespace Builder {
         }
     };
 
+    class Additive : public Base {
+        glm::vec3 p, v, a;
+    public:
+        Additive(const glm::vec3 &p, const glm::vec3 &v, const glm::vec3 &a)
+            : p(p), v(v), a(a) {}
+        void pass(Vertex &vv, int i) {
+            vv.position = vv.position + p;
+            vv.velocity = vv.velocity + v;
+            vv.acceleration += vv.acceleration + glm::vec4(a, 0.0f);
+            emit(vv, i);
+        }
+    };
+
     Base *targetTime(const glm::vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -113,5 +126,13 @@ namespace Builder {
     Base *crossBias(const glm::vec3 &base) { return new CrossBias(base); }
     Base *circle(const glm::vec3 &x, const glm::vec3 &y, float angle) {
         return new Circle(x, y, angle);
+    }
+    Base *addPosition(const glm::vec3 &p) {
+        glm::vec3 zero(0.0f, 0.0f, 0.0f);
+        return new Additive(p, zero, zero);
+    }
+    Base *addVelocity(const glm::vec3 &v) {
+        glm::vec3 zero(0.0f, 0.0f, 0.0f);
+        return new Additive(zero, v, zero);
     }
 }

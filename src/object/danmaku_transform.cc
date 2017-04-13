@@ -67,19 +67,25 @@ static void setupVertices() {
     //     << src << Emit();
 
     Multi circles;
-    const int N = 20;
-    const int M = 1;
+    const int N = 3;
+    const int M = 3;
 
     for (int k = -M; k <= M; ++k) {
         float pitch = (float)k / (float)(M + 1) * M_PI_2;
-        for (int i = 0; i < N; ++i) {
-            float angle = (float)i / (float)N * M_PI * 2.0f;
+        int T = 4 * (1 + floor(N * cos(pitch)));
+        for (int i = 0; i < T; ++i) {
+            float angle = (float)i / (float)T * M_PI * 2.0f;
             glm::vec3 x = glm::vec3(cos(angle) * cos(pitch),
-                        sin(angle) * cos(pitch), sin(pitch)) * 10.0f;
+                        sin(angle) * cos(pitch), 0.0f) * 10.0f;
             glm::vec3 y = glm::vec3(-sin(angle) * cos(pitch),
-                        cos(angle) * cos(pitch), sin(pitch)) * 10.0f;
-            circles << circle(x, y,  0.03f)
-                    << circle(x, y, -0.03f);
+                        cos(angle) * cos(pitch), 0.0f) * 10.0f;
+
+            Multi m = Multi()
+                << circle(x, y,  0.03f)
+                << circle(x, y, -0.03f);
+            Chain c = Chain(m)
+                << addVelocity(glm::vec3(0.0f, 0.0f, sin(pitch)) * 10.0f);
+            circles << c;
         }
     }
 
@@ -92,7 +98,7 @@ static void setupVertices() {
     //     << type(0, 16, 8, 0.6f)
     //     << src << Emit();
 
-    Chain(generator(100))
+    Chain(generator(50))
         << point(0.0f, 0.0f, 20.0f)
         << emitter(3.0f, 0.02f)
         << circles << dieAfter(2.0f)

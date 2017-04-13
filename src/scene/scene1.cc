@@ -51,6 +51,7 @@ public:
         static char str[100];
         static int second = 0;
         if (!(second % 2) && Application::getKey(GLFW_KEY_X) == GLFW_PRESS) {
+        // if (!(second % 2) && second >= 180) {
             sprintf(str, "tmp/s_%04d.png", second / 2);
             LOG << str;
             Application::screenShot(str);
