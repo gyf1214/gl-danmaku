@@ -6,6 +6,7 @@
 static const int PNG_BYTES_TO_CHECK = 4;
 
 GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
+
     FILE *fp;
     char buf[PNG_BYTES_TO_CHECK];
 
@@ -63,16 +64,16 @@ GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
     return texture;
 }
 
-#define defineTexture(name, path, wraps, wrapt) static GLuint tex_##name = 0;\
+#define defineTexture(name, path, ...) static GLuint tex_##name = 0;\
 GLuint Texture::name() {\
-    if (!tex_##name) tex_##name = loadTexture(path, wraps, wrapt);\
+    if (!tex_##name) tex_##name = loadTexture("assets/" path, ##__VA_ARGS__);\
     return tex_##name;\
 }
 
-defineTexture(small, "assets/small.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-defineTexture(etama, "assets/etama.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-defineTexture(wallNormal, "assets/rock_normal.png", GL_REPEAT, GL_REPEAT);
-defineTexture(wall, "assets/scene_wall6.png", GL_REPEAT, GL_REPEAT);
-defineTexture(lava, "assets/lava2.png", GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER);
-defineTexture(wallLava, "assets/lava3.png", GL_MIRRORED_REPEAT, GL_CLAMP_TO_BORDER);
-defineTexture(white, "assets/white.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+defineTexture(small, "small.png");
+defineTexture(etama, "etama.png");
+defineTexture(wallNormal, "rock_normal.png", GL_REPEAT, GL_REPEAT);
+defineTexture(wall, "scene_wall6.png", GL_REPEAT, GL_REPEAT);
+defineTexture(lava, "lava2.png");
+defineTexture(wallLava, "lava3.png", GL_MIRRORED_REPEAT, GL_CLAMP_TO_BORDER);
+defineTexture(white, "white.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);

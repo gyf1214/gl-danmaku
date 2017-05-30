@@ -13,6 +13,7 @@ public:
     static GLuint danmakuTransform(void);
     static GLuint base(void);
     static GLuint lambert(void);
+    static GLuint character(void);
 };
 
 #endif

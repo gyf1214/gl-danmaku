@@ -23,7 +23,8 @@ public:
         Transformer *transform = ObjectBox::danmakuTransform(this);
         objects.push_back(ObjectBox::skybox(this));
         objects.push_back(transform);
-        objects.push_back(ObjectBox::danmaku(this, transform));
+        // objects.push_back(ObjectBox::danmaku(this, transform));
+        objects.push_back(ObjectBox::character(this, Model::reimu()));
 
         Scene::setup();
 
