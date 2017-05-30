@@ -1,9 +1,7 @@
 #ifndef __APPLICATION
 #define __APPLICATION
 
-#include <GLFW/glfw3.h>
-
-class Scene;
+#include "common.hpp"
 
 class Application {
     static void errorCallBack(int error, const char* desc);

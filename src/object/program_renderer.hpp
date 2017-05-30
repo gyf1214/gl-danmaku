@@ -1,9 +1,7 @@
 #ifndef __PROGRAM_RENDERER
 #define __PROGRAM_RENDERER
 
-#include <GL/glew.h>
-#include "renderer.hpp"
-#include "util.hpp"
+#include "ext.hpp"
 
 struct BufferProto {
     GLsizeiptr size;

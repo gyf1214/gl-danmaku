@@ -1,13 +1,4 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <vector>
-#include "light.hpp"
 #include "program_renderer.hpp"
-#include "scene.hpp"
-#include "object_box.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
 #include "model.hpp"
 
 typedef mmd::pmx::Vertex Vertex;

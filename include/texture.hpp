@@ -1,7 +1,7 @@
 #ifndef __TEXTURE
 #define __TEXTURE
 
-#include <GL/glew.h>
+#include "common.hpp"
 
 struct Texture {
     static GLuint loadTexture(const char *name,

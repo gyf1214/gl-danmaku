@@ -1,11 +1,5 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <algorithm>
 #include "transform_renderer.hpp"
 #include "vertex/danmaku.hpp"
-#include "object_box.hpp"
-#include "shader.hpp"
-#include "util.hpp"
 #include "builder.hpp"
 
 static Vertex vertexData[vertexSize];

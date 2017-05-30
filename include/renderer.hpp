@@ -1,9 +1,7 @@
 #ifndef __RENDERER
 #define __RENDERER
 
-class Scene;
-
-#include <GL/glew.h>
+#include "common.hpp"
 
 class Renderer {
 protected:

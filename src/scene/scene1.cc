@@ -1,10 +1,6 @@
-#include "scene.hpp"
+#include "../ext.hpp"
+#include "object_box.hpp"
 #include "scene_box.hpp"
-#include "application.hpp"
-#include "util.hpp"
-#include <glm/gtx/transform.hpp>
-#include <cmath>
-#include <cstdio>
 
 class Scene1 : public Scene {
     double timer;

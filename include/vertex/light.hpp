@@ -1,13 +1,13 @@
 #ifndef __VERTEX_BASE
 #define __VERTEX_BASE
 
-#include <glm/glm.hpp>
+#include "common.hpp"
 
 typedef struct {
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec3 tangent;
-    glm::vec2 uv;
+    vec3 position;
+    vec3 normal;
+    vec3 tangent;
+    vec2 uv;
 } Vertex;
 
 #endif

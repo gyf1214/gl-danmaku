@@ -1,7 +1,7 @@
 #ifndef __SHADER
 #define __SHADER
 
-#include "GL/glew.h"
+#include "common.hpp"
 
 class Shader {
 protected:

@@ -1,4 +1,5 @@
-#include "scene.hpp"
+#include "../ext.hpp"
+#include "object_box.hpp"
 
 Scene::~Scene() {}
 void Scene::setup(void)  { for (auto o : objects) if (o) o -> setup(); }

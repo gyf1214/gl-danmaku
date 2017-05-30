@@ -1,12 +1,9 @@
 #ifndef __SCENE
 #define __SCENE
 
-#include <vector>
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "renderer.hpp"
 #include "light.hpp"
-#include "object_box.hpp"
+
+class Renderer;
 
 class Scene {
 protected:

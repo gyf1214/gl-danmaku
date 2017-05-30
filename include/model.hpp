@@ -1,7 +1,7 @@
 #ifndef __MODEL
 #define __MODEL
 
-#include <GL/glew.h>
+#include "common.hpp"
 #include "mmd/pmx.hpp"
 
 class Model : public mmd::pmx::Model {

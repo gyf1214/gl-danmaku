@@ -1,7 +1,5 @@
+#include "ext.hpp"
 #include "texture.hpp"
-#include "util.hpp"
-#include <png.h>
-#include <cstdio>
 
 static const int PNG_BYTES_TO_CHECK = 4;
 

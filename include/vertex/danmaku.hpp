@@ -1,14 +1,14 @@
 #ifndef __VERTEX_DANMAKU
 #define __VERTEX_DANMAKU
 
-#include <glm/glm.hpp>
+#include "common.hpp"
 
 typedef struct {
-    glm::vec4 time;
-    glm::vec3 position;
-    glm::vec3 velocity;
-    glm::vec4 acceleration;
-    glm::vec4 uvIndex;
+    vec4 time;
+    vec3 position;
+    vec3 velocity;
+    vec4 acceleration;
+    vec4 uvIndex;
 } Vertex;
 
 constexpr int vertexSize = 14400;

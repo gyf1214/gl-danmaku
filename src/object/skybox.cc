@@ -1,13 +1,5 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <vector>
-#include "light.hpp"
-#include "vertex/light.hpp"
 #include "program_renderer.hpp"
-#include "scene.hpp"
-#include "object_box.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
+#include "vertex/light.hpp"
 
 static const int circleSize = 128;
 static const int wallSize = 6 * circleSize;

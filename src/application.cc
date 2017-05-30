@@ -1,9 +1,5 @@
-#include <GL/glew.h>
-#include <cstdio>
-#include <png.h>
-#include "application.hpp"
+#include "ext.hpp"
 #include "scene_box.hpp"
-#include "util.hpp"
 
 static Scene *currentScene = NULL;
 static Scene *newScene = NULL;

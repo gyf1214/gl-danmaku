@@ -1,7 +1,6 @@
 #ifndef __TRANFORM
 #define __TRANFORM
 
-#include <GL/glew.h>
 #include "program_renderer.hpp"
 
 #define transProto(name, program) protoOpen(name, program)\

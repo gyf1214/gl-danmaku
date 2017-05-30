@@ -1,9 +1,8 @@
 #ifndef __DANMAKU_BUILDER
 #define __DANMAKU_BUILDER
 
-#include <vector>
+#include "common.hpp"
 #include "vertex/danmaku.hpp"
-#include "util.hpp"
 
 namespace Builder {
     class Base {

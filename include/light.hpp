@@ -1,7 +1,7 @@
 #ifndef __LIGHT
 #define __LIGHT
 
-#include <glm/glm.hpp>
+#include "common.hpp"
 
 struct Light {
     glm::vec4 position;

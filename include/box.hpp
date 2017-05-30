@@ -1,7 +1,7 @@
 #ifndef __BOX
 #define __BOX
 
-#include <cstdlib>
+#include "common.hpp"
 
 template <typename T>
 class Box {

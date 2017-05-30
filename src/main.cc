@@ -1,5 +1,4 @@
-#include <GL/glew.h>
-#include "application.hpp"
+#include "ext.hpp"
 #include "scene_box.hpp"
 
 int main() {

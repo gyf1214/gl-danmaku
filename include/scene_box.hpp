@@ -2,7 +2,6 @@
 #define __SCENE_BOX
 
 #include "box.hpp"
-#include "scene.hpp"
 
 class SceneBox : public Box<Scene> {
 public:

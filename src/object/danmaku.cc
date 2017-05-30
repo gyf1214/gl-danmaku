@@ -1,12 +1,5 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "vertex/danmaku.hpp"
-#include "transform_renderer.hpp"
 #include "program_renderer.hpp"
-#include "scene.hpp"
-#include "object_box.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
+#include "vertex/danmaku.hpp"
 
 proto(Danmaku, Shader::danmaku);
 

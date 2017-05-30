@@ -2,7 +2,6 @@
 #define __OBJECT_BOX
 
 #include "box.hpp"
-#include "renderer.hpp"
 #include "model.hpp"
 
 class ObjectBox : public Box<Renderer> {
