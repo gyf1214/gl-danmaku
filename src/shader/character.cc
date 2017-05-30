@@ -10,6 +10,7 @@ static const char *vsh = R"(
     in vec3 normal;
     in vec2 uv;
 
+    uniform mat4 mMat;
     uniform mat4 vMat;
     uniform mat4 pMat;
     uniform vec4 lightPosition;
@@ -20,11 +21,11 @@ static const char *vsh = R"(
     out vec4 lPos;
 
     void main(void) {
-        vPos = vMat * vec4(position, 1.0);
+        vPos = vMat * mMat * vec4(position, 1.0);
         gl_Position = pMat * vPos;
 
         normalOut = normalize((vMat * vec4(normal, 0.0)).xyz);
-        uvOut = uv;
+        uvOut = vec2(uv.x, 1.0 - uv.y);
 
         lPos = vMat * lightPosition;
         if (lPos.w == 0.0) {
@@ -67,13 +68,13 @@ static const char *fsh = R"(
             scalar /= dot(lightMaterial.xyz, vec3(1.0, dis, dis * dis));
         }
 
-        vec3 diff = scalar * diffuse.xyz * max(dot(L, N), 0.0);
+        vec3 diff = scalar * diffuse.xyz * abs(dot(L, N));
         c += lightColor * color * diff;
 
         vec3 spec = scalar * specular.xyz * pow(max(dot(N, H), 0.0), specular.w);
         c += lightColor * spec;
 
-        fragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        fragColor = vec4(c, 1.0);
     }
 )";
 

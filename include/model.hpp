@@ -11,6 +11,8 @@ public:
     Model();
     GLuint texture(int index);
     void load(const char *path);
+    void loadTextures(void);
+    
     static Model *reimu(void);
 };
 

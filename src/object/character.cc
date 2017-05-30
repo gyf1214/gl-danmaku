@@ -1,6 +1,9 @@
 #include "program_renderer.hpp"
 #include "model.hpp"
 
+using namespace glm;
+using namespace std;
+
 typedef mmd::pmx::Vertex Vertex;
 
 proto(Character, Shader::character);
@@ -17,13 +20,12 @@ protoAttrib = {
 };
 
 protoUnifom = {
-    "vMat", "pMat",
+    "mMat", "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
     "diffuse", "specular", "texture0"
 };
 
 class Character : public ProgramRenderer<Proto> {
-    GLuint white;
     Model *model;
 public:
     Character(Scene *scene, Model *model)
@@ -50,8 +52,8 @@ public:
 
         bindBuffer(buffer[0]);
 
-        white = Texture::white();
-        glUniform1i(uniform[8], 0);
+        glUniform1i(uniform[9], 0);
+        model->loadTextures();
     }
 
     void render() {
@@ -59,23 +61,39 @@ public:
 
         glEnable(GL_DEPTH_TEST);
 
-        glm::mat4 vMat = scene -> vMat();
-        // vMat = vMat * glm::translate(vec3(9.0f, 9.0f, 25.0f));
-        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &vMat[0][0]);
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        mat4 mMat(1.0f);
+        swap(mMat[1], mMat[2]);
+        mMat = scale(vec3(0.1f, 0.1f, 0.1f)) * mMat;
+        mMat = translate(vec3(0.0f, 4.0f, 10.0f)) * mMat;
 
-        Light light = scene -> light();
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
+        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
-        glUniform4fv(uniform[2], 1, &light.position[0]);
-        glUniform3fv(uniform[3], 1, &light.color[0]);
-        glUniform3fv(uniform[4], 1, &light.ambient[0]);
-        glUniform4fv(uniform[5], 1, &light.material[0]);
+        Light light = scene->light();
+
+        glUniform4fv(uniform[3], 1, &light.position[0]);
+        glUniform3fv(uniform[4], 1, &light.color[0]);
+        glUniform4fv(uniform[6], 1, &light.material[0]);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, white);
 
-        glDrawElements(GL_TRIANGLES, model->mesh.surface.size() * 3,
-            GL_UNSIGNED_INT, (void *)0);
+        int sum = 0;
+
+        for (int i = 0; i < model->materials.size(); ++i) {
+            const auto &material = model->materials[i];
+
+            glUniform3fv(uniform[5], 1, &material.ambient[0]);
+            glUniform4fv(uniform[7], 1, &material.diffuse[0]);
+            glUniform4fv(uniform[8], 1, &material.specular[0]);
+
+            glBindTexture(GL_TEXTURE_2D, model->texture(material.texture));
+
+            glDrawElements(GL_TRIANGLES, material.count,
+                GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
+
+            sum += material.count;
+        }
 
         glDisable(GL_DEPTH_TEST);
     }

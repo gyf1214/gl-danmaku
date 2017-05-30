@@ -2,6 +2,8 @@
 #include "object_box.hpp"
 #include "scene_box.hpp"
 
+using namespace glm;
+
 class Scene1 : public Scene {
     double timer;
     int tick;
@@ -104,13 +106,13 @@ public:
         Scene::update();
     }
 
-    glm::mat4 vMat() {
-        return glm::lookAt(position, position + dir, cross(dir, left));
+    mat4 vMat() {
+        return lookAt(position, position + dir, cross(dir, left));
     }
 
-    glm::mat4 pMat() {
+    mat4 pMat() {
         GLfloat wh = (GLfloat) Application::width / (GLfloat) Application::height;
-        return glm::perspective(glm::radians(fov), wh, 1.0f, 100.0f);
+        return perspective(radians(fov), wh, 1.0f, 100.0f);
     }
 
     Light light() {
