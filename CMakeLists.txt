@@ -38,3 +38,6 @@ target_link_libraries(${TARGET} ${GLEW_LIBRARIES})
 
 find_library(PNG_LIBRARIES png)
 target_link_libraries(${TARGET} ${PNG_LIBRARIES})
+
+find_library(MMD_TOOLS mmd-tools PATHS lib)
+target_link_libraries(${TARGET} ${MMD_TOOLS})
