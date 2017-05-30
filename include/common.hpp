@@ -19,16 +19,4 @@ class Scene;
 class Renderer;
 class Transformer;
 
-inline float randomNorm() {
-    return rand() / (float)RAND_MAX;
-}
-
-inline float randomNeg() {
-    return (rand() - RAND_MAX / 2) / (float)RAND_MAX;
-}
-
-inline glm::vec3 randomNorm3() {
-    return normalize(glm::vec3(randomNeg(), randomNeg(), randomNeg()));
-}
-
 #endif

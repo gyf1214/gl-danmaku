@@ -38,15 +38,15 @@ namespace Builder {
             : start(start), interval(interval) {}
         void pass(Vertex &v, int i) {
             float t = start + interval * i;
-            v.time = glm::vec4(t, INFINITY, t, INFINITY);
+            v.time = vec4(t, INFINITY, t, INFINITY);
             emit(v, i);
         }
     };
 
     class Point : public Base {
-        glm::vec3 pos;
+        vec3 pos;
     public:
-        Point(const glm::vec3 &pos) : pos(pos) {}
+        Point(const vec3 &pos) : pos(pos) {}
         void pass(Vertex &v, int i) {
             v.position = pos;
             emit(v, i);
@@ -54,9 +54,9 @@ namespace Builder {
     };
 
     class Direction : public Base {
-        glm::vec3 dir;
+        vec3 dir;
     public:
-        Direction(const glm::vec3 &dir) : dir(dir) {}
+        Direction(const vec3 &dir) : dir(dir) {}
         void pass(Vertex &v, int i) {
             v.velocity = dir;
             emit(v, i);
@@ -65,14 +65,14 @@ namespace Builder {
 
     class Type : public Base {
         static const int maxSize = 32;
-        glm::vec4 uv;
+        vec4 uv;
     public:
         Type(int type, int color, int scale, float size) {
             CHECK(type >= 0 && type + scale <= maxSize
                   && color >= 0 && color + scale <= maxSize)
                 << "danmaku type not supported!";
 
-            uv = glm::vec4((float)color / 32.0f, (float)type / 32.0f,
+            uv = vec4((float)color / 32.0f, (float)type / 32.0f,
                            (float)scale / 32.0f, size);
         }
         void pass(Vertex &v, int i) {
@@ -96,8 +96,8 @@ namespace Builder {
     Base *emitter(float start, float interval) {
         return new Emitter(start, interval);
     }
-    Base *point(const glm::vec3 &pos) { return new Point(pos); }
-    Base *direction(const glm::vec3 &dir) { return new Direction(dir); }
+    Base *point(const vec3 &pos) { return new Point(pos); }
+    Base *direction(const vec3 &dir) { return new Direction(dir); }
     Base *type(int type, int color, int scale, float size) {
         return new Type(type, color, scale, size);
     }

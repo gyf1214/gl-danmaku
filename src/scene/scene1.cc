@@ -5,7 +5,7 @@
 class Scene1 : public Scene {
     double timer;
     int tick;
-    glm::vec3 position, dir, left;
+    vec3 position, dir, left;
     float horizonAngle, verticalAngle;
     float fov;
 
@@ -27,7 +27,7 @@ public:
         timer = glfwGetTime();
         tick = 0;
 
-        position = glm::vec3(9.0f, 0.0f, 25.0f);
+        position = vec3(9.0f, 0.0f, 25.0f);
         horizonAngle = M_PI / 2.0f;
         verticalAngle = 0.0f;
         fov = 45.0f;
@@ -64,11 +64,11 @@ public:
         horizonAngle += mouseSpeed * Application::elapse * (centerX - posX);
         verticalAngle += mouseSpeed * Application::elapse * (centerY - posY);
 
-        dir = glm::vec3(cos(verticalAngle) * cos(horizonAngle),
+        dir = vec3(cos(verticalAngle) * cos(horizonAngle),
                         cos(verticalAngle) * sin(horizonAngle),
                         sin(verticalAngle));
 
-        left = glm::vec3(-sin(horizonAngle), cos(horizonAngle), 0.0f);
+        left = vec3(-sin(horizonAngle), cos(horizonAngle), 0.0f);
 
         if (Application::getKey(GLFW_KEY_W) == GLFW_PRESS){
             position += dir * Application::elapse * speed;
@@ -115,10 +115,10 @@ public:
 
     Light light() {
         return Light(
-            glm::vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            glm::vec3(1.0f, 0.6f, 0.2f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec4(0.3f, 0.0f, 0.3f / 10.0f / 10.0f, 1.0f)
+            vec4(0.0f, 0.0f, 0.0f, 1.0f),
+            vec3(1.0f, 0.6f, 0.2f),
+            vec3(0.0f, 0.0f, 0.0f),
+            vec4(0.3f, 0.0f, 0.3f / 10.0f / 10.0f, 1.0f)
         );
     }
 };

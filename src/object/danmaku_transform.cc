@@ -31,8 +31,8 @@ static void setupVertices() {
     Base *src = source(vertexData, vertexSize) -> set();
 
     // Chain(generator(10))
-    //     << line(glm::vec3(-2.0f, 5.0f, 20.0f),
-    //             glm::vec3(4.0f, 0.0f, 0.0f) / 5.0f)
+    //     << line(vec3(-2.0f, 5.0f, 20.0f),
+    //             vec3(4.0f, 0.0f, 0.0f) / 5.0f)
     //     << emitter(7.0f, 0.1f)
     //     << type(0, 24, 8, 1.0f)
     //     << direction(0.0f, 0.0f, -1.0f)
@@ -69,16 +69,16 @@ static void setupVertices() {
         int T = 4 * (1 + floor(N * cos(pitch)));
         for (int i = 0; i < T; ++i) {
             float angle = (float)i / (float)T * M_PI * 2.0f;
-            glm::vec3 x = glm::vec3(cos(angle) * cos(pitch),
+            vec3 x = vec3(cos(angle) * cos(pitch),
                         sin(angle) * cos(pitch), 0.0f) * 10.0f;
-            glm::vec3 y = glm::vec3(-sin(angle) * cos(pitch),
+            vec3 y = vec3(-sin(angle) * cos(pitch),
                         cos(angle) * cos(pitch), 0.0f) * 10.0f;
 
             Multi m = Multi()
                 << circle(x, y,  0.03f)
                 << circle(x, y, -0.03f);
             Chain c = Chain(m)
-                << addVelocity(glm::vec3(0.0f, 0.0f, sin(pitch)) * 10.0f);
+                << addVelocity(vec3(0.0f, 0.0f, sin(pitch)) * 10.0f);
             circles << c;
         }
     }

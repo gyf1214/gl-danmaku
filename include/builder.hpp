@@ -63,27 +63,27 @@ namespace Builder {
     Base *dieAfter(float delta);
 
     // Position Pass
-    Base *point(const glm::vec3 &pos);
-    Base *line(const glm::vec3 &start, const glm::vec3 &dir);
+    Base *point(const vec3 &pos);
+    Base *line(const vec3 &start, const vec3 &dir);
 
     // Motion Pass
-    Base *direction(const glm::vec3 &dir);
-    Base *targetTime(const glm::vec3 &pos, float time);
-    Base *targetNorm(const glm::vec3 &pos, float speed);
+    Base *direction(const vec3 &dir);
+    Base *targetTime(const vec3 &pos, float time);
+    Base *targetNorm(const vec3 &pos, float speed);
     Base *linearSpeed(float base, float k);
-    Base *circleMotion(const glm::vec3 &center);
-    Base *crossBias(const glm::vec3 &base);
-    Base *circle(const glm::vec3 &x, const glm::vec3 &y, float angle);
+    Base *circleMotion(const vec3 &center);
+    Base *crossBias(const vec3 &base);
+    Base *circle(const vec3 &x, const vec3 &y, float angle);
 
     // Both
     Base *sphere(int split, int height);
 
     // Additive
-    Base *addPosition(const glm::vec3 &p);
-    Base *addVelocity(const glm::vec3 &v);
+    Base *addPosition(const vec3 &p);
+    Base *addVelocity(const vec3 &v);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
-    return name(glm::vec3(x, y, z));\
+    return name(vec3(x, y, z));\
 }
 
     inlineVec3(point);

@@ -60,7 +60,7 @@ public:
         glEnable(GL_DEPTH_TEST);
 
         glm::mat4 vMat = scene -> vMat();
-        // vMat = vMat * glm::translate(glm::vec3(9.0f, 9.0f, 25.0f));
+        // vMat = vMat * glm::translate(vec3(9.0f, 9.0f, 25.0f));
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &vMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
 

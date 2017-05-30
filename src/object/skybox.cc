@@ -40,11 +40,11 @@ static void push(int x, int y, float norm) {
     float angle = t * M_PI * 2.0f;
     float yy = y * height;
 
-    vertices[cnt].uv = glm::vec2(t * uvScale, y * uvScale * heightScale);
-    vertices[cnt].position = glm::vec3(radius * cos(angle), -radius * sin(angle), yy);
-    vertices[cnt].normal = glm::vec3(-cos(norm), sin(norm), 0.0f);
-    vertices[cnt].tangent = glm::vec3(-sin(norm), -cos(norm), 0.0f);
-    // vertices[cnt].tangent = glm::vec3(0.0f, 0.0f, 0.0f);
+    vertices[cnt].uv = vec2(t * uvScale, y * uvScale * heightScale);
+    vertices[cnt].position = vec3(radius * cos(angle), -radius * sin(angle), yy);
+    vertices[cnt].normal = vec3(-cos(norm), sin(norm), 0.0f);
+    vertices[cnt].tangent = vec3(-sin(norm), -cos(norm), 0.0f);
+    // vertices[cnt].tangent = vec3(0.0f, 0.0f, 0.0f);
     ++cnt;
 }
 
@@ -67,10 +67,10 @@ static void setupVertices() {
         for (int j = 0; j < 2; ++j) {
             float xx = ((float)i * 2.0f - 1.0f) * radius;
             float yy = ((float)j * 2.0f - 1.0f) * radius;
-            vertices[cnt].position = glm::vec3(xx, yy, 0.0f);
-            vertices[cnt].normal = glm::vec3(0.0f, 0.0f, 1.0f);
-            vertices[cnt].tangent = glm::vec3(0.0f, 0.0f, 0.0f);
-            vertices[cnt++].uv = glm::vec2((float)i, (float)j);
+            vertices[cnt].position = vec3(xx, yy, 0.0f);
+            vertices[cnt].normal = vec3(0.0f, 0.0f, 1.0f);
+            vertices[cnt].tangent = vec3(0.0f, 0.0f, 0.0f);
+            vertices[cnt++].uv = vec2((float)i, (float)j);
         }
     }
 }
