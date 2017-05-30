@@ -26,6 +26,7 @@ add_custom_target(assets ALL DEPENDS ${ASSETS})
 
 include_directories(include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/src/,,$(abspath $<))\"'")
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(${TARGET} ${OPENGL_LIBRARIES})
