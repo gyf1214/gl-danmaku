@@ -31,7 +31,7 @@ static const char *vsh = R"(
         vPos = vMat * mMat * bMat * vec4(position, 1.0);
         gl_Position = pMat * vPos;
 
-        normalOut = normalize((vMat * vec4(normal, 0.0)).xyz);
+        normalOut = normalize((vMat * mMat * bMat * vec4(normal, 0.0)).xyz);
         uvOut = vec2(uv.x, 1.0 - uv.y);
 
         lPos = vMat * lightPosition;

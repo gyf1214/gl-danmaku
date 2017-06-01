@@ -115,15 +115,17 @@ public:
 
             glBindTexture(GL_TEXTURE_2D, model->texture(material.texture));
 
-            glUniform1f(uniform[10], -1.0f);
-            glCullFace(GL_BACK);
-            glDrawElements(GL_TRIANGLES, material.count,
-                GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
-
             glUniform1f(uniform[10], 1.0f);
             glCullFace(GL_FRONT);
             glDrawElements(GL_TRIANGLES, material.count,
                 GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
+
+            if (material.flag & mmd::pmx::Material::DoubleSided) {
+                glUniform1f(uniform[10], -1.0f);
+                glCullFace(GL_BACK);
+                glDrawElements(GL_TRIANGLES, material.count,
+                    GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
+            }
 
             sum += material.count;
         }
