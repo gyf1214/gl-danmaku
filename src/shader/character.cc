@@ -9,11 +9,17 @@ static const char *vsh = R"(
     in vec3 position;
     in vec3 normal;
     in vec2 uv;
+    in ivec4 boneIndex;
+    in vec4 boneWeight;
 
     uniform mat4 mMat;
     uniform mat4 vMat;
     uniform mat4 pMat;
     uniform vec4 lightPosition;
+
+    uniform Bones {
+        mat4 bones[256];
+    };
 
     out vec3 normalOut;
     out vec2 uvOut;
@@ -21,7 +27,8 @@ static const char *vsh = R"(
     out vec4 lPos;
 
     void main(void) {
-        vPos = vMat * mMat * vec4(position, 1.0);
+        mat4 bMat = boneWeight.x * bones[boneIndex.x] + boneWeight.y * bones[boneIndex.y];
+        vPos = vMat * mMat * bMat * vec4(position, 1.0);
         gl_Position = pMat * vPos;
 
         normalOut = normalize((vMat * vec4(normal, 0.0)).xyz);

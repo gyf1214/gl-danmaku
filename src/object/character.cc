@@ -1,5 +1,5 @@
 #include "program_renderer.hpp"
-#include "model.hpp"
+#include "bone.hpp"
 
 using namespace glm;
 using namespace std;
@@ -10,13 +10,16 @@ proto(Character, Shader::character);
 
 protoBuffer = {
     { 0, NULL },
+    { 0, NULL },
     { 0, NULL }
 };
 
 protoAttrib = {
-    { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
-    { "normal"  , Offset(Vertex, normal[0])  , 3, sizeof(Vertex) },
-    { "uv"      , Offset(Vertex, uv[0])      , 2, sizeof(Vertex) },
+    { "position"  , Offset(Vertex, position[0])   , 3, sizeof(Vertex) },
+    { "normal"    , Offset(Vertex, normal[0])     , 3, sizeof(Vertex) },
+    { "uv"        , Offset(Vertex, uv[0])         , 2, sizeof(Vertex) },
+    { "boneIndex" , Offset(Vertex, BDEF.bone[0])  , 4, sizeof(Vertex), true, GL_INT },
+    { "boneWeight", Offset(Vertex, BDEF.weight[0]), 4, sizeof(Vertex) }
 };
 
 protoUnifom = {
@@ -26,10 +29,13 @@ protoUnifom = {
 };
 
 class Character : public ProgramRenderer<Proto> {
+    static const int uboBinding = 1;
+
     Model *model;
+    Armature armature;
 public:
     Character(Scene *scene, Model *model)
-        : ProgramRenderer(scene), model(model) {}
+        : ProgramRenderer(scene), model(model), armature(model) {}
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
@@ -45,12 +51,23 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer[1]);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, s * sizeof(mmd::pmx::Surface),
             &model->mesh.surface[0], GL_STATIC_DRAW);
+
+        glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
+        glBufferData(GL_UNIFORM_BUFFER, armature.size() * sizeof(mat4),
+            NULL, GL_DYNAMIC_DRAW);
+        glBindBufferBase(GL_UNIFORM_BUFFER, uboBinding, buffer[2]);
     }
 
     void setup() {
+        armature.setup();
+        armature.buildTree();
+
         ProgramRenderer::setup();
 
         bindBuffer(buffer[0]);
+
+        GLuint uboIndex = glGetUniformBlockIndex(program, "Bones");
+        glUniformBlockBinding(program, uboIndex, uboBinding);
 
         glUniform1i(uniform[9], 0);
         model->loadTextures();
@@ -76,6 +93,10 @@ public:
         glUniform3fv(uniform[4], 1, &light.color[0]);
         glUniform4fv(uniform[6], 1, &light.material[0]);
 
+        glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0,
+            armature.size() * sizeof(mat4), &armature.transform()[0][0][0]);
+
         glActiveTexture(GL_TEXTURE0);
 
         int sum = 0;
@@ -96,6 +117,14 @@ public:
         }
 
         glDisable(GL_DEPTH_TEST);
+    }
+
+    void update() {
+        static float angle = 0.0f;
+        armature[10] = rotate(angle, vec3(0.0f, 0.0f, 1.0f));
+        angle += .1f;
+
+        armature.applyTransform();
     }
 };
 

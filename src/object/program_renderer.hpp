@@ -21,11 +21,13 @@ struct AttribProto {
     GLenum type;
     GLboolean normalized;
 
+    bool integer;
+
     AttribProto(const GLchar *_name, const GLvoid *_offset,
-                GLint _size, GLsizei _stride, GLenum _type = GL_FLOAT,
-                GLboolean _normalized = GL_FALSE)
+                GLint _size, GLsizei _stride, bool integer = false,
+                GLenum _type = GL_FLOAT, GLboolean _normalized = GL_FALSE)
         : name(_name), offset(_offset), size(_size), stride(_stride),
-          type(_type), normalized(_normalized) {}
+          type(_type), normalized(_normalized), integer(integer) {}
 };
 
 typedef const char *UniformProto;
@@ -104,8 +106,13 @@ protected:
     virtual void bindAttribute(GLuint buf, int index) {
         glBindBuffer(GL_ARRAY_BUFFER, buf);
         const auto &proto = Proto::Attributes[index];
-        glVertexAttribPointer(attribute[index], proto.size, proto.type,
-                              proto.normalized, proto.stride, proto.offset);
+        if (proto.integer) {
+            glVertexAttribIPointer(attribute[index], proto.size, proto.type,
+                                   proto.stride, proto.offset);
+        } else {
+            glVertexAttribPointer(attribute[index], proto.size, proto.type,
+                                  proto.normalized, proto.stride, proto.offset);
+        }
     }
 
     virtual void bindBuffer(GLuint buf) {

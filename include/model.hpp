@@ -12,7 +12,9 @@ public:
     GLuint texture(int index);
     void load(const char *path);
     void loadTextures(void);
-    
+
+    glm::mat4 boneTransform(int index, const glm::mat4 &trans);
+
     static Model *reimu(void);
 };
 

@@ -2,6 +2,7 @@
 #include "model.hpp"
 #include "texture.hpp"
 
+using namespace glm;
 using namespace mmd;
 
 Model::Model() : mmd::pmx::Model(), loaded(false) {}
@@ -29,6 +30,11 @@ GLuint Model::texture(int index) {
         textureSlot[index] = Texture::loadTexture(textures[index].c_str());
     }
     return textureSlot[index];
+}
+
+mat4 Model::boneTransform(int index, const mat4 &trans) {
+    vec3 pos = bones[index].position;
+    return translate(pos) * trans * translate(-pos);
 }
 
 #define defineModel(name, path) static Model name##_model;\
