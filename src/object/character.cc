@@ -1,4 +1,5 @@
 #include "program_renderer.hpp"
+#include "motion.hpp"
 #include "bone.hpp"
 
 using namespace glm;
@@ -25,17 +26,19 @@ protoAttrib = {
 protoUnifom = {
     "mMat", "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
-    "diffuse", "specular", "texture0"
+    "diffuse", "specular", "texture0", "side"
 };
 
 class Character : public ProgramRenderer<Proto> {
     static const int uboBinding = 1;
 
     Model *model;
+    Motion *motion;
     Armature armature;
 public:
-    Character(Scene *scene, Model *model)
-        : ProgramRenderer(scene), model(model), armature(model) {}
+    Character(Scene *scene, Model *model, Motion *motion)
+        : ProgramRenderer(scene), model(model),
+          motion(motion), armature(model) {}
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
@@ -61,6 +64,7 @@ public:
     void setup() {
         armature.setup();
         armature.buildTree();
+        motion->loadModel(model);
 
         ProgramRenderer::setup();
 
@@ -77,6 +81,7 @@ public:
         bindProgram();
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
 
         mat4 mMat(1.0f);
         swap(mMat[1], mMat[2]);
@@ -85,7 +90,7 @@ public:
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
-        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene->pMat()[0][0]);
 
         Light light = scene->light();
 
@@ -110,6 +115,13 @@ public:
 
             glBindTexture(GL_TEXTURE_2D, model->texture(material.texture));
 
+            glUniform1f(uniform[10], -1.0f);
+            glCullFace(GL_BACK);
+            glDrawElements(GL_TRIANGLES, material.count,
+                GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
+
+            glUniform1f(uniform[10], 1.0f);
+            glCullFace(GL_FRONT);
             glDrawElements(GL_TRIANGLES, material.count,
                 GL_UNSIGNED_INT, (void *)(sum * sizeof(GLuint)));
 
@@ -117,17 +129,21 @@ public:
         }
 
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
     }
 
     void update() {
-        static float angle = 0.0f;
-        armature[10] = rotate(angle, vec3(0.0f, 0.0f, 1.0f));
-        angle += .1f;
+        static int frame = 0;
+        int n = armature.size();
+        for (int i = 0; i < n; ++i) {
+            armature[i] = motion->getKey(frame / 2, i);
+        }
+        ++frame;
 
         armature.applyTransform();
     }
 };
 
-Renderer *ObjectBox::character(Scene *scene, Model *model) {
-    return create<Character>(scene, model);
+Renderer *ObjectBox::character(Scene *scene, Model *model, Motion *motion) {
+    return create<Character>(scene, model, motion);
 }

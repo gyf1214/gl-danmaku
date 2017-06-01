@@ -22,7 +22,8 @@ public:
         objects.push_back(ObjectBox::skybox(this));
         objects.push_back(transform);
         // objects.push_back(ObjectBox::danmaku(this, transform));
-        objects.push_back(ObjectBox::character(this, Model::reimu()));
+        objects.push_back(ObjectBox::character(this,
+            Model::reimu(), Motion::test1()));
 
         Scene::setup();
 

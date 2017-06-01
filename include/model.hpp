@@ -7,8 +7,8 @@
 class Model : public mmd::pmx::Model {
     bool loaded;
     std::vector<GLuint> textureSlot;
-public:
     Model();
+public:
     GLuint texture(int index);
     void load(const char *path);
     void loadTextures(void);

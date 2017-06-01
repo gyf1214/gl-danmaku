@@ -37,12 +37,12 @@ mat4 Model::boneTransform(int index, const mat4 &trans) {
     return translate(pos) * trans * translate(-pos);
 }
 
-#define defineModel(name, path) static Model name##_model;\
-Model *Model::name() {\
-    if (!name##_model.loaded) {\
-        name##_model.load("assets/" path);\
+#define defineModel(name, path) Model *Model::name() {\
+    static Model model;\
+    if (!model.loaded) {\
+        model.load("assets/" path);\
     }\
-    return &name##_model;\
+    return &model;\
 }
 
 defineModel(reimu, "reimu.pmx");

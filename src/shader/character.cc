@@ -57,6 +57,7 @@ static const char *fsh = R"(
     uniform vec4 lightMaterial;
     uniform vec4 diffuse;
     uniform vec4 specular;
+    uniform float side;
     uniform sampler2D texture0;
 
     out vec4 fragColor;
@@ -75,7 +76,7 @@ static const char *fsh = R"(
             scalar /= dot(lightMaterial.xyz, vec3(1.0, dis, dis * dis));
         }
 
-        vec3 diff = scalar * diffuse.xyz * abs(dot(L, N));
+        vec3 diff = scalar * diffuse.xyz * max(dot(L, N) * side, 0.0);
         c += lightColor * color * diff;
 
         vec3 spec = scalar * specular.xyz * pow(max(dot(N, H), 0.0), specular.w);

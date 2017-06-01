@@ -10,7 +10,7 @@ void Armature::setup() {
 void Armature::dfs(int v) {
     int p = bones[v].parent;
     output[v] = model->boneTransform(v, bones[v].transform);
-    if (p > 0) output[v] = output[v] * output[p];
+    if (p > 0) output[v] = output[p] * output[v];
 
     if (bones[v].son > 0) dfs(bones[v].son);
     if (bones[v].brother > 0) dfs(bones[v].brother);
