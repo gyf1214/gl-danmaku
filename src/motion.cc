@@ -39,15 +39,20 @@ mat4 Motion::getKey(int frame, int bone) {
         }
     }
 
-    vec4 q = keys[l]->rotation;
+    vec4 rr = keys[l]->rotation;
+    quat q = quat(rr.w, rr.x, rr.y, rr.z);
+    vec3 pos = keys[l]->position;
     if (r < keys.size()) {
-        q = (q * (float)(keys[r]->frame - frame) +
-            keys[r]->rotation * (float)(frame - keys[l]->frame)) /
-            (float)(keys[r]->frame - keys[l]->frame);
+        float scalar = (float)(frame - keys[l]->frame) /
+                       (float)(keys[r]->frame - keys[l]->frame);
+        rr = keys[r]->rotation;
+        quat qq = quat(rr.w, rr.x, rr.y, rr.z);
+        q = slerp(q, qq, scalar);
+        pos = mix(pos, keys[r]->position, scalar);
     }
 
-    return translate(keys[l]->position)
-         * mat4_cast(quat(q.w, q.x, q.y, q.z));
+    return translate(pos) * mat4_cast(q);
+    // return translate(pos);
     // return mat4_cast(quat(q.w, q.x, q.y, q.z));
 }
 

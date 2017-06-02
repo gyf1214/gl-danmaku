@@ -10,10 +10,10 @@ void Armature::setup() {
 void Armature::dfs(int v) {
     int p = bones[v].parent;
     output[v] = model->boneTransform(v, bones[v].transform);
-    if (p > 0) output[v] = output[p] * output[v];
+    if (p >= 0) output[v] = output[p] * output[v];
 
-    if (bones[v].son > 0) dfs(bones[v].son);
-    if (bones[v].brother > 0) dfs(bones[v].brother);
+    if (bones[v].son >= 0) dfs(bones[v].son);
+    if (bones[v].brother >= 0) dfs(bones[v].brother);
 }
 
 void Armature::buildTree() {
@@ -21,7 +21,7 @@ void Armature::buildTree() {
         auto &b = bones[i];
         const auto &mb = model->bones[i];
         b.parent = mb.parent;
-        if (b.parent > 0) {
+        if (b.parent >= 0) {
             auto &p = bones[b.parent];
             b.brother = p.son;
             p.son = i;
