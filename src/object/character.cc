@@ -63,7 +63,6 @@ public:
 
     void setup() {
         armature.setup();
-        armature.buildTree();
         motion->loadModel(model);
 
         ProgramRenderer::setup();

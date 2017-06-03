@@ -42,3 +42,6 @@ target_link_libraries(${TARGET} ${PNG_LIBRARIES})
 
 find_library(MMD_TOOLS mmd-tools PATHS lib)
 target_link_libraries(${TARGET} ${MMD_TOOLS})
+
+find_library(MMD_PHY mmd-physics PATHS lib)
+target_link_libraries(${TARGET} ${MMD_PHY})
