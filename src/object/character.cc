@@ -1,11 +1,12 @@
 #include "program_renderer.hpp"
 #include "motion.hpp"
-#include "bone.hpp"
+#include "mmd-physics/armature.hpp"
 
 using namespace glm;
 using namespace std;
 
-typedef mmd::pmx::Vertex Vertex;
+using mmd::pmx::Vertex;
+using mmd::physics::Armature;
 
 proto(Character, Shader::character);
 
@@ -34,11 +35,12 @@ class Character : public ProgramRenderer<Proto> {
 
     Model *model;
     Motion *motion;
-    Armature armature;
+    Armature *armature;
+
+    vector<mat4> bones;
 public:
     Character(Scene *scene, Model *model, Motion *motion)
-        : ProgramRenderer(scene), model(model),
-          motion(motion), armature(model) {}
+        : ProgramRenderer(scene), model(model), motion(motion) {}
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
@@ -56,13 +58,15 @@ public:
             &model->mesh.surface[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
-        glBufferData(GL_UNIFORM_BUFFER, armature.size() * sizeof(mat4),
+        glBufferData(GL_UNIFORM_BUFFER, bones.size() * sizeof(mat4),
             NULL, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, uboBinding, buffer[2]);
     }
 
     void setup() {
-        armature.setup();
+        armature = Armature::create();
+        bones.resize(model->bones.size(), mat4(1.0f));
+        armature->loadModel(model);
         motion->loadModel(model);
 
         ProgramRenderer::setup();
@@ -99,7 +103,7 @@ public:
 
         glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
         glBufferSubData(GL_UNIFORM_BUFFER, 0,
-            armature.size() * sizeof(mat4), &armature.transform()[0][0][0]);
+            bones.size() * sizeof(mat4), &bones[0][0][0]);
 
         glActiveTexture(GL_TEXTURE0);
 
@@ -135,13 +139,22 @@ public:
 
     void update() {
         static int frame = 0;
-        int n = armature.size();
+        int n = bones.size();
         for (int i = 0; i < n; ++i) {
-            armature[i] = motion->getKey(frame / 2, i);
+            armature->applyLocal(i, motion->getKey(frame / 2, i));
         }
+        armature->solveIK();
         ++frame;
 
-        armature.applyTransform();
+        for (int i = 0; i < n; ++i) {
+            bones[i] = armature->skin(i);
+        }
+    }
+
+    void reset() {
+        ProgramRenderer::reset();
+
+        delete armature;
     }
 };
 

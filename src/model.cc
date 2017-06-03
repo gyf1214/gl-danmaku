@@ -32,11 +32,6 @@ GLuint Model::texture(int index) {
     return textureSlot[index];
 }
 
-mat4 Model::boneTransform(int index, const mat4 &trans) {
-    vec3 pos = bones[index].position;
-    return translate(pos) * trans * translate(-pos);
-}
-
 #define defineModel(name, path) Model *Model::name() {\
     static Model model;\
     if (!model.loaded) {\
