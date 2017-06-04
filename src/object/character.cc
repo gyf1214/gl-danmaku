@@ -13,7 +13,7 @@ proto(Character, Shader::character);
 protoBuffer = {
     { 0, NULL },
     { 0, NULL },
-    { 0, NULL }
+    { 0, NULL },
 };
 
 protoAttrib = {
@@ -27,8 +27,12 @@ protoAttrib = {
 protoUnifom = {
     "mMat", "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
-    "diffuse", "specular", "texture0", "side"
+    "diffuse", "specular", "texture0", "side",
+    "morphData", "morphCount", "morphs"
 };
+
+static const int boneSize = 512;
+static const int morphSize = 128;
 
 class Character : public ProgramRenderer<Proto> {
     static const int uboBinding = 1;
@@ -37,7 +41,8 @@ class Character : public ProgramRenderer<Proto> {
     Motion *motion;
     Armature *armature;
 
-    vector<mat4> bones;
+    mat4 bones[boneSize];
+    float morphs[morphSize];
 public:
     Character(Scene *scene, Model *model, Motion *motion)
         : ProgramRenderer(scene), model(model), motion(motion) {}
@@ -58,14 +63,13 @@ public:
             &model->mesh.surface[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
-        glBufferData(GL_UNIFORM_BUFFER, bones.size() * sizeof(mat4),
-            NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, boneSize * sizeof(mat4),
+                     NULL, GL_DYNAMIC_DRAW);
         glBindBufferBase(GL_UNIFORM_BUFFER, uboBinding, buffer[2]);
     }
 
     void setup() {
         armature = Armature::create();
-        bones.resize(model->bones.size(), mat4(1.0f));
         armature->loadModel(model);
         motion->loadModel(model);
 
@@ -77,7 +81,11 @@ public:
         glUniformBlockBinding(program, uboIndex, uboBinding);
 
         glUniform1i(uniform[9], 0);
+        glUniform1i(uniform[11], 1);
+        glUniform1i(uniform[12], model->morphs.size());
+
         model->loadTextures();
+        model->loadMorphTexture();
     }
 
     void render() {
@@ -100,10 +108,13 @@ public:
         glUniform4fv(uniform[3], 1, &light.position[0]);
         glUniform3fv(uniform[4], 1, &light.color[0]);
         glUniform4fv(uniform[6], 1, &light.material[0]);
+        glUniform1fv(uniform[13], model->morphs.size(), morphs);
 
         glBindBuffer(GL_UNIFORM_BUFFER, buffer[2]);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0,
-            bones.size() * sizeof(mat4), &bones[0][0][0]);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, boneSize * sizeof(mat4), &bones[0][0][0]);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_BUFFER, model->morphTexture());
 
         glActiveTexture(GL_TEXTURE0);
 
@@ -139,7 +150,7 @@ public:
 
     void update() {
         static int frame = 0;
-        int n = bones.size();
+        int n = armature->getSize();
         for (int i = 0; i < n; ++i) {
             armature->applyLocal(i, motion->getKey(frame / 2, i));
         }
@@ -149,6 +160,10 @@ public:
         for (int i = 0; i < n; ++i) {
             bones[i] = armature->skin(i);
         }
+        for (int i = 0; i < model->morphs.size(); ++i) {
+            morphs[i] = 0.0f;
+        }
+        morphs[35] = 1.0f;
     }
 
     void reset() {

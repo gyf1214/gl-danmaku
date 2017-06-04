@@ -16,9 +16,12 @@ static const char *vsh = R"(
     uniform mat4 vMat;
     uniform mat4 pMat;
     uniform vec4 lightPosition;
+    uniform samplerBuffer morphData;
+    uniform int morphCount;
+    uniform float morphs[128];
 
     uniform Bones {
-        mat4 bones[256];
+        mat4 bones[512];
     };
 
     out vec3 normalOut;
@@ -27,8 +30,14 @@ static const char *vsh = R"(
     out vec4 lPos;
 
     void main(void) {
+        vec3 pos = position;
+        for (int i = 0; i < morphCount; ++i) {
+            vec3 offset = texelFetch(morphData, gl_VertexID * morphCount + i).xyz;
+            pos += morphs[i] * offset;
+        }
+
         mat4 bMat = boneWeight.x * bones[boneIndex.x] + boneWeight.y * bones[boneIndex.y];
-        vPos = vMat * mMat * bMat * vec4(position, 1.0);
+        vPos = vMat * mMat * bMat * vec4(pos, 1.0);
         gl_Position = pMat * vPos;
 
         normalOut = normalize((vMat * mMat * bMat * vec4(normal, 0.0)).xyz);

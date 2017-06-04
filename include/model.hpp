@@ -7,11 +7,14 @@
 class Model : public mmd::pmx::Model {
     bool loaded;
     std::vector<GLuint> textureSlot;
+    GLuint morphBuffer, morphTex;
+    void load(const char *path);
     Model();
 public:
     GLuint texture(int index);
-    void load(const char *path);
+    GLuint morphTexture(void);
     void loadTextures(void);
+    void loadMorphTexture(void);
 
     static Model *reimu(void);
 };

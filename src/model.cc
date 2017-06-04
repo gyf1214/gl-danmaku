@@ -5,7 +5,7 @@
 using namespace glm;
 using namespace mmd;
 
-Model::Model() : mmd::pmx::Model(), loaded(false) {}
+Model::Model() : mmd::pmx::Model(), loaded(false), morphTex(0) {}
 
 void Model::load(const char *path) {
     CHECK(!loaded) << "cannot load a model twice!";
@@ -30,6 +30,33 @@ GLuint Model::texture(int index) {
         textureSlot[index] = Texture::loadTexture(textures[index].c_str());
     }
     return textureSlot[index];
+}
+
+GLuint Model::morphTexture() {
+    if (!morphTex) loadMorphTexture();
+    return morphTex;
+}
+
+void Model::loadMorphTexture() {
+    glGenBuffers(1, &morphBuffer);
+    glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
+    int m = morphs.size();
+    int n = mesh.vertex.size();
+    vec4 *data = new vec4[n * m];
+    memset(data, 0, n * m * sizeof(vec4));
+    for (int i = 0; i < m; ++i) {
+        const auto &offset = morphs[i].offsets;
+        int t = offset.size();
+        for (int j = 0; j < t; ++j) {
+            data[offset[j].index * m + i] = vec4(offset[j].translate, 0.0f);
+        }
+    }
+    glBufferData(GL_TEXTURE_BUFFER, n * m * sizeof(vec4), data, GL_STATIC_DRAW);
+    delete[] data;
+
+    glGenTextures(1, &morphTex);
+    glBindTexture(GL_TEXTURE_BUFFER, morphTex);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
 }
 
 #define defineModel(name, path) Model *Model::name() {\
