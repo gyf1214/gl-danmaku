@@ -5,11 +5,9 @@
 using namespace glm;
 using namespace mmd;
 
-Model::Model() : mmd::pmx::Model(), loaded(false), morphTex(0) {}
+Model::Model() : mmd::pmx::Model(), morphTex(0) {}
 
 void Model::load(const char *path) {
-    CHECK(!loaded) << "cannot load a model twice!";
-    loaded = true;
     Fs *fs = Fs::open(path);
     mmd::pmx::Model::load(fs);
     delete fs;
@@ -61,10 +59,25 @@ void Model::loadMorphTexture() {
 
 #define defineModel(name, path) Model *Model::name() {\
     static Model model;\
-    if (!model.loaded) {\
+    static bool loaded = false;\
+    if (!loaded) {\
         model.load("assets/" path);\
+        loaded = true;\
     }\
     return &model;\
 }
 
+#define defineMotion(name, path) vmd::Motion *Model::name() {\
+    static vmd::Motion motion;\
+    static bool loaded = false;\
+    if (!loaded) {\
+        Fs *fs = mmd::Fs::open("assets/" path);\
+        motion.load(fs);\
+        loaded = true;\
+        delete fs;\
+    }\
+    return &motion;\
+}
+
 defineModel(reimu, "reimu.pmx");
+defineMotion(test1, "test1.vmd");

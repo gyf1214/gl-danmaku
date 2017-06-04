@@ -2,10 +2,8 @@
 #define __MODEL
 
 #include "common.hpp"
-#include "mmd/pmx.hpp"
 
 class Model : public mmd::pmx::Model {
-    bool loaded;
     std::vector<GLuint> textureSlot;
     GLuint morphBuffer, morphTex;
     void load(const char *path);
@@ -17,6 +15,7 @@ public:
     void loadMorphTexture(void);
 
     static Model *reimu(void);
+    static mmd::vmd::Motion *test1(void);
 };
 
 #endif

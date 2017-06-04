@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include <png.h>
 
+#include "mmd/pmx.hpp"
+#include "mmd/vmd.hpp"
+
 #define Offset(type, member)    ((void *)(&(((type *)0)->member)))
 #define Alias(src, tar)         inline decltype(src) &tar() { return tar; }
 

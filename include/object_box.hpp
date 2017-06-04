@@ -2,14 +2,14 @@
 #define __OBJECT_BOX
 
 #include "box.hpp"
-#include "motion.hpp"
+#include "model.hpp"
 
 class ObjectBox : public Box<Renderer> {
 public:
     static Renderer *danmaku(Scene *scene, Transformer *trans);
     static Transformer *danmakuTransform(Scene *scene);
     static Renderer *skybox(Scene *scene);
-    static Renderer *character(Scene *scene, Model *model, Motion *motion);
+    static Renderer *character(Scene *scene, Model *model, mmd::vmd::Motion *motion);
 };
 
 #endif

@@ -1,12 +1,12 @@
 #include "program_renderer.hpp"
-#include "motion.hpp"
-#include "mmd-physics/armature.hpp"
+#include "mmd-physics/motion.hpp"
 
 using namespace glm;
 using namespace std;
+using namespace mmd;
 
 using mmd::pmx::Vertex;
-using mmd::physics::Armature;
+using mmd::physics::Motion;
 
 proto(Character, Shader::character);
 
@@ -34,15 +34,18 @@ protoUnifom = {
 class Character : public ProgramRenderer<Proto> {
     static const int uboBinding = 1;
 
-    Model *model;
     Motion *motion;
-    Armature *armature;
+    Model *model;
+    vmd::Motion *vMotion;
 
     vector<mat4> bones;
     vector<float> morphs;
 public:
-    Character(Scene *scene, Model *model, Motion *motion)
-        : ProgramRenderer(scene), model(model), motion(motion) {}
+    Character(Scene *scene, Model *model, mmd::vmd::Motion *motion)
+        : ProgramRenderer(scene), motion(Motion::create()),
+          model(model), vMotion(motion) {}
+
+    ~Character() {}
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
@@ -66,9 +69,8 @@ public:
     }
 
     void setup() {
-        armature = Armature::create();
-        armature->loadModel(model);
         motion->loadModel(model);
+        motion->loadMotion(vMotion);
         bones.resize(model->bones.size());
         morphs.resize(model->morphs.size());
 
@@ -150,29 +152,24 @@ public:
 
     void update() {
         static int frame = 0;
-        int n = bones.size();
-        for (int i = 0; i < n; ++i) {
-            armature->applyLocal(i, motion->getKey(frame, i));
-        }
-        armature->solveIK();
+        motion->updateKey(frame);
         ++frame;
 
-        for (int i = 0; i < n; ++i) {
-            bones[i] = armature->skin(i);
+        for (int i = 0; i < bones.size(); ++i) {
+            bones[i] = motion->skin(i);
         }
         for (int i = 0; i < morphs.size(); ++i) {
-            morphs[i] = 0.0f;
+            morphs[i] = motion->face(i);
         }
-        morphs[35] = 1.0f;
     }
 
     void reset() {
         ProgramRenderer::reset();
 
-        delete armature;
+        motion->reset();
     }
 };
 
-Renderer *ObjectBox::character(Scene *scene, Model *model, Motion *motion) {
+Renderer *ObjectBox::character(Scene *scene, Model *model, vmd::Motion *motion) {
     return create<Character>(scene, model, motion);
 }
