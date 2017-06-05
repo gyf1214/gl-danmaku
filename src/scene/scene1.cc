@@ -18,12 +18,12 @@ class Scene1 : public Scene {
     static constexpr double centerY = Application::height / 2;
 public:
     void setup() {
-        Transformer *transform = ObjectBox::danmakuTransform(this);
+        // Transformer *transform = ObjectBox::danmakuTransform(this);
         objects.push_back(ObjectBox::skybox(this));
-        objects.push_back(transform);
+        // objects.push_back(transform);
         objects.push_back(ObjectBox::character(this,
             Model::reimu(), Model::test1()));
-        objects.push_back(ObjectBox::danmaku(this, transform));
+        // objects.push_back(ObjectBox::danmaku(this, transform));
 
         Scene::setup();
 
