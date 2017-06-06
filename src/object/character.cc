@@ -153,6 +153,7 @@ public:
     void update() {
         static int frame = 0;
         motion->updateKey(frame);
+        motion->updatePhysics(Application::elapse);
         ++frame;
 
         for (int i = 0; i < bones.size(); ++i) {
