@@ -45,7 +45,9 @@ public:
         : ProgramRenderer(scene), motion(Motion::create()),
           model(model), vMotion(motion) {}
 
-    ~Character() {}
+    ~Character() {
+        delete motion;
+    }
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
