@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <ctime>
 #include <algorithm>
 #include "transform_renderer.hpp"
 #include "vertex/danmaku.hpp"

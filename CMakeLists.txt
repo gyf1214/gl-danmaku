@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 project(gl)
 
+find_package(PkgConfig REQUIRED)
+
 set(EXECUTABLE_OUTPUT_PATH bin)
 set(TARGET main)
 aux_source_directory(src SRCS)
@@ -28,13 +30,11 @@ include_directories(include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 find_package(OpenGL REQUIRED)
+pkg_search_module(GLEW REQUIRED glew)
+pkg_search_module(GLFW REQUIRED glfw3)
+pkg_search_module(PNG REQUIRED libpng)
+
 target_link_libraries(${TARGET} ${OPENGL_LIBRARIES})
-
-find_library(GLFW_LIBRARIES glfw)
 target_link_libraries(${TARGET} ${GLFW_LIBRARIES})
-
-find_library(GLEW_LIBRARIES glew)
 target_link_libraries(${TARGET} ${GLEW_LIBRARIES})
-
-find_library(PNG_LIBRARIES png)
 target_link_libraries(${TARGET} ${PNG_LIBRARIES})

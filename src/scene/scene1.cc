@@ -6,6 +6,10 @@
 #include <cmath>
 #include <cstdio>
 
+#ifndef M_PI
+#define M_PI 3.1415926535897
+#endif
+
 static constexpr float speed = 10.0f;
 static constexpr float scrollSpeed = 5.0f;
 static constexpr float mouseSpeed = 0.1f;

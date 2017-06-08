@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <cmath>
 #include "light.hpp"
 #include "vertex/light.hpp"
 #include "program_renderer.hpp"
@@ -8,6 +9,10 @@
 #include "object_box.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+
+#ifndef M_PI
+#define M_PI 3.1415926535897
+#endif
 
 static const int circleSize = 128;
 static const int wallSize = 6 * circleSize;
