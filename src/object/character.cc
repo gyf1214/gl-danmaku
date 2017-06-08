@@ -120,7 +120,7 @@ void Character::render() {
 
 void Character::update() {
     static int frame = 0;
-    // motion->updateKey(frame / 2);
+    motion->updateKey(frame / 2);
     motion->updatePhysics(Application::elapse);
     ++frame;
 
