@@ -7,6 +7,15 @@ using namespace mmd;
 using mmd::pmx::Vertex;
 using mmd::physics::Motion;
 
+const mat4 Character::preTransform(
+    0.1f, 0.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.1f, 0.0f,
+    0.0f, 0.1f, 0.0f, 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f
+);
+
+const mat4 Character::invTransform = inverse(preTransform);
+
 Character::Character(Scene *scene, Model *model, mmd::vmd::Motion *motion)
         : ProgramRenderer(scene), motion(Motion::create()),
           model(model), vMotion(motion) {}
@@ -40,6 +49,9 @@ void Character::setup() {
     motion->loadMotion(vMotion);
     bones.resize(model->bones.size());
     morphs.resize(model->morphs.size());
+    transform = translate(vec3(0.0f, 4.0f, 20.0f));
+    // motion->updateGlobal(invTransform * transform * preTransform);
+    // motion->resetPhysics();
 
     ProgramRenderer::setup();
 
@@ -62,10 +74,7 @@ void Character::render() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    mat4 mMat(1.0f);
-    swap(mMat[1], mMat[2]);
-    mMat = scale(vec3(0.1f, 0.1f, 0.1f)) * mMat;
-    mMat = translate(vec3(0.0f, 4.0f, 10.0f)) * mMat;
+    mat4 mMat = transform * preTransform;
 
     glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
     glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
@@ -119,10 +128,19 @@ void Character::render() {
 }
 
 void Character::update() {
-    static int frame = 0;
-    motion->updateKey(frame / 2);
+    static float frame = 0;
+    motion->updateGlobal(invTransform * transform * preTransform);
+    motion->updateKey(frame);
+    motion->resetPhysics();
     motion->updatePhysics(Application::elapse);
-    ++frame;
+    frame += 0.5f;
+    if (frame > 40) frame = 10;
+    static float height = 0.0f;
+    static float speed = 0.05f;
+    // transform = translate(vec3(0.0f, 0.0f, height));
+    height += speed;
+    if (height > 5.0f) speed = -0.05f;
+    if (height < 0.0f) speed = 0.05f;
 
     for (int i = 0; i < bones.size(); ++i) {
         bones[i] = motion->skin(i);

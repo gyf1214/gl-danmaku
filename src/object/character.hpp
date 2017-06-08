@@ -39,6 +39,9 @@ protected:
 
     std::vector<glm::mat4> bones;
     std::vector<float> morphs;
+    glm::mat4 transform;
+    static const glm::mat4 preTransform;
+    static const glm::mat4 invTransform;
 
     void setupBuffers(void);
 public:
