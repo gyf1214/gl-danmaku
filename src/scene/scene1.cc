@@ -6,18 +6,18 @@
 #include <cmath>
 #include <cstdio>
 
+static constexpr float speed = 10.0f;
+static constexpr float scrollSpeed = 5.0f;
+static constexpr float mouseSpeed = 0.1f;
+static constexpr double centerX = Application::width / 2;
+static constexpr double centerY = Application::height / 2;
+
 class Scene1 : public Scene {
     double timer;
     int tick;
     glm::vec3 position, dir, left;
     float horizonAngle, verticalAngle;
     float fov;
-
-    static constexpr float speed = 10.0f;
-    static constexpr float scrollSpeed = 5.0f;
-    static constexpr float mouseSpeed = 0.1f;
-    static constexpr double centerX = Application::width / 2;
-    static constexpr double centerY = Application::height / 2;
 public:
     void setup() {
         Transformer *transform = ObjectBox::danmakuTransform(this);

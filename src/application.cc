@@ -11,6 +11,9 @@ static GLFWwindow *window = NULL;
 
 int Application::bufferWidth;
 int Application::bufferHeight;
+const float Application::elapse;
+const int Application::width;
+const int Application::height;
 
 void Application::errorCallBack(int error, const char* description) {
     FAIL << "glfw error " << error << ": " << description;
