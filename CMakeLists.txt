@@ -31,9 +31,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/src/,,$(abspath $<))\"'")
 
 find_package(OpenGL REQUIRED)
-pkg_search_module(GLEW REQUIRED glew)
+find_package(GLEW REQUIRED)
+find_package(PNG REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
-pkg_search_module(PNG REQUIRED libpng)
+
+include_directories(${GLEW_INCLUDE_DIRS})
+include_directories(${PNG_INCLUDE_DIRS})
+include_directories(${GLFW_INCLUDE_DIRS})
 
 target_link_libraries(${TARGET} ${OPENGL_LIBRARIES})
 target_link_libraries(${TARGET} ${GLFW_LIBRARIES})
