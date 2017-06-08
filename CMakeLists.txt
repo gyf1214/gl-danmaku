@@ -47,3 +47,9 @@ target_link_libraries(${TARGET} ${PNG_LIBRARIES})
 
 find_library(MMD_TOOLS mmd-tools PATHS ../mmd-tools/build/lib)
 target_link_libraries(${TARGET} ${MMD_TOOLS})
+
+if (WIN32)
+add_custom_command(TARGET ${TARGET} POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different
+             ${MMD_TOOLS} $<TARGET_FILE_DIR:${TARGET}>)
+endif(WIN32)
