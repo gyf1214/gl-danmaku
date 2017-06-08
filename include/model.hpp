@@ -16,6 +16,7 @@ public:
 
     static Model *reimu(void);
     static mmd::vmd::Motion *test1(void);
+    static mmd::vmd::Motion *test2(void);
 };
 
 #endif

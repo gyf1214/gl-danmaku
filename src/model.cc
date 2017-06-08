@@ -81,3 +81,4 @@ void Model::loadMorphTexture() {
 
 defineModel(reimu, "reimu.pmx");
 defineMotion(test1, "test1.vmd");
+defineMotion(test2, "test2.vmd");
