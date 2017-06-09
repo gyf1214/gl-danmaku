@@ -65,7 +65,7 @@ static void setupVertices() {
     const int M = 3;
 
     for (int k = -M; k <= M; ++k) {
-        float pitch = (float)k / (float)(M + 1) * M_PI_2;
+        float pitch = (float)k / (float)(M + 1) * M_PI / 2.0f;
         int T = 4 * (1 + floor(N * cos(pitch)));
         for (int i = 0; i < T; ++i) {
             float angle = (float)i / (float)T * M_PI * 2.0f;

@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cmath>
+#include <ctime>
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -28,5 +29,9 @@ inline float randomNeg() {
 inline vec3 randomNorm3() {
     return normalize(vec3(randomNeg(), randomNeg(), randomNeg()));
 }
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
 
 #endif

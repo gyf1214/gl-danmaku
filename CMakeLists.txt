@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 project(gl)
 
+find_package(PkgConfig REQUIRED)
+
 set(EXECUTABLE_OUTPUT_PATH bin)
 set(TARGET main)
 aux_source_directory(src SRCS)
@@ -25,23 +27,36 @@ endif()
 add_custom_target(assets ALL DEPENDS ${ASSETS})
 
 include_directories(include)
+include_directories(../mmd-tools/include)
+include_directories(../mmd-physics/include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/src/,,$(abspath $<))\"'")
 
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(PNG REQUIRED)
+pkg_search_module(GLFW REQUIRED glfw3)
+
+include_directories(${GLEW_INCLUDE_DIRS})
+include_directories(${PNG_INCLUDE_DIRS})
+include_directories(${GLFW_INCLUDE_DIRS})
+
 target_link_libraries(${TARGET} ${OPENGL_LIBRARIES})
-
-find_library(GLFW_LIBRARIES glfw)
 target_link_libraries(${TARGET} ${GLFW_LIBRARIES})
-
-find_library(GLEW_LIBRARIES glew)
 target_link_libraries(${TARGET} ${GLEW_LIBRARIES})
-
-find_library(PNG_LIBRARIES png)
 target_link_libraries(${TARGET} ${PNG_LIBRARIES})
 
-find_library(MMD_TOOLS mmd-tools PATHS lib)
+find_library(MMD_TOOLS mmd-tools PATHS ../mmd-tools/build/lib)
 target_link_libraries(${TARGET} ${MMD_TOOLS})
 
-find_library(MMD_PHY mmd-physics PATHS lib)
+find_library(MMD_PHY mmd-physics PATHS ../mmd-physics/build/lib)
 target_link_libraries(${TARGET} ${MMD_PHY})
+
+if (WIN32)
+add_custom_command(TARGET ${TARGET} POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different
+             ${MMD_TOOLS} $<TARGET_FILE_DIR:${TARGET}>)
+ add_custom_command(TARGET ${TARGET} POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different
+             ${MMD_PHY} $<TARGET_FILE_DIR:${TARGET}>)
+endif(WIN32)
