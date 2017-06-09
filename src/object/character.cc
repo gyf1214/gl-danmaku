@@ -45,13 +45,12 @@ void Character::setupBuffers() {
 }
 
 void Character::setup() {
+    transform = translate(vec3(0.0f, 4.0f, 10.0f));
+    motion->updateGlobal(invTransform * transform * preTransform);
     motion->loadModel(model);
     motion->loadMotion(vMotion);
     bones.resize(model->bones.size());
     morphs.resize(model->morphs.size());
-    transform = translate(vec3(0.0f, 4.0f, 20.0f));
-    // motion->updateGlobal(invTransform * transform * preTransform);
-    // motion->resetPhysics();
 
     ProgramRenderer::setup();
 
@@ -131,16 +130,9 @@ void Character::update() {
     static float frame = 0;
     motion->updateGlobal(invTransform * transform * preTransform);
     motion->updateKey(frame);
-    motion->resetPhysics();
     motion->updatePhysics(Application::elapse);
     frame += 0.5f;
     if (frame > 40) frame = 10;
-    static float height = 0.0f;
-    static float speed = 0.05f;
-    // transform = translate(vec3(0.0f, 0.0f, height));
-    height += speed;
-    if (height > 5.0f) speed = -0.05f;
-    if (height < 0.0f) speed = 0.05f;
 
     for (int i = 0; i < bones.size(); ++i) {
         bones[i] = motion->skin(i);
