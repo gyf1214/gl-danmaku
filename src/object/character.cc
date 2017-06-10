@@ -64,7 +64,7 @@ public:
         mat4 mMat(1.0f);
         swap(mMat[1], mMat[2]);
         mMat = scale(vec3(0.1f, 0.1f, 0.1f)) * mMat;
-        mMat = translate(vec3(0.0f, 4.0f, 10.0f)) * mMat;
+        mMat = translate(vec3(0.0f, 4.0f, 40.0f)) * mMat;
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);

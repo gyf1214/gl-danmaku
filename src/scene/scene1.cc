@@ -29,7 +29,7 @@ public:
         timer = glfwGetTime();
         tick = 0;
 
-        position = vec3(9.0f, 0.0f, 25.0f);
+        position = vec3(0.0f, 0.0f, 41.0f);
         horizonAngle = M_PI / 2.0f;
         verticalAngle = 0.0f;
         fov = 45.0f;
@@ -120,7 +120,7 @@ public:
             vec4(0.0f, 0.0f, 0.0f, 1.0f),
             vec3(1.0f, 0.6f, 0.2f),
             vec3(0.0f, 0.0f, 0.0f),
-            vec4(0.3f, 0.0f, 0.3f / 10.0f / 10.0f, 1.0f)
+            vec4(0.5f, 0.0f, 0.5f / 40.0f / 40.0f, 1.0f)
         );
     }
 };

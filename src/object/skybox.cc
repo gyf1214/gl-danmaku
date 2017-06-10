@@ -5,12 +5,12 @@ static const int circleSize = 128;
 static const int wallSize = 6 * circleSize;
 static const int floorSize = 4;
 static const int vertexSize = wallSize + floorSize;
-static const float radius = 10.0f;
+static const float radius = 40.0f;
 static const float heightScale = 1.0f;
 static const float height = radius * M_PI * 2.0f * heightScale;
 static const float uvScale = 10.0f;
 
-static const float wallMaterial[]  = { 1.0f, 0.5f, 0.5f, 50.0f };
+static const float wallMaterial[]  = { 1.0f, 0.5f, 0.5f, 100.0f };
 static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static Vertex vertices[vertexSize];
@@ -65,8 +65,8 @@ static void setupVertices() {
 
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j) {
-            float xx = ((float)i * 2.0f - 1.0f) * radius;
-            float yy = ((float)j * 2.0f - 1.0f) * radius;
+            float xx = ((float)j * 2.0f - 1.0f) * radius;
+            float yy = ((float)i * 2.0f - 1.0f) * radius;
             vertices[cnt].position = vec3(xx, yy, 0.0f);
             vertices[cnt].normal = vec3(0.0f, 0.0f, 1.0f);
             vertices[cnt].tangent = vec3(0.0f, 0.0f, 0.0f);
@@ -102,6 +102,8 @@ public:
         bindProgram();
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
@@ -132,6 +134,7 @@ public:
         glUniform4fv(uniform[6], 1, wallMaterial);
         glDrawArrays(GL_TRIANGLES, 0, wallSize);
 
+        glDisable(GL_CULL_FACE);
         glDisable(GL_DEPTH_TEST);
     }
 };
