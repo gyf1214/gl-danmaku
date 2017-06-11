@@ -15,6 +15,10 @@ SceneExt::SceneExt(bool debug, bool output, int passes)
 void SceneExt::setup() {
     setupObjects();
 
+    nextEvent = 0.0f;
+    fiber = Fiber::create(fiberWorker, this);
+    fiber->resume();
+
     Scene::setup();
 
     glEnable(GL_DEPTH_TEST);
@@ -106,6 +110,12 @@ void SceneExt::update() {
     }
 }
 
+void SceneExt::reset() {
+    delete fiber;
+
+    Scene::reset();
+}
+
 glm::mat4 SceneExt::vMat() {
     return lookAt(position, position + dir, cross(dir, left));
 }
@@ -137,4 +147,9 @@ Light SceneExt::direction(vec3 dir, vec3 color) {
         vec4(normalize(dir), 0.0f), color, vec3(0.0f),
         vec4(1.0f, 0.0f, 0.0f, 0.0f)
     );
+}
+
+void SceneExt::fiberWorker(void *ptr) {
+    SceneExt *self = (SceneExt *)ptr;
+    self->script();
 }

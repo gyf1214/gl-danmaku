@@ -28,7 +28,11 @@ protected:
         bool play, loop, range;
         float current, begin, end, speed;
     } frame;
-    glm::mat4 transform;
+
+    struct {
+        glm::mat4 mat;
+        bool reset;
+    } transform;
 
     void updateFrame(void);
     void updateMotion(void);
@@ -41,6 +45,8 @@ public:
     void playRange(float start, float end, float speed = 1.0f);
     void loop(float start, float end, float speed = 1.0f);
     void fix(float start);
+
+    void teleport(glm::vec3 pos);
 };
 
 #endif

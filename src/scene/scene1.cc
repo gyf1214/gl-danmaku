@@ -5,13 +5,13 @@
 using namespace glm;
 
 class Scene1 : public SceneExt {
+    Character *reimu;
 public:
     Scene1() : SceneExt(true, false, 3) {}
 
     void setupObjects() {
         // Transformer *transform = ObjectBox::danmakuTransform(this);
-        Character *reimu = (Character *)ObjectBox::character(this, Model::reimu(), Model::test2());
-        reimu->play(0.0f);
+        reimu = ObjectBox::character(this, Model::reimu(), Model::test2());
         objects.push_back(ObjectBox::skybox(this));
         objects.push_back(reimu);
         // objects.push_back(transform);
@@ -35,6 +35,11 @@ public:
         CHECK(currentPass < sizeof(lights) / sizeof(Light)) << "invalid pass!";
 
         return lights[currentPass];
+    }
+
+    void script() {
+        reimu->teleport(vec3(0.0f, 4.0f, 40.0f));
+        reimu->loop(10.0f, 40.0f);
     }
 };
 

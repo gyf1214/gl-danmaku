@@ -1,4 +1,7 @@
+#include "ext.hpp"
 #include "renderer.hpp"
+
+using namespace glm;
 
 Renderer::Renderer(Scene *scene) : scene(scene) {}
 Renderer::~Renderer() {}
@@ -56,4 +59,9 @@ void Character::loop(float start, float end, float speed) {
 void Character::fix(float start) {
     frame.current = start;
     frame.play = false;
+}
+
+void Character::teleport(vec3 pos) {
+    transform.mat = translate(pos);
+    transform.reset = true;
 }

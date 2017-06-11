@@ -66,20 +66,28 @@ protected:
 public:
     CharacterRenderer(Scene *scene, Model *model, mmd::vmd::Motion *vMotion)
         : Character(scene), motion(Motion::create()),
-          model(model), vMotion(vMotion) {}
+          model(model), vMotion(vMotion) {
+
+        transform.mat = mat4(1.0f);
+        transform.reset = false;
+        frame.play = false;
+        frame.current = 0.0f;
+    }
 
     ~CharacterRenderer() {
         delete motion;
     }
 
     void setup() {
-        transform = translate(vec3(0.0f, 4.0f, 40.0f));
-        frame.play = false;
-        frame.current = 0.0f;
-
-        motion->updateGlobal(invTransform * transform * preTransform);
         motion->loadModel(model);
         motion->loadMotion(vMotion);
+
+        motion->updateGlobal(invTransform * transform.mat * preTransform);
+        motion->updateKey(frame.current);
+
+        motion->loadBody();
+        transform.reset = false;
+
         bones.resize(model->bones.size());
         morphs.resize(model->morphs.size());
 
@@ -103,7 +111,7 @@ public:
 
         glEnable(GL_CULL_FACE);
 
-        mat4 mMat = transform * preTransform;
+        mat4 mMat = transform.mat * preTransform;
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
@@ -162,7 +170,11 @@ public:
         updateFrame();
 
         motion->updateKey(frame.current);
-        motion->updateGlobal(invTransform * transform * preTransform);
+        motion->updateGlobal(invTransform * transform.mat * preTransform);
+        if (transform.reset) {
+            motion->resetPhysics();
+            transform.reset = false;
+        }
         motion->updatePhysics(Application::elapse);
 
         for (int i = 0; i < bones.size(); ++i) {

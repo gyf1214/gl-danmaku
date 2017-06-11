@@ -18,8 +18,11 @@ class FiberExt : public Fiber {
 
         void operator ()() {
             self->resumeSign.lock();
+            LOG << "fiber " << self->pthread.get_id() << " start";
             r(arg);
             self->end = true;
+            Fiber::yield();
+            LOG << "fiber " << self->pthread.get_id() << " terminated";
         }
     } worker;
 public:
@@ -39,18 +42,21 @@ public:
 
     bool resume() {
         CHECK(!end) << "call to a terminated fiber!";
+        FiberExt *last = current;
         current = this;
         resumeSign.unlock();
         yieldSign.lock();
+        LOG << "fiber " << pthread.get_id() << " yield";
+        current = last;
         return end;
     }
 
     static void yield() {
         FiberExt *last = current;
         CHECK_NQ(last, NULL) << "yield from main thread!";
-        current = NULL;
         last->yieldSign.unlock();
         last->resumeSign.lock();
+        LOG << "fiber " << last->pthread.get_id() << " resume from another";
     }
 };
 
