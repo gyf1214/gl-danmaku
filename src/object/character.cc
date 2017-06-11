@@ -59,19 +59,19 @@ public:
     void render() {
         bindProgram();
 
-        glEnable(GL_DEPTH_TEST);
-
         mat4 mMat(1.0f);
         swap(mMat[1], mMat[2]);
         mMat = scale(vec3(0.1f, 0.1f, 0.1f)) * mMat;
-        mMat = translate(vec3(0.0f, 4.0f, 10.0f)) * mMat;
+        mMat = translate(vec3(0.0f, 4.0f, 40.0f)) * mMat;
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
         glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
         Light light = scene->light();
+        bool ambient = !scene->pass();
 
+        glUniform3fv(uniform[5], 1, &light.ambient[0]);
         glUniform4fv(uniform[3], 1, &light.position[0]);
         glUniform3fv(uniform[4], 1, &light.color[0]);
         glUniform4fv(uniform[6], 1, &light.material[0]);
@@ -83,7 +83,9 @@ public:
         for (int i = 0; i < model->materials.size(); ++i) {
             const auto &material = model->materials[i];
 
-            glUniform3fv(uniform[5], 1, &material.ambient[0]);
+            if (ambient) {
+                glUniform3fv(uniform[5], 1, &material.ambient[0]);
+            }
             glUniform4fv(uniform[7], 1, &material.diffuse[0]);
             glUniform4fv(uniform[8], 1, &material.specular[0]);
 
@@ -94,8 +96,6 @@ public:
 
             sum += material.count;
         }
-
-        glDisable(GL_DEPTH_TEST);
     }
 };
 
