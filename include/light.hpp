@@ -11,7 +11,8 @@ struct Light {
 
     Light(const vec4 &pos, const vec3 &color,
           const vec3 &ambient, const vec4 &material)
-        : position(pos), color(color), ambient(ambient), material(material) {}
+        : position(pos), color(color), ambient(ambient),
+          material(material) {}
 };
 
 #endif

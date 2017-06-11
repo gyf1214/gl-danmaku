@@ -45,7 +45,7 @@ void Character::setupBuffers() {
 }
 
 void Character::setup() {
-    transform = translate(vec3(0.0f, 4.0f, 10.0f));
+    transform = translate(vec3(0.0f, 4.0f, 40.0f));
     motion->updateGlobal(invTransform * transform * preTransform);
     motion->loadModel(model);
     motion->loadMotion(vMotion);
@@ -70,7 +70,6 @@ void Character::setup() {
 void Character::render() {
     bindProgram();
 
-    glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
     mat4 mMat = transform * preTransform;
@@ -80,7 +79,9 @@ void Character::render() {
     glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene->pMat()[0][0]);
 
     Light light = scene->light();
+    bool ambient = !scene->pass();
 
+    glUniform3fv(uniform[5], 1, &light.ambient[0]);
     glUniform4fv(uniform[3], 1, &light.position[0]);
     glUniform3fv(uniform[4], 1, &light.color[0]);
     glUniform4fv(uniform[6], 1, &light.material[0]);
@@ -101,7 +102,7 @@ void Character::render() {
     for (int i = 0; i < model->materials.size(); ++i) {
         const auto &material = model->materials[i];
 
-        glUniform3fv(uniform[5], 1, &material.ambient[0]);
+        if (ambient) glUniform3fv(uniform[5], 1, &material.ambient[0]);
         glUniform4fv(uniform[7], 1, &material.diffuse[0]);
         glUniform4fv(uniform[8], 1, &material.specular[0]);
 
@@ -122,7 +123,6 @@ void Character::render() {
         sum += material.count;
     }
 
-    glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 }
 
