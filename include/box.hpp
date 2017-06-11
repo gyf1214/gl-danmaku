@@ -7,12 +7,12 @@ template <typename T>
 class Box {
 protected:
     template <typename U>
-    static T *alloc() {
-        return (T *)malloc(sizeof(U));
+    static U *alloc() {
+        return (U *)malloc(sizeof(U));
     }
 
     template <typename U, typename ...Ts>
-    static T *create(Ts ...args) {
+    static U *create(Ts ...args) {
         return new U(args...);
     }
 public:

@@ -10,9 +10,10 @@ public:
 
     void setupObjects() {
         // Transformer *transform = ObjectBox::danmakuTransform(this);
+        Character *reimu = (Character *)ObjectBox::character(this, Model::reimu(), Model::test2());
+        reimu->play(0.0f);
         objects.push_back(ObjectBox::skybox(this));
-        objects.push_back(ObjectBox::character(this,
-            Model::reimu(), Model::test2()));
+        objects.push_back(reimu);
         // objects.push_back(transform);
         // objects.push_back(ObjectBox::danmaku(this, transform));
     }

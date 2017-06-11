@@ -141,5 +141,5 @@ public:
 };
 
 Transformer *ObjectBox::danmakuTransform(Scene *scene) {
-    return new DanmakuTransform(scene);
+    return create<DanmakuTransform>(scene);
 }

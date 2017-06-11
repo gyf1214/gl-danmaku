@@ -19,7 +19,5 @@ using glm::vec3;
 using glm::vec4;
 
 class Scene;
-class Renderer;
-class Transformer;
 
 #endif

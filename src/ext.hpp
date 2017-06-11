@@ -10,6 +10,8 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <thread>
+#include <mutex>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/random.hpp>
 
