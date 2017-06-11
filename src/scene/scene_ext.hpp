@@ -13,6 +13,10 @@ protected:
     float fov;
     bool debug, output;
     int currentPass, passes;
+
+    static Light ambient(float r, float g, float b);
+    static Light point(vec3 position, vec3 color, float radius, float alpha);
+    static Light direction(vec3 dir, vec3 color);
 public:
     static constexpr float Near = 1.0f;
     static constexpr float Far = 100.0f;
@@ -24,11 +28,10 @@ public:
     void update(void);
     glm::mat4 vMat(void);
     glm::mat4 pMat(void);
-    Light light(void);
+    int pass(void);
 
     virtual void setupObjects(void) = 0;
     virtual void setupCamera(void) = 0;
-    virtual Light lightPass(int pass) = 0;
 };
 
 #endif

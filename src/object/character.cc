@@ -69,7 +69,9 @@ public:
         glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
         Light light = scene->light();
+        bool ambient = !scene->pass();
 
+        glUniform3fv(uniform[5], 1, &light.ambient[0]);
         glUniform4fv(uniform[3], 1, &light.position[0]);
         glUniform3fv(uniform[4], 1, &light.color[0]);
         glUniform4fv(uniform[6], 1, &light.material[0]);
@@ -81,7 +83,9 @@ public:
         for (int i = 0; i < model->materials.size(); ++i) {
             const auto &material = model->materials[i];
 
-            glUniform3fv(uniform[5], 1, &material.ambient[0]);
+            if (ambient) {
+                glUniform3fv(uniform[5], 1, &material.ambient[0]);
+            }
             glUniform4fv(uniform[7], 1, &material.diffuse[0]);
             glUniform4fv(uniform[8], 1, &material.specular[0]);
 

@@ -6,7 +6,7 @@ using namespace glm;
 
 class Scene1 : public SceneExt {
 public:
-    Scene1() : SceneExt(true, false, 1) {}
+    Scene1() : SceneExt(true, false, 3) {}
 
     void setupObjects() {
         Transformer *transform = ObjectBox::danmakuTransform(this);
@@ -23,14 +23,16 @@ public:
         fov = 45.0f;
     }
 
-    Light lightPass(int pass) {
-        return Light(
-            vec4(0.0f, 0.0f, 0.0f, 1.0f),
-            vec3(1.0f, 0.6f, 0.2f),
-            vec3(0.0f, 0.0f, 0.0f),
-            vec4(0.5f, 0.0f, 0.5f / 40.0f / 40.0f, 1.0f),
-            pass
-        );
+    Light light() {
+        static Light lights[] = {
+            ambient(0.0f, 0.0f, 0.0f),
+            direction(vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.6f, 0.2f)),
+            point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f)
+        };
+
+        CHECK(currentPass < sizeof(lights) / sizeof(Light)) << "invalid pass!";
+
+        return lights[currentPass];
     }
 };
 

@@ -18,6 +18,7 @@ void SceneExt::setup() {
     Scene::setup();
 
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     timer = glfwGetTime();
     tick = frame = 0;
     Application::setCursor(centerX, centerY);
@@ -27,13 +28,16 @@ void SceneExt::setup() {
 
 void SceneExt::render() {
     glDisable(GL_BLEND);
+    currentPass = 0;
     Scene::render();
 
+    glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     for (currentPass = 1; currentPass < passes; ++currentPass) {
         Scene::render();
     }
+    glDepthMask(GL_TRUE);
 
     ++tick;
     double now = glfwGetTime();
@@ -110,6 +114,27 @@ glm::mat4 SceneExt::pMat() {
     return perspective(radians(fov), wh, 1.0f, 100.0f);
 }
 
-Light SceneExt::light() {
-    return lightPass(currentPass);
+int SceneExt::pass() {
+    return currentPass;
+}
+
+Light SceneExt::ambient(float r, float g, float b) {
+    return Light(
+        vec4(0.0f, 0.0f, 0.0f, 1.0f), vec3(0.0f, 0.0f, 0.0f),
+        vec3(r, g, b), vec4(1.0f, 0.0f, 0.0f, 1.0f)
+    );
+}
+
+Light SceneExt::point(vec3 position, vec3 color, float radius, float alpha) {
+    return Light(
+        vec4(position, 1.0f), color, vec3(0.0f),
+        vec4(alpha, 0.0f, (1.0f - alpha) / radius / radius, 0.0f)
+    );
+}
+
+Light SceneExt::direction(vec3 dir, vec3 color) {
+    return Light(
+        vec4(normalize(dir), 0.0f), color, vec3(0.0f),
+        vec4(1.0f, 0.0f, 0.0f, 0.0f)
+    );
 }

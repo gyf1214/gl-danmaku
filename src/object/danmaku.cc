@@ -31,6 +31,8 @@ public:
     }
 
     void render() {
+        if (scene->pass() > 0) return;
+
         bindProgram();
 
         glEnable(GL_BLEND);
