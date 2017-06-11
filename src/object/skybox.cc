@@ -8,9 +8,9 @@ static const int vertexSize = wallSize + floorSize;
 static const float radius = 40.0f;
 static const float heightScale = 1.0f;
 static const float height = radius * M_PI * 2.0f * heightScale;
-static const float uvScale = 10.0f;
+static const float uvScale = 20.0f;
 
-static const float wallMaterial[]  = { 1.0f, 0.5f, 0.5f, 100.0f };
+static const float wallMaterial[]  = { 1.0f, 0.5f, 0.8f, 100.0f };
 static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static Vertex vertices[vertexSize];
@@ -101,7 +101,6 @@ public:
     void render() {
         bindProgram();
 
-        glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
@@ -135,7 +134,6 @@ public:
         glDrawArrays(GL_TRIANGLES, 0, wallSize);
 
         glDisable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
     }
 };
 

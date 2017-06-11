@@ -59,8 +59,6 @@ public:
     void render() {
         bindProgram();
 
-        glEnable(GL_DEPTH_TEST);
-
         mat4 mMat(1.0f);
         swap(mMat[1], mMat[2]);
         mMat = scale(vec3(0.1f, 0.1f, 0.1f)) * mMat;
@@ -94,8 +92,6 @@ public:
 
             sum += material.count;
         }
-
-        glDisable(GL_DEPTH_TEST);
     }
 };
 

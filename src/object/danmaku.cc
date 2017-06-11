@@ -35,7 +35,6 @@ public:
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_FALSE);
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
@@ -50,7 +49,6 @@ public:
 
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
-        glDisable(GL_DEPTH_TEST);
     }
 };
 

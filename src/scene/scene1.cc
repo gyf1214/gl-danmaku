@@ -20,9 +20,9 @@ public:
     void setup() {
         Transformer *transform = ObjectBox::danmakuTransform(this);
         objects.push_back(ObjectBox::skybox(this));
-        objects.push_back(transform);
-        // objects.push_back(ObjectBox::danmaku(this, transform));
         objects.push_back(ObjectBox::character(this, Model::reimu()));
+        objects.push_back(transform);
+        objects.push_back(ObjectBox::danmaku(this, transform));
 
         Scene::setup();
 
@@ -34,6 +34,8 @@ public:
         verticalAngle = 0.0f;
         fov = 45.0f;
         Application::setCursor(centerX, centerY);
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     void render() {
