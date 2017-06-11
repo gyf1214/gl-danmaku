@@ -65,3 +65,8 @@ void Character::teleport(vec3 pos) {
     transform.mat = translate(pos);
     transform.reset = true;
 }
+
+void Character::teleport(float x, float y, float z) {
+    transform.mat = translate(vec3(x, y, z));
+    transform.reset = true;
+}

@@ -38,8 +38,10 @@ public:
     }
 
     void script() {
-        reimu->teleport(vec3(0.0f, 4.0f, 40.0f));
-        reimu->loop(10.0f, 40.0f);
+        reimu->teleport(0.0f, 4.0f, 40.0f);
+        reimu->loop(10, 40);
+        await(120);
+        reimu->play(40);
     }
 };
 

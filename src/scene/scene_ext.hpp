@@ -16,6 +16,7 @@ protected:
     int currentPass, passes;
 
     float nextEvent;
+    bool waiting;
     Fiber *fiber;
 
     static Light ambient(float r, float g, float b);
@@ -36,6 +37,10 @@ public:
     glm::mat4 vMat(void);
     glm::mat4 pMat(void);
     int pass(void);
+
+    void await(void);
+    void await(float x);
+    void awaitUntil(float x);
 
     virtual void setupObjects(void) = 0;
     virtual void setupCamera(void) = 0;

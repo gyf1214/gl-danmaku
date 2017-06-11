@@ -47,6 +47,7 @@ public:
     void fix(float start);
 
     void teleport(glm::vec3 pos);
+    void teleport(float x, float y, float z);
 };
 
 #endif

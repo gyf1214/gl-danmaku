@@ -15,7 +15,10 @@ SceneExt::SceneExt(bool debug, bool output, int passes)
 void SceneExt::setup() {
     setupObjects();
 
+    frame = 0;
+
     nextEvent = 0.0f;
+    waiting = false;
     fiber = Fiber::create(fiberWorker, this);
     fiber->resume();
 
@@ -24,7 +27,7 @@ void SceneExt::setup() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     timer = glfwGetTime();
-    tick = frame = 0;
+    tick = 0;
     Application::setCursor(centerX, centerY);
 
     setupCamera();
@@ -62,6 +65,12 @@ void SceneExt::render() {
 }
 
 void SceneExt::update() {
+    if (waiting && frame >= nextEvent) {
+        waiting = false;
+        LOG << "event triggered at: " << frame;
+        fiber->resume();
+    }
+
     Scene::update();
     if (!debug) return;
 
@@ -147,6 +156,23 @@ Light SceneExt::direction(vec3 dir, vec3 color) {
         vec4(normalize(dir), 0.0f), color, vec3(0.0f),
         vec4(1.0f, 0.0f, 0.0f, 0.0f)
     );
+}
+
+void SceneExt::await() {
+    waiting = true;
+    nextEvent = frame;
+    Fiber::yield();
+}
+
+void SceneExt::await(float x) {
+    waiting = true;
+    nextEvent = frame + x;
+    Fiber::yield();
+}
+
+void SceneExt::awaitUntil(float x) {
+    waiting = true;
+    Fiber::yield();
 }
 
 void SceneExt::fiberWorker(void *ptr) {
