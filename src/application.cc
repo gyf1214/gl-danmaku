@@ -8,8 +8,8 @@ static GLFWwindow *window = NULL;
 int Application::bufferWidth;
 int Application::bufferHeight;
 constexpr float Application::elapse;
-const int Application::width;
-const int Application::height;
+constexpr int Application::width;
+constexpr int Application::height;
 
 void Application::errorCallBack(int error, const char* description) {
     FAIL << "glfw error " << error << ": " << description;
