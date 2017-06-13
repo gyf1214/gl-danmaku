@@ -32,6 +32,14 @@ inline vec3 randomNorm3() {
     return normalize(vec3(randomNeg(), randomNeg(), randomNeg()));
 }
 
+inline vec3 getMatTranslate(const glm::mat4 &mat) {
+    return vec3(mat[3]);
+}
+
+inline void setMatTranslate(glm::mat4 &mat, const vec3 &v) {
+    mat[3] = vec4(v, 1.0f);
+}
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
 #endif

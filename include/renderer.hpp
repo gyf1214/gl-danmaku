@@ -30,8 +30,10 @@ protected:
     } frame;
 
     struct {
+        bool reset, moving;
         glm::mat4 mat;
-        bool reset;
+        glm::vec3 begin, target;
+        float current, end;
     } transform;
 
     void updateFrame(void);
@@ -47,7 +49,11 @@ public:
     void fix(float start);
 
     void teleport(glm::vec3 pos);
-    void teleport(float x, float y, float z);
+    void teleport(float x, float y, float z) { teleport(vec3(x, y, z)); }
+    float moveTo(glm::vec3 pos, float speed);
+    float moveTo(float x, float y, float z, float speed) {
+        return moveTo(vec3(x, y, z), speed);
+    }
 };
 
 #endif

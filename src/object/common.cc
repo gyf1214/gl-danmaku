@@ -26,10 +26,26 @@ void Character::updateFrame() {
     }
 }
 
-Character::Character(Scene *scene) : Renderer(scene) {}
+Character::Character(Scene *scene) : Renderer(scene) {
+    transform.mat = mat4(1.0f);
+    transform.reset = false;
+    transform.moving = false;
+    frame.play = false;
+    frame.current = 0.0f;
+}
 
 void Character::updateMotion() {
-    // TODO
+    if (transform.moving) {
+        if (transform.current < transform.end) {
+            vec3 tar = mix(transform.begin, transform.target,
+                        transform.current / transform.end);
+            setMatTranslate(transform.mat, tar);
+            ++transform.current;
+        } else {
+            setMatTranslate(transform.mat, transform.target);
+            transform.moving = false;
+        }
+    }
 }
 
 void Character::resume() { frame.play = true; }
@@ -66,7 +82,12 @@ void Character::teleport(vec3 pos) {
     transform.reset = true;
 }
 
-void Character::teleport(float x, float y, float z) {
-    transform.mat = translate(vec3(x, y, z));
-    transform.reset = true;
+float Character::moveTo(vec3 pos, float speed) {
+    vec3 cur = getMatTranslate(transform.mat);
+    transform.end = distance(pos, cur) / speed / Application::elapse;
+    transform.current = 0.0f;
+    transform.begin = cur;
+    transform.target = pos;
+    transform.moving = true;
+    return transform.end * Application::elapse;
 }

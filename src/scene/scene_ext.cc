@@ -166,12 +166,13 @@ void SceneExt::await() {
 
 void SceneExt::await(float x) {
     waiting = true;
-    nextEvent = frame + x;
+    nextEvent = frame + x / Application::elapse;
     Fiber::yield();
 }
 
 void SceneExt::awaitUntil(float x) {
     waiting = true;
+    nextEvent = x / Application::elapse;
     Fiber::yield();
 }
 

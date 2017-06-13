@@ -66,13 +66,7 @@ protected:
 public:
     CharacterRenderer(Scene *scene, Model *model, mmd::vmd::Motion *vMotion)
         : Character(scene), motion(Motion::create()),
-          model(model), vMotion(vMotion) {
-
-        transform.mat = mat4(1.0f);
-        transform.reset = false;
-        frame.play = false;
-        frame.current = 0.0f;
-    }
+          model(model), vMotion(vMotion) {}
 
     ~CharacterRenderer() {
         delete motion;
