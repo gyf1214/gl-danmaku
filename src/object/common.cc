@@ -82,6 +82,10 @@ void Character::teleport(vec3 pos) {
     transform.reset = true;
 }
 
+void Character::move(vec3 pos) {
+    transform.mat = translate(pos);
+}
+
 float Character::moveTo(vec3 pos, float speed) {
     vec3 cur = getMatTranslate(transform.mat);
     transform.end = distance(pos, cur) / speed / Application::elapse;

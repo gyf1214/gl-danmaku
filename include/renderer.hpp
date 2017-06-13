@@ -50,6 +50,8 @@ public:
 
     void teleport(glm::vec3 pos);
     void teleport(float x, float y, float z) { teleport(vec3(x, y, z)); }
+    void move(glm::vec3 pos);
+    void move(float x, float y, float z) { move(vec3(x, y, z)); }
     float moveTo(glm::vec3 pos, float speed);
     float moveTo(float x, float y, float z, float speed) {
         return moveTo(vec3(x, y, z), speed);
