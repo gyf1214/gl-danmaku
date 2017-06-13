@@ -11,7 +11,7 @@ public:
 
     void setupObjects() {
         // Transformer *transform = ObjectBox::danmakuTransform(this);
-        reimu = ObjectBox::character(this, Model::reimu(), Model::test2());
+        reimu = ObjectBox::character(this, Model::reimu(), Model::test2(), false);
         objects.push_back(ObjectBox::skybox(this));
         objects.push_back(reimu);
         // objects.push_back(transform);

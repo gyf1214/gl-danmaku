@@ -80,7 +80,9 @@ protected:
             const auto &proto = Proto::Buffers[i];
 
             glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-            glBufferData(GL_ARRAY_BUFFER, proto.size, proto.data, proto.usage);
+            if (proto.size > 0) {
+                glBufferData(GL_ARRAY_BUFFER, proto.size, proto.data, proto.usage);
+            }
         }
     }
 

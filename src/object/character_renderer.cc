@@ -31,6 +31,34 @@ protoUnifom(Character) = {
     "morphData", "morphCount", "morphs"
 };
 
+proto(Debug, Shader::debug);
+
+protoBuffer(Debug) = { { 65536 * sizeof(vec3), NULL } };
+
+protoAttrib(Debug) = {
+    { "position", 0                   , 3, 2 * sizeof(vec3) },
+    { "color"   , (void *)sizeof(vec3), 3, 2 * sizeof(vec3) }
+};
+
+protoUnifom(Debug) = { "mat" };
+
+class DebugRenderer : public ProgramBase<DebugProto> {
+public:
+    void setup() { setupAll(); }
+    void reset() { resetAll(); }
+
+    void render(mat4 mat, const vector<vec3> &v) {
+        bindProgram();
+
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mat[0][0]);
+
+        glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, v.size() * sizeof(vec3), &v[0][0]);
+        bindBuffer(buffer[0]);
+        glDrawArrays(GL_LINES, 0, v.size() / 2);
+    }
+};
+
 class CharacterRenderer : public ProgramBase<CharacterProto>, public Character {
 protected:
     static const int uboBinding = 1;
@@ -43,6 +71,9 @@ protected:
     std::vector<float> morphs;
     static const glm::mat4 preTransform;
     static const glm::mat4 invTransform;
+
+    bool debug;
+    DebugRenderer debugRenderer;
 
     void setupBuffers() {
         int v = model->mesh.vertex.size();
@@ -64,9 +95,10 @@ protected:
                      NULL, GL_DYNAMIC_DRAW);
     }
 public:
-    CharacterRenderer(Scene *scene, Model *model, mmd::vmd::Motion *vMotion)
-        : Character(scene), motion(Motion::create()),
-          model(model), vMotion(vMotion) {}
+    CharacterRenderer(Scene *scene, Model *model,
+                      mmd::vmd::Motion *vMotion, bool debug)
+        : Character(scene), motion(Motion::create(debug)),
+          model(model), vMotion(vMotion), debug(debug) {}
 
     ~CharacterRenderer() {
         delete motion;
@@ -85,6 +117,7 @@ public:
         bones.resize(model->bones.size());
         morphs.resize(model->morphs.size());
 
+        if (debug) debugRenderer.setup();
         setupAll();
 
         bindBuffer(buffer[0]);
@@ -101,6 +134,11 @@ public:
     }
 
     void render() {
+        if (scene->pass() && debug) {
+            mat4 mat = scene->pMat() * scene->vMat() * preTransform;
+            debugRenderer.render(mat, motion->getDebugLines());
+        }
+
         bindProgram();
 
         glEnable(GL_CULL_FACE);
@@ -181,6 +219,7 @@ public:
 
     void reset() {
         resetAll();
+        if (debug) debugRenderer.reset();
 
         motion->reset();
     }
@@ -195,6 +234,7 @@ const mat4 CharacterRenderer::preTransform(
 
 const mat4 CharacterRenderer::invTransform = inverse(preTransform);
 
-Character *ObjectBox::character(Scene *scene, Model *model, vmd::Motion *motion) {
-    return create<CharacterRenderer>(scene, model, motion);
+Character *ObjectBox::character(Scene *scene, Model *model,
+                                vmd::Motion *motion, bool debug) {
+    return create<CharacterRenderer>(scene, model, motion, debug);
 }

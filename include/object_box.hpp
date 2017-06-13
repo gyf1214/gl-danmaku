@@ -10,7 +10,8 @@ public:
     static Renderer *danmaku(Scene *scene, Transformer *trans);
     static Transformer *danmakuTransform(Scene *scene);
     static Renderer *skybox(Scene *scene);
-    static Character *character(Scene *scene, Model *model, mmd::vmd::Motion *motion);
+    static Character *character(Scene *scene, Model *model,
+                                mmd::vmd::Motion *motion, bool debug);
 };
 
 #endif
