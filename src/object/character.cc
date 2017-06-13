@@ -17,26 +17,31 @@ void Character::updateFrame() {
 }
 
 Character::Character(Scene *scene) : Renderer(scene) {
-    transform.rot = mat4(1.0f);
-    transform.pos = vec3(0.0f);
+    rotate.now = quat();
+    rotate.moving = false;
+    transform.now = vec3(0.0f);
     transform.reset = false;
     transform.moving = false;
     frame.play = false;
     frame.current = 0.0f;
 }
 
-void Character::updateMotion() {
-    if (transform.moving) {
-        if (transform.current < transform.end) {
-            vec3 tar = mix(transform.begin, transform.target,
-                        transform.current / transform.end);
-            transform.pos = tar;
-            ++transform.current;
+template <typename T, typename U>
+void updateTransform(T &t, U inter) {
+    if (t.moving) {
+        if (t.current < t.end) {
+            t.now = inter(t.begin, t.target, t.current / t.end);
+            ++t.current;
         } else {
-            transform.pos = transform.target;
-            transform.moving = false;
+            t.now = t.target;
+            t.moving = false;
         }
     }
+}
+
+void Character::updateMotion() {
+    updateTransform(transform, (vec3 (*)(const vec3 &, const vec3 &, float))mix);
+    updateTransform(rotate, (quat (*)(const quat &, const quat &, float))slerp);
 }
 
 void Character::resume() { frame.play = true; }
@@ -76,20 +81,42 @@ void Character::fix(float start) {
 }
 
 void Character::teleport(vec3 pos) {
-    transform.pos = pos;
+    transform.now = pos;
     transform.reset = true;
 }
 
 void Character::move(vec3 pos) {
-    transform.pos = pos;
+    transform.now = pos;
 }
 
 float Character::moveTo(vec3 pos, float speed) {
-    vec3 cur = transform.pos;
+    vec3 cur = transform.now;
     transform.end = distance(pos, cur) / speed / Application::elapse;
     transform.current = 0.0f;
     transform.begin = cur;
     transform.target = pos;
     transform.moving = true;
     return transform.end * Application::elapse;
+}
+
+void Character::lookAt(quat dir) {
+    rotate.now = dir;
+}
+
+float Character::rotateTo(quat dir, float speed) {
+    float dis = acos(dot(dir, rotate.now));
+    rotate.end = dis / speed / Application::elapse;
+    rotate.current = 0.0f;
+    rotate.begin = rotate.now;
+    rotate.target = dir;
+    rotate.moving = true;
+    return rotate.end * Application::elapse;
+}
+
+float Character::rotateLocal(quat r, float speed) {
+    return rotateTo(rotate.now * r, speed);
+}
+
+float Character::rotateGlobal(quat r, float speed) {
+    return rotateTo(r * rotate.now, speed);
 }

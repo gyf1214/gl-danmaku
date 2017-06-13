@@ -19,7 +19,7 @@ public:
     }
 
     void setupCamera() {
-        position = vec3(0.0f, 0.0f, 41.0f);
+        position = vec3(0.0f, -10.0f, 45.0f);
         horizonAngle = M_PI / 2.0f;
         verticalAngle = 0.0f;
         fov = 45.0f;
@@ -40,10 +40,14 @@ public:
     void script() {
         reimu->teleport(0.0f, 4.0f, 40.0f);
         reimu->loop(10, 40);
-        await(1);
+        await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
         await(reimu->playTo(60));
-        await(reimu->moveTo(0.0f, 4.0f, 50.0f, 3.0f));
-        await(reimu->playTo(70));
+        await(reimu->moveTo(0.0f, 4.0f, 45.0f, 3.0f));
+        reimu->fix(80);
+        reimu->rotateLocal(degreeAxis(30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
+        await(reimu->moveTo(4.0f, 4.0f, 45.0f, 3.0f));
+        reimu->rotateLocal(degreeAxis(-30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
+        await(reimu->playTo(90));
         reimu->loop(10, 40);
     }
 };

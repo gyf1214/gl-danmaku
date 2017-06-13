@@ -96,7 +96,7 @@ protected:
     }
 
     mat4 globalTransform() {
-        return translate(transform.pos) * transform.rot;
+        return translate(transform.now) * mat4_cast(rotate.now);
     }
 
     mat4 localTransform() {
