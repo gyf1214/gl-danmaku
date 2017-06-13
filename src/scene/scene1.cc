@@ -40,13 +40,11 @@ public:
     void script() {
         reimu->teleport(0.0f, 4.0f, 40.0f);
         reimu->loop(10, 40);
-        // await();
-        for (;;) {
-            await(reimu->moveTo(0.0f, 4.0f, 45.0f, 2.0f));
-            await(reimu->moveTo(4.0f, 4.0f, 45.0f, 2.0f));
-            await(reimu->moveTo(4.0f, 4.0f, 40.0f, 2.0f));
-            await(reimu->moveTo(0.0f, 4.0f, 40.0f, 2.0f));
-        }
+        await(1);
+        await(reimu->playTo(60));
+        await(reimu->moveTo(0.0f, 4.0f, 50.0f, 3.0f));
+        await(reimu->playTo(70));
+        reimu->loop(10, 40);
     }
 };
 

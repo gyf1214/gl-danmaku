@@ -31,8 +31,8 @@ protected:
 
     struct {
         bool reset, moving;
-        glm::mat4 mat;
-        glm::vec3 begin, target;
+        vec3 pos, begin, target;
+        glm::mat4 rot;
         float current, end;
     } transform;
 
@@ -44,8 +44,10 @@ public:
     void resume(void);
     void pause(void);
     void play(float start, float speed = 1.0f);
-    void playRange(float start, float end, float speed = 1.0f);
+    float playRange(float start, float end, float speed = 1.0f);
+    float playTo(float end, float speed = 1.0f);
     void loop(float start, float end, float speed = 1.0f);
+    void loopTo(float end, float speed = 1.0f);
     void fix(float start);
 
     void teleport(glm::vec3 pos);

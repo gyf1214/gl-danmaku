@@ -94,6 +94,14 @@ protected:
         glBufferData(GL_UNIFORM_BUFFER, bones.size() * sizeof(mat4),
                      NULL, GL_DYNAMIC_DRAW);
     }
+
+    mat4 globalTransform() {
+        return translate(transform.pos) * transform.rot;
+    }
+
+    mat4 localTransform() {
+        return invTransform * globalTransform() * preTransform;
+    }
 public:
     CharacterRenderer(Scene *scene, Model *model,
                       mmd::vmd::Motion *vMotion, bool debug)
@@ -108,7 +116,7 @@ public:
         motion->loadModel(model);
         motion->loadMotion(vMotion);
 
-        motion->updateGlobal(invTransform * transform.mat * preTransform);
+        motion->updateGlobal(localTransform());
         motion->updateKey(frame.current);
 
         motion->loadBody();
@@ -143,7 +151,7 @@ public:
 
         glEnable(GL_CULL_FACE);
 
-        mat4 mMat = transform.mat * preTransform;
+        mat4 mMat = globalTransform() * preTransform;
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &mMat[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene->vMat()[0][0]);
@@ -202,7 +210,7 @@ public:
         updateFrame();
 
         motion->updateKey(frame.current);
-        motion->updateGlobal(invTransform * transform.mat * preTransform);
+        motion->updateGlobal(localTransform());
         if (transform.reset) {
             motion->resetPhysics();
             transform.reset = false;
