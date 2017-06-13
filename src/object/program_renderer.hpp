@@ -32,7 +32,7 @@ struct AttribProto {
 
 typedef const char *UniformProto;
 
-#define protoOpen(name, program) typedef struct name##Proto {\
+#define protoOpen(name, program) struct name##Proto {\
     static constexpr const char *Name = #name;\
     static constexpr auto Program = program;\
     static const BufferProto Buffers[];\
@@ -40,11 +40,11 @@ typedef const char *UniformProto;
     static const UniformProto Uniforms[];
 
 #define proto(name, program) protoOpen(name, program)\
-} Proto
+}
 
-#define protoBuffer const BufferProto Proto::Buffers[]
-#define protoAttrib const AttribProto Proto::Attributes[]
-#define protoUnifom const UniformProto Proto::Uniforms[]
+#define protoBuffer(name) const BufferProto name##Proto::Buffers[]
+#define protoAttrib(name) const AttribProto name##Proto::Attributes[]
+#define protoUnifom(name) const UniformProto name##Proto::Uniforms[]
 
 template <typename Proto>
 class ProgramBase {

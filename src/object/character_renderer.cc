@@ -10,13 +10,13 @@ using mmd::physics::Motion;
 
 proto(Character, Shader::character);
 
-protoBuffer = {
+protoBuffer(Character) = {
     { 0, NULL },
     { 0, NULL },
     { 0, NULL },
 };
 
-protoAttrib = {
+protoAttrib(Character) = {
     { "position"  , Offset(Vertex, position[0])   , 3, sizeof(Vertex) },
     { "normal"    , Offset(Vertex, normal[0])     , 3, sizeof(Vertex) },
     { "uv"        , Offset(Vertex, uv[0])         , 2, sizeof(Vertex) },
@@ -24,14 +24,14 @@ protoAttrib = {
     { "boneWeight", Offset(Vertex, BDEF.weight[0]), 4, sizeof(Vertex) }
 };
 
-protoUnifom = {
+protoUnifom(Character) = {
     "mMat", "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
     "diffuse", "specular", "texture0", "side",
     "morphData", "morphCount", "morphs"
 };
 
-class CharacterRenderer : public ProgramBase<Proto>, public Character {
+class CharacterRenderer : public ProgramBase<CharacterProto>, public Character {
 protected:
     static const int uboBinding = 1;
 

@@ -6,13 +6,13 @@ static Vertex vertexData[vertexSize];
 
 transProto(DanmakuTransform, Shader::danmakuTransform);
 
-protoBuffer = {
+protoBuffer(DanmakuTransform) = {
     { sizeof(vertexData), vertexData }
 };
 
-protoOutput = { sizeof(vertexData), NULL };
+protoOutput(DanmakuTransform) = { sizeof(vertexData), NULL };
 
-protoAttrib = {
+protoAttrib(DanmakuTransform) = {
     { "time0"        , Offset(Vertex, time[0])        , 4, sizeof(Vertex) },
     { "position0"    , Offset(Vertex, position[0])    , 3, sizeof(Vertex) },
     { "velocity0"    , Offset(Vertex, velocity[0])    , 3, sizeof(Vertex) },
@@ -20,7 +20,7 @@ protoAttrib = {
     { "uvIndex0"     , Offset(Vertex, uvIndex[0])     , 4, sizeof(Vertex) },
 };
 
-protoUnifom = {};
+protoUnifom(DanmakuTransform) = {};
 
 using namespace Builder;
 
@@ -118,7 +118,7 @@ static void setupVertices() {
     LOG << "done setup vertices";
 }
 
-class DanmakuTransform : public TransformRenderer<Proto> {
+class DanmakuTransform : public TransformRenderer<DanmakuTransformProto> {
 public:
     DanmakuTransform(Scene *scene) : TransformRenderer(scene) {}
 
