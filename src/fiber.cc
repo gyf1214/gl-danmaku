@@ -8,6 +8,8 @@ class FiberExt : public Fiber {
     mutex resumeSign, yieldSign;
     bool end;
 
+    class FiberTerminatedException : public exception {};
+
     struct Worker {
         Runnable r;
         void *arg;
@@ -17,12 +19,16 @@ class FiberExt : public Fiber {
             : r(r), arg(arg), self(self) {}
 
         void operator ()() {
-            self->resumeSign.lock();
-            LOG << "fiber " << self->pthread.get_id() << " start";
-            r(arg);
-            self->end = true;
-            Fiber::yield();
-            LOG << "fiber " << self->pthread.get_id() << " terminated";
+            try {
+                self->resumeSign.lock();
+                LOG << "fiber " << self->pthread.get_id() << " start";
+                r(arg);
+                self->end = true;
+                Fiber::yield();
+            } catch (FiberTerminatedException &e) {
+                LOG << "fiber " << self->pthread.get_id() << " terminated!";
+                return;
+            }
         }
     } worker;
 public:
@@ -35,6 +41,7 @@ public:
     }
 
     ~FiberExt() {
+        end = true;
         resumeSign.unlock();
         yieldSign.unlock();
         pthread.join();
@@ -57,6 +64,7 @@ public:
         last->yieldSign.unlock();
         last->resumeSign.lock();
         LOG << "fiber " << last->pthread.get_id() << " resume from another";
+        if (last->end) throw FiberTerminatedException();
     }
 };
 
