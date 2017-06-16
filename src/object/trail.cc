@@ -3,16 +3,16 @@
 
 proto(Trail, Shader::trail);
 
-protoBuffer = {};
+protoBuffer(Trail) = {};
 
-protoAttrib = {
+protoAttrib(Trail) = {
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "alpha"   , Offset(Vertex, alpha)      , 1, sizeof(Vertex) }
 };
 
-protoUnifom = { "vMat", "pMat", "texture0" };
+protoUnifom(Trail) = { "vMat", "pMat", "texture0" };
 
-class Trail : public ProgramRenderer<Proto> {
+class Trail : public ProgramRenderer<TrailProto> {
     Transformer *transform;
     GLuint texture0;
 public:

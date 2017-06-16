@@ -5,17 +5,17 @@ static Vertex vertex[trailSize + trailHead];
 
 proto(TrailTransform, Shader::trailTransform);
 
-protoBuffer = {
+protoBuffer(TrailTransform) = {
     { sizeof(vertex), vertex },
     { sizeof(vertex), vertex }
 };
 
-protoAttrib = {
+protoAttrib(TrailTransform) = {
     { "position0", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "alpha0"   , Offset(Vertex, alpha)      , 1, sizeof(Vertex) }
 };
 
-protoUnifom = {
+protoUnifom(TrailTransform) = {
     "elapse", "position1", "alpha1",
     "position2", "alpha2"
 };
@@ -28,7 +28,7 @@ static void setupVertices() {
 
 }
 
-class TrailTransform : public TransformRenderer<Proto> {
+class TrailTransform : public TransformRenderer<TrailTransformProto> {
 protected:
     void begin(GLenum mode) {
         glEnable(GL_RASTERIZER_DISCARD);

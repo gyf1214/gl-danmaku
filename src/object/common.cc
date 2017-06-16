@@ -1,4 +1,7 @@
+#include "ext.hpp"
 #include "renderer.hpp"
+
+using namespace glm;
 
 Renderer::Renderer(Scene *scene) : scene(scene) {}
 Renderer::~Renderer() {}
