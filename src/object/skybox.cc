@@ -18,18 +18,18 @@ static int cnt;
 
 proto(Skybox, Shader::lambert);
 
-protoBuffer = {
+protoBuffer(Skybox) = {
     { sizeof(vertices), vertices }
 };
 
-protoAttrib = {
+protoAttrib(Skybox) = {
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "normal"  , Offset(Vertex, normal[0])  , 3, sizeof(Vertex) },
     { "tangent" , Offset(Vertex, tangent[0]) , 3, sizeof(Vertex) },
     { "uv"      , Offset(Vertex, uv[0])      , 2, sizeof(Vertex) },
 };
 
-protoUnifom = {
+protoUnifom(Skybox) = {
     "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
     "material", "diffuse", "normal", "specular", "emission"
@@ -75,7 +75,7 @@ static void setupVertices() {
     }
 }
 
-class Skybox : public ProgramRenderer<Proto> {
+class Skybox : public ProgramRenderer<SkyboxProto> {
     GLuint lava, wall, wallLava, normal, white;
 public:
     Skybox(Scene *scene) : ProgramRenderer(scene) {}

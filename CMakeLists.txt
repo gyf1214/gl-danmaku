@@ -28,6 +28,7 @@ add_custom_target(assets ALL DEPENDS ${ASSETS})
 
 include_directories(include)
 include_directories(../mmd-tools/include)
+include_directories(../mmd-physics/include)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${CMAKE_SOURCE_DIR}/src/,,$(abspath $<))\"'")
 
@@ -48,8 +49,14 @@ target_link_libraries(${TARGET} ${PNG_LIBRARIES})
 find_library(MMD_TOOLS mmd-tools PATHS ../mmd-tools/build/lib)
 target_link_libraries(${TARGET} ${MMD_TOOLS})
 
+find_library(MMD_PHY mmd-physics PATHS ../mmd-physics/build/lib)
+target_link_libraries(${TARGET} ${MMD_PHY})
+
 if (WIN32)
 add_custom_command(TARGET ${TARGET} POST_BUILD
              COMMAND ${CMAKE_COMMAND} -E copy_if_different
              ${MMD_TOOLS} $<TARGET_FILE_DIR:${TARGET}>)
+ add_custom_command(TARGET ${TARGET} POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy_if_different
+             ${MMD_PHY} $<TARGET_FILE_DIR:${TARGET}>)
 endif(WIN32)

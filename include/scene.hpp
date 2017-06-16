@@ -1,9 +1,8 @@
 #ifndef __SCENE
 #define __SCENE
 
+#include "renderer.hpp"
 #include "light.hpp"
-
-class Renderer;
 
 class Scene {
 protected:

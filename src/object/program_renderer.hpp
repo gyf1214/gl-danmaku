@@ -21,16 +21,18 @@ struct AttribProto {
     GLenum type;
     GLboolean normalized;
 
+    bool integer;
+
     AttribProto(const GLchar *_name, const GLvoid *_offset,
-                GLint _size, GLsizei _stride, GLenum _type = GL_FLOAT,
-                GLboolean _normalized = GL_FALSE)
+                GLint _size, GLsizei _stride, bool integer = false,
+                GLenum _type = GL_FLOAT, GLboolean _normalized = GL_FALSE)
         : name(_name), offset(_offset), size(_size), stride(_stride),
-          type(_type), normalized(_normalized) {}
+          type(_type), normalized(_normalized), integer(integer) {}
 };
 
 typedef const char *UniformProto;
 
-#define protoOpen(name, program) typedef struct name##Proto {\
+#define protoOpen(name, program) struct name##Proto {\
     static constexpr const char *Name = #name;\
     static constexpr auto Program = program;\
     static const BufferProto Buffers[];\
@@ -38,11 +40,11 @@ typedef const char *UniformProto;
     static const UniformProto Uniforms[];
 
 #define proto(name, program) protoOpen(name, program)\
-} Proto
+}
 
-#define protoBuffer const BufferProto Proto::Buffers[]
-#define protoAttrib const AttribProto Proto::Attributes[]
-#define protoUnifom const UniformProto Proto::Uniforms[]
+#define protoBuffer(name) const BufferProto name##Proto::Buffers[]
+#define protoAttrib(name) const AttribProto name##Proto::Attributes[]
+#define protoUnifom(name) const UniformProto name##Proto::Uniforms[]
 
 template <typename Proto>
 class ProgramBase {
@@ -78,7 +80,9 @@ protected:
             const auto &proto = Proto::Buffers[i];
 
             glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-            glBufferData(GL_ARRAY_BUFFER, proto.size, proto.data, proto.usage);
+            if (proto.size > 0) {
+                glBufferData(GL_ARRAY_BUFFER, proto.size, proto.data, proto.usage);
+            }
         }
     }
 
@@ -104,8 +108,13 @@ protected:
     virtual void bindAttribute(GLuint buf, int index) {
         glBindBuffer(GL_ARRAY_BUFFER, buf);
         const auto &proto = Proto::Attributes[index];
-        glVertexAttribPointer(attribute[index], proto.size, proto.type,
-                              proto.normalized, proto.stride, proto.offset);
+        if (proto.integer) {
+            glVertexAttribIPointer(attribute[index], proto.size, proto.type,
+                                   proto.stride, proto.offset);
+        } else {
+            glVertexAttribPointer(attribute[index], proto.size, proto.type,
+                                  proto.normalized, proto.stride, proto.offset);
+        }
     }
 
     virtual void bindBuffer(GLuint buf) {

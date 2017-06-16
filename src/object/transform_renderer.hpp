@@ -5,9 +5,9 @@
 
 #define transProto(name, program) protoOpen(name, program)\
     static const BufferProto Output;\
-} Proto
+}
 
-#define protoOutput const BufferProto Proto::Output
+#define protoOutput(name) const BufferProto name##Proto::Output
 
 template <typename Proto>
 class TransformRenderer : public ProgramBase<Proto>, public Transformer {

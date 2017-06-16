@@ -3,20 +3,20 @@
 
 proto(Danmaku, Shader::danmaku);
 
-protoBuffer = {
+protoBuffer(Danmaku) = {
     // { sizeof(uvData), uvData },
 };
 
-protoAttrib = {
+protoAttrib(Danmaku) = {
     { "time"    , Offset(Vertex, time[0])    , 4, sizeof(Vertex) },
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "velocity", Offset(Vertex, velocity[0]), 3, sizeof(Vertex) },
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
 };
 
-protoUnifom = { "vMat", "pMat", "texture0" };
+protoUnifom(Danmaku) = { "vMat", "pMat", "texture0" };
 
-class Danmaku : public ProgramRenderer<Proto> {
+class Danmaku : public ProgramRenderer<DanmakuProto> {
     GLuint texture0;
     Transformer *transform;
 public:

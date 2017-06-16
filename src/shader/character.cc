@@ -9,11 +9,20 @@ static const char *vsh = R"(
     in vec3 position;
     in vec3 normal;
     in vec2 uv;
+    in ivec4 boneIndex;
+    in vec4 boneWeight;
 
     uniform mat4 mMat;
     uniform mat4 vMat;
     uniform mat4 pMat;
     uniform vec4 lightPosition;
+    uniform samplerBuffer morphData;
+    uniform int morphCount;
+    uniform float morphs[128];
+
+    uniform Bones {
+        mat4 bones[512];
+    };
 
     out vec3 normalOut;
     out vec2 uvOut;
@@ -21,10 +30,17 @@ static const char *vsh = R"(
     out vec4 lPos;
 
     void main(void) {
-        vPos = vMat * mMat * vec4(position, 1.0);
+        vec3 pos = position;
+        for (int i = 0; i < morphCount; ++i) {
+            vec3 offset = texelFetch(morphData, gl_VertexID * morphCount + i).xyz;
+            pos += morphs[i] * offset;
+        }
+
+        mat4 bMat = boneWeight.x * bones[boneIndex.x] + boneWeight.y * bones[boneIndex.y];
+        vPos = vMat * mMat * bMat * vec4(pos, 1.0);
         gl_Position = pMat * vPos;
 
-        normalOut = normalize((vMat * vec4(normal, 0.0)).xyz);
+        normalOut = normalize((vMat * mMat * bMat * vec4(normal, 0.0)).xyz);
         uvOut = vec2(uv.x, 1.0 - uv.y);
 
         lPos = vMat * lightPosition;
@@ -50,6 +66,7 @@ static const char *fsh = R"(
     uniform vec4 lightMaterial;
     uniform vec4 diffuse;
     uniform vec4 specular;
+    uniform float side;
     uniform sampler2D texture0;
 
     out vec4 fragColor;
@@ -68,7 +85,7 @@ static const char *fsh = R"(
             scalar /= dot(lightMaterial.xyz, vec3(1.0, dis, dis * dis));
         }
 
-        vec3 diff = scalar * diffuse.xyz * abs(dot(L, N));
+        vec3 diff = scalar * diffuse.xyz * max(dot(L, N) * side, 0.0);
         c += lightColor * color * diff;
 
         vec3 spec = scalar * specular.xyz * pow(max(dot(N, H), 0.0), specular.w);

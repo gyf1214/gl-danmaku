@@ -1,2 +1,4 @@
 -Iinclude
+-I../mmd-tools/include
+-I../mmd-physics/include
 -std=c++11

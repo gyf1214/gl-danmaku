@@ -10,28 +10,16 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <thread>
+#include <mutex>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/random.hpp>
 
 #include "application.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
+
+#include "helper.hpp"
 #include "log.hpp"
-
-inline float randomNorm() {
-    return rand() / (float)RAND_MAX;
-}
-
-inline float randomNeg() {
-    return (rand() - RAND_MAX / 2) / (float)RAND_MAX;
-}
-
-inline vec3 randomNorm3() {
-    return normalize(vec3(randomNeg(), randomNeg(), randomNeg()));
-}
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846264338327950288
-#endif
 
 #endif
