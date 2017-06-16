@@ -8,6 +8,7 @@ typedef struct {
     float alpha;
 } Vertex;
 
-constexpr int trailSize = 100;
+static constexpr int trailSize = 10000;
+static constexpr int trailHead = 20;
 
 #endif

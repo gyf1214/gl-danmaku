@@ -17,13 +17,15 @@ static const char *vsh = R"(
     out float alpha;
 
     uniform vec3 position1;
+    uniform vec3 position2;
     uniform float alpha1;
+    uniform float alpha2;
     uniform float elapse;
 
     void main() {
         if (alpha0 < 0.0) {
-            position = position1;
-            alpha = alpha1;
+            position = mix(position2, position1, -alpha0);
+            alpha = mix(alpha2, alpha1, -alpha0);
         } else {
             position = position0;
             alpha = max(alpha0 - elapse, 0.0);

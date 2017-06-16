@@ -10,13 +10,21 @@ protoAttrib = {
     { "alpha"   , Offset(Vertex, alpha)      , 1, sizeof(Vertex) }
 };
 
-protoUnifom = { "vMat", "pMat" };
+protoUnifom = { "vMat", "pMat", "texture0" };
 
 class Trail : public ProgramRenderer<Proto> {
     Transformer *transform;
+    GLuint texture0;
 public:
     Trail(Scene *scene, Transformer *transform)
         : ProgramRenderer(scene), transform(transform) {}
+
+    void setup() {
+        ProgramRenderer::setup();
+
+        glUniform1i(uniform[2], 0);
+        texture0 = Texture::trail();
+    }
 
     void render() {
         if (scene->pass() > 0) return;
@@ -30,9 +38,12 @@ public:
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture0);
+
         bindBuffer(transform->outputBuffer());
 
-        glDrawArrays(GL_POINTS, 1, trailSize);
+        glDrawArrays(GL_POINTS, trailHead, trailSize);
 
         glDepthMask(GL_TRUE);
         glDisable(GL_PROGRAM_POINT_SIZE);

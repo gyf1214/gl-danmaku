@@ -1,7 +1,7 @@
 #include "transform_renderer.hpp"
 #include "vertex/trail.hpp"
 
-static Vertex vertex[trailSize + 1];
+static Vertex vertex[trailSize + trailHead];
 
 proto(TrailTransform, Shader::trailTransform);
 
@@ -15,11 +15,17 @@ protoAttrib = {
     { "alpha0"   , Offset(Vertex, alpha)      , 1, sizeof(Vertex) }
 };
 
-protoUnifom = { "position1", "alpha1", "elapse" };
+protoUnifom = {
+    "elapse", "position1", "alpha1",
+    "position2", "alpha2"
+};
 
 static void setupVertices() {
     memset(vertex, 0, sizeof(vertex));
-    vertex[0].alpha = -1.0f;
+    for (int i = 0; i < trailHead; ++i) {
+        vertex[i].alpha = (float)i / (float)trailHead - 1.0f;
+    }
+
 }
 
 class TrailTransform : public TransformRenderer<Proto> {
@@ -27,7 +33,7 @@ protected:
     void begin(GLenum mode) {
         glEnable(GL_RASTERIZER_DISCARD);
         glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, outputBuffer(),
-                          sizeof(Vertex), trailSize * sizeof(Vertex));
+                          trailHead * sizeof(Vertex), trailSize * sizeof(Vertex));
         glBeginTransformFeedback(mode);
     }
 public:
@@ -37,7 +43,9 @@ public:
         setupVertices();
         TransformRenderer::setup();
 
-        glUniform1f(uniform[2], Application::elapse);
+        glUniform1f(uniform[0], Application::elapse);
+        glUniform1f(uniform[2], 1.0f);
+        glUniform1f(uniform[4], 1.0f - Application::elapse);
     }
 
     GLuint outputBuffer() {
@@ -50,9 +58,9 @@ public:
         bindProgram();
 
         static vec3 now(0.0f, 0.0f, 10.0f);
-        glUniform3fv(uniform[0], 1, &now[0]);
-        glUniform1f(uniform[1], 1.0f);
+        glUniform3fv(uniform[3], 1, &now[0]);
         now.z += 0.1f;
+        glUniform3fv(uniform[1], 1, &now[0]);
 
         bindBuffer(buffer[1]);
 
