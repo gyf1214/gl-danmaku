@@ -9,6 +9,6 @@ typedef struct {
 } Vertex;
 
 static constexpr int trailSize = 10000;
-static constexpr int trailHead = 20;
+static constexpr int trailHead = 5;
 
 #endif
