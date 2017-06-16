@@ -231,6 +231,15 @@ public:
 
         motion->reset();
     }
+
+    vec3 getGlobal(int bone, vec3 pos) {
+        if (bone >= 0) {
+            return globalTransform() * preTransform *
+                   motion->skin(bone) * vec4(pos, 1.0f);
+        } else {
+            return globalTransform() * preTransform * vec4(pos, 1.0f);
+        }
+    }
 };
 
 const mat4 CharacterRenderer::preTransform(

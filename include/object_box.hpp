@@ -13,7 +13,8 @@ public:
     static Character *character(Scene *scene, Model *model,
                                 mmd::vmd::Motion *motion, bool debug);
 
-    static Transformer *trailTransform(Scene *scene);
+    static Transformer *trailTransform(Scene *scene, Character *character,
+                                       int bone, vec3 pos);
     static Renderer *trail(Scene *scene, Transformer *transform);
 };
 

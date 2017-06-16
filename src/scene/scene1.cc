@@ -16,7 +16,7 @@ public:
         objects.push_back(reimu);
         // objects.push_back(transform);
         // objects.push_back(ObjectBox::danmaku(this, transform));
-        Transformer *trail = ObjectBox::trailTransform(this);
+        Transformer *trail = ObjectBox::trailTransform(this, reimu, -1, vec3(0.0f, 0.0f, 0.0f));
         objects.push_back(trail);
         objects.push_back(ObjectBox::trail(this, trail));
     }

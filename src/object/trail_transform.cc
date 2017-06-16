@@ -3,6 +3,8 @@
 
 static Vertex vertex[trailSize + trailHead];
 
+using namespace glm;
+
 proto(TrailTransform, Shader::trailTransform);
 
 protoBuffer(TrailTransform) = {
@@ -36,16 +38,32 @@ protected:
                           trailHead * sizeof(Vertex), trailSize * sizeof(Vertex));
         glBeginTransformFeedback(mode);
     }
+
+    struct {
+        Character *character;
+        int bone;
+        vec3 pos;
+        vec3 now;
+
+        vec3 update() {
+            return now = character->getGlobal(bone, pos);
+        }
+    } bind;
 public:
-    TrailTransform(Scene *scene) : TransformRenderer(scene) {}
+    TrailTransform(Scene *scene, Character *character, int bone, vec3 pos)
+    : TransformRenderer(scene) {
+        bind.character = character;
+        bind.bone = bone;
+        bind.pos = pos;
+    }
 
     void setup() {
         setupVertices();
         TransformRenderer::setup();
 
         glUniform1f(uniform[0], Application::elapse);
-        glUniform1f(uniform[2], 1.0f);
-        glUniform1f(uniform[4], 1.0f - Application::elapse);
+
+        bind.update();
     }
 
     GLuint outputBuffer() {
@@ -57,10 +75,19 @@ public:
 
         bindProgram();
 
-        static vec3 now(0.0f, 0.0f, 10.0f);
-        glUniform3fv(uniform[3], 1, &now[0]);
-        now.z += 0.1f;
-        glUniform3fv(uniform[1], 1, &now[0]);
+        vec3 tmp = bind.now;
+        bind.update();
+
+        if (distance(tmp, bind.now) < 1e-4) {
+            glUniform1f(uniform[2], 0.0f);
+            glUniform1f(uniform[4], 0.0f);
+        } else {
+            glUniform1f(uniform[2], 1.0f);
+            glUniform1f(uniform[4], 1.0f - Application::elapse);
+        }
+
+        glUniform3fv(uniform[3], 1, &tmp[0]);
+        glUniform3fv(uniform[1], 1, &bind.now[0]);
 
         bindBuffer(buffer[1]);
 
@@ -70,6 +97,7 @@ public:
     }
 };
 
-Transformer *ObjectBox::trailTransform(Scene *scene) {
-    return new TrailTransform(scene);
+Transformer *ObjectBox::trailTransform(Scene *scene, Character *character,
+                                       int bone, vec3 pos) {
+    return new TrailTransform(scene, character, bone, pos);
 }
