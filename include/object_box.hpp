@@ -10,6 +10,8 @@ public:
     static Transformer *danmakuTransform(Scene *scene);
     static Renderer *skybox(Scene *scene);
     static Renderer *character(Scene *scene, Model *model);
+    static Transformer *trailTransform(Scene *scene);
+    static Renderer *trail(Scene *scene, Transformer *transform);
 };
 
 #endif

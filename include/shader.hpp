@@ -14,7 +14,8 @@ public:
     static GLuint base(void);
     static GLuint lambert(void);
     static GLuint character(void);
-    // static GLuint trailTransform(void);
+    static GLuint trail(void);
+    static GLuint trailTransform(void);
 };
 
 #endif

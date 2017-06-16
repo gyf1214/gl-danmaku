@@ -2,58 +2,36 @@
 
 static GLuint program = 0;
 
-const char *varyings[] = {
-    "time",
+static const char *varyings[] = {
     "position",
-    "velocity",
-    "acceleration",
-    "uvIndex",
+    "alpha"
 };
 
 static const char *vsh = R"(
     #version 330 core
     precision highp float;
 
-    in vec4 time0;
     in vec3 position0;
-    in vec3 velocity0;
-    in vec4 acceleration0;
-    in vec4 uvIndex0;
-    out vec4 time;
+    in float alpha0;
     out vec3 position;
-    out vec3 velocity;
-    out vec4 acceleration;
-    out vec4 uvIndex;
+    out float alpha;
 
-    const float elapse = 1.0 / 60.0;
+    uniform vec3 position1;
+    uniform float alpha1;
+    uniform float elapse;
 
     void main() {
-        time = time0 - vec4(elapse);
-        acceleration = acceleration0;
-        uvIndex = uvIndex0;
-        vec3 accel;
-        if (acceleration0.w == 0.0) {
-            accel = acceleration0.xyz;
+        if (alpha0 < 0.0) {
+            position = position1;
+            alpha = alpha1;
         } else {
-            accel = normalize(acceleration0.xyz - position0) * acceleration0.w;
-        }
-        if (time0.z <= 0.0 && time0.w > 0.0) {
-            velocity = velocity0 + accel * elapse;
-            position = position0 + (velocity0 + velocity) * 0.5 * elapse;
-        } else {
-            velocity = velocity0;
-            if (time0.z < elapse) {
-                velocity += accel * (elapse - time0.z);
-            }
             position = position0;
-            if (time0.z < elapse) {
-                position += (velocity0 + velocity) * 0.5 * (elapse - time0.z);
-            }
+            alpha = max(alpha0 - elapse, 0.0);
         }
     }
 )";
 
-GLuint Shader::danmakuTransform() {
+GLuint Shader::trailTransform() {
     if (!program) {
         program = glCreateProgram();
         GLuint shader = compileShader(GL_VERTEX_SHADER, vsh);

@@ -2,7 +2,7 @@
 
 static GLuint program = 0;
 
-const char *varyings[] = {
+static const char *varyings[] = {
     "time",
     "position",
     "velocity",
