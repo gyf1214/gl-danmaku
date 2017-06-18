@@ -15,6 +15,7 @@ public:
     void loadMorphTexture(void);
 
     static Model *reimu(void);
+    static Model *utsuho(void);
     static mmd::vmd::Motion *test1(void);
     static mmd::vmd::Motion *test2(void);
 };

@@ -5,15 +5,17 @@
 using namespace glm;
 
 class Scene1 : public SceneExt {
-    Character *reimu;
+    Character *reimu, *utsuho;
 public:
     Scene1() : SceneExt(true, false, 3) {}
 
     void setupObjects() {
         // Transformer *transform = ObjectBox::danmakuTransform(this);
         reimu = ObjectBox::character(this, Model::reimu(), Model::test2(), false);
+        utsuho = ObjectBox::character(this, Model::utsuho(), Model::test2(), false);
         objects.push_back(ObjectBox::skybox(this));
         objects.push_back(reimu);
+        objects.push_back(utsuho);
         // objects.push_back(transform);
         // objects.push_back(ObjectBox::danmaku(this, transform));
         Transformer *trail1 = ObjectBox::trailTransform(this, reimu, -1, vec3(-9.5f, 13.8f, 0.2f));
@@ -44,17 +46,18 @@ public:
     }
 
     void script() {
-        reimu->teleport(0.0f, 4.0f, 40.0f);
-        reimu->loop(10, 40);
-        await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
-        await(reimu->playTo(60));
-        await(reimu->moveTo(0.0f, 4.0f, 45.0f, 3.0f));
-        reimu->fix(80);
-        reimu->rotateLocal(degreeAxis(30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
-        await(reimu->moveTo(4.0f, 4.0f, 45.0f, 3.0f));
-        reimu->rotateLocal(degreeAxis(-30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
-        await(reimu->playTo(90));
-        reimu->loop(10, 40);
+        reimu->teleport(-2.0f, 0.0f, 40.0f);
+        utsuho->teleport(2.0f, 0.0f, 40.0f);
+        // reimu->loop(10, 40);
+        // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
+        // await(reimu->playTo(60));
+        // await(reimu->moveTo(0.0f, 4.0f, 45.0f, 3.0f));
+        // reimu->fix(80);
+        // reimu->rotateLocal(degreeAxis(30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
+        // await(reimu->moveTo(4.0f, 4.0f, 45.0f, 3.0f));
+        // reimu->rotateLocal(degreeAxis(-30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
+        // await(reimu->playTo(90));
+        // reimu->loop(10, 40);
     }
 };
 

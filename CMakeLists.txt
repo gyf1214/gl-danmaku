@@ -19,7 +19,7 @@ if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
         set(ASSETS ${ASSETS} ${item})
         add_custom_command(
             OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
+            COMMAND ${CMAKE_COMMAND} -E copy '${CMAKE_CURRENT_SOURCE_DIR}/${item}' '${CMAKE_CURRENT_BINARY_DIR}/${item}'
             DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
         )
     endforeach()
