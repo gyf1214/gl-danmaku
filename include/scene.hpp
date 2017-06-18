@@ -14,6 +14,7 @@ public:
     virtual void render(void);
     virtual void reset(void);
     virtual void onKey(int key, int scancode, int action, int mods);
+    virtual float fovy(void) = 0;
     virtual glm::mat4 vMat(void) = 0;
     virtual glm::mat4 pMat(void) = 0;
     virtual Light light(void) = 0;

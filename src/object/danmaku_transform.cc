@@ -4,13 +4,12 @@
 
 static Vertex vertexData[vertexSize];
 
-transProto(DanmakuTransform, Shader::danmakuTransform);
+proto(DanmakuTransform, Shader::danmakuTransform);
 
 protoBuffer(DanmakuTransform) = {
-    { sizeof(vertexData), vertexData }
+    { sizeof(vertexData), vertexData },
+    { sizeof(vertexData), NULL }
 };
-
-protoOutput(DanmakuTransform) = { sizeof(vertexData), NULL };
 
 protoAttrib(DanmakuTransform) = {
     { "time0"        , Offset(Vertex, time[0])        , 4, sizeof(Vertex) },
@@ -129,15 +128,16 @@ public:
     }
 
     void update() {
+        std::swap(buffer[0], buffer[1]);
         bindProgram();
-        bindBuffer(buffer[0]);
+        bindBuffer(buffer[1]);
 
         begin(GL_POINTS);
         glDrawArrays(GL_POINTS, 0, vertexSize);
         end();
-
-        std::swap(buffer[0], output);
     }
+
+    GLuint outputBuffer() { return buffer[0]; }
 };
 
 Transformer *ObjectBox::danmakuTransform(Scene *scene) {

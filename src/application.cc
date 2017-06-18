@@ -72,6 +72,7 @@ void Application::setClose() {
 
 void Application::mainLoop() {
     while (!glfwWindowShouldClose(window)) {
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         if (newScene != currentScene) {

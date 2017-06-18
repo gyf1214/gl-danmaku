@@ -68,6 +68,8 @@ public:
     float rotateTo(glm::quat dir, float speed);
     float rotateLocal(glm::quat r, float speed);
     float rotateGlobal(glm::quat r, float speed);
+
+    virtual vec3 getGlobal(int bone, vec3 pos) = 0;
 };
 
 #endif

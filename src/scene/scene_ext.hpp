@@ -34,6 +34,7 @@ public:
     void render(void);
     void update(void);
     void reset(void);
+    float fovy(void);
     glm::mat4 vMat(void);
     glm::mat4 pMat(void);
     int pass(void);
