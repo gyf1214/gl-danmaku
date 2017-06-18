@@ -24,6 +24,7 @@ void Model::loadTextures() {
 
 GLuint Model::texture(int index) {
     CHECK(index >= -1 && index < textures.size()) << "texture index out of bound!";
+    if (index == -1) return Texture::white();
     if (!textureSlot[index]) {
         textureSlot[index] = Texture::loadTexture(textures[index].c_str());
     }

@@ -12,7 +12,7 @@ aux_source_directory(src/shader SRCS)
 aux_source_directory(src/builder SRCS)
 add_executable(${TARGET} ${SRCS})
 
-file (GLOB ASSETS_FULL assets/*)
+file (GLOB_RECURSE ASSETS_FULL assets/*)
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     foreach(item_full IN LISTS ASSETS_FULL)
         file (RELATIVE_PATH item ${CMAKE_CURRENT_SOURCE_DIR} ${item_full})
