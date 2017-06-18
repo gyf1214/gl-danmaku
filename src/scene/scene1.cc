@@ -16,9 +16,12 @@ public:
         objects.push_back(reimu);
         // objects.push_back(transform);
         // objects.push_back(ObjectBox::danmaku(this, transform));
-        Transformer *trail = ObjectBox::trailTransform(this, reimu, -1, vec3(0.0f, 0.0f, 0.0f));
-        objects.push_back(trail);
-        objects.push_back(ObjectBox::trail(this, trail, 0.2f, vec3(1.0f, 0.0f, 0.0f)));
+        Transformer *trail1 = ObjectBox::trailTransform(this, reimu, -1, vec3(-9.5f, 13.8f, 0.2f));
+        Transformer *trail2 = ObjectBox::trailTransform(this, reimu, -1, vec3( 9.5f, 13.8f, 0.2f));
+        objects.push_back(trail1);
+        objects.push_back(trail2);
+        objects.push_back(ObjectBox::trail(this, trail1, 0.15f, vec3(1.0f, 0.0f, 0.0f)));
+        objects.push_back(ObjectBox::trail(this, trail2, 0.15f, vec3(1.0f, 0.0f, 0.0f)));
     }
 
     void setupCamera() {

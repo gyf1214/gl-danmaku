@@ -30,6 +30,8 @@ static void setupVertices() {
 
 }
 
+static constexpr float elapse = Application::elapse * 0.5f;
+
 class TrailTransform : public TransformRenderer<TrailTransformProto> {
 protected:
     void begin(GLenum mode) {
@@ -61,7 +63,7 @@ public:
         setupVertices();
         TransformRenderer::setup();
 
-        glUniform1f(uniform[0], 0.3 * Application::elapse);
+        glUniform1f(uniform[0], elapse);
 
         bind.update();
     }
@@ -78,13 +80,13 @@ public:
         vec3 tmp = bind.now;
         bind.update();
 
-        if (distance(tmp, bind.now) < 1e-4) {
-            glUniform1f(uniform[2], 0.0f);
-            glUniform1f(uniform[4], 0.0f);
-        } else {
-            glUniform1f(uniform[2], 1.0f);
-            glUniform1f(uniform[4], 1.0f - Application::elapse);
-        }
+        // if (distance(tmp, bind.now) < 1e-4) {
+        //     glUniform1f(uniform[2], 0.0f);
+        //     glUniform1f(uniform[4], 0.0f);
+        // } else {
+        glUniform1f(uniform[2], 1.0f);
+        glUniform1f(uniform[4], 1.0f - elapse);
+        // }
 
         glUniform3fv(uniform[3], 1, &tmp[0]);
         glUniform3fv(uniform[1], 1, &bind.now[0]);
