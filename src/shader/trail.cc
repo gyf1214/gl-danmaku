@@ -9,6 +9,7 @@ static const char *vsh = R"(
     in vec3 position;
     in float alpha;
 
+    uniform float size;
     uniform mat4 vMat;
     uniform mat4 pMat;
 
@@ -16,7 +17,7 @@ static const char *vsh = R"(
 
     void main(void) {
         gl_Position = pMat * vMat * vec4(position, 1.0);
-        gl_PointSize = 100.0 * (0.5 + 0.5 * alpha) / gl_Position.w;
+        gl_PointSize = size * (0.5 * alpha + 0.5) / gl_Position.w;
         alphaOut = alpha;
     }
 )";
@@ -28,11 +29,11 @@ static const char *fsh = R"(
     in float alphaOut;
     out vec4 fragColor;
 
+    uniform vec3 color;
     uniform sampler2D texture0;
 
     void main(void) {
-        fragColor = texture(texture0, gl_PointCoord);
-        fragColor.a *= alphaOut;
+        fragColor = vec4(color, alphaOut) * texture(texture0, gl_PointCoord);
     }
 )";
 

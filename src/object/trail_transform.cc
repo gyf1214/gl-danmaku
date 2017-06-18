@@ -61,7 +61,7 @@ public:
         setupVertices();
         TransformRenderer::setup();
 
-        glUniform1f(uniform[0], Application::elapse);
+        glUniform1f(uniform[0], 0.3 * Application::elapse);
 
         bind.update();
     }

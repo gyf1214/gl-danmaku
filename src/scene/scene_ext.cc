@@ -125,6 +125,10 @@ void SceneExt::reset() {
     Scene::reset();
 }
 
+float SceneExt::fovy() {
+    return radians(fov);
+}
+
 glm::mat4 SceneExt::vMat() {
     return lookAt(position, position + dir, cross(dir, left));
 }
