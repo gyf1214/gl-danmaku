@@ -4,7 +4,17 @@
 #include "ext.hpp"
 
 class Layer {
-    GLuint frameBuffer;
+    GLuint framebuffer;
+    GLuint color, depth;
+    Layer();
+public:
+    void select(void);
+    void render(void);
+
+    static void detach(void);
+    static void clear(void);
+    static void setup(void);
+    static Layer *temp(void);
 };
 
 #endif

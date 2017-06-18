@@ -1,4 +1,5 @@
 #include "program_renderer.hpp"
+#include "layer.hpp"
 #include "vertex/trail.hpp"
 
 proto(Trail, Shader::trail);
@@ -15,6 +16,7 @@ protoUnifom(Trail) = { "vMat", "pMat", "texture0" };
 class Trail : public ProgramRenderer<TrailProto> {
     Transformer *transform;
     GLuint texture0;
+    Layer *layer;
 public:
     Trail(Scene *scene, Transformer *transform)
         : ProgramRenderer(scene), transform(transform) {}
@@ -24,22 +26,21 @@ public:
 
         glUniform1i(uniform[2], 0);
         texture0 = Texture::trail();
+
+        layer = Layer::temp();
     }
 
     void render() {
         if (scene->pass() > 0) return;
 
-        // glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        // glClear(GL_COLOR_BUFFER_BIT);
+        layer->select();
+        Layer::clear();
 
         bindProgram();
-        glEnable(GL_BLEND);
         glEnable(GL_PROGRAM_POINT_SIZE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        // glBlendFunc(GL_ONE, GL_ZERO);
-        // glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
-
-        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendEquationSeparate(GL_MAX, GL_MAX);
+        glDepthFunc(GL_ALWAYS);
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
@@ -51,9 +52,12 @@ public:
 
         glDrawArrays(GL_POINTS, trailHead, trailSize);
 
-        glDepthMask(GL_TRUE);
-        glDisable(GL_PROGRAM_POINT_SIZE);
+        glDepthFunc(GL_LEQUAL);
         glDisable(GL_BLEND);
+        glDisable(GL_PROGRAM_POINT_SIZE);
+
+        Layer::detach();
+        layer->render();
     }
 };
 
