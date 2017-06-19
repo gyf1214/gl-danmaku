@@ -16,6 +16,7 @@ public:
 
     static Model *reimu(void);
     static Model *utsuho(void);
+    static Model *suwako(void);
     static mmd::vmd::Motion *test1(void);
     static mmd::vmd::Motion *test2(void);
 };
