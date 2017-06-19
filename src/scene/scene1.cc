@@ -7,7 +7,7 @@ using namespace glm;
 class Scene1 : public SceneExt {
     Character *reimu, *utsuho, *suwako;
 public:
-    Scene1() : SceneExt(true, false, 3) {}
+    Scene1() : SceneExt(true, false, 2) {}
 
     void setupObjects() {
         // Transformer *transform = ObjectBox::danmakuTransform(this);
@@ -37,8 +37,8 @@ public:
     Light light() {
         static Light lights[] = {
             ambient(0.0f, 0.0f, 0.0f),
+            point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f),
             direction(vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.6f, 0.2f)),
-            point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f)
         };
 
         CHECK(currentPass < sizeof(lights) / sizeof(Light)) << "invalid pass!";
