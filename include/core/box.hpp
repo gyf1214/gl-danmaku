@@ -7,20 +7,22 @@ class Box {
 protected:
     static void *alloc(size_t n);
     static void dealloc(void *o);
-
+    static void track(BaseObject *o);
+public:
     template <typename U, typename ...Ts>
     static U *create(Ts ...args) {
         void *ret = alloc(sizeof(U));
         return new(ret) U(args...);
     }
-public:
-    static void release(BaseObject *o) {
-        if (o) {
-            o->reset();
-            o->~BaseObject();
-            dealloc(o);
-        }
+    template <typename U, typename ...Ts>
+    static U *global(Ts ...args) {
+        U *ret = create<U>(args...);
+        track(ret);
+        ret->setup();
+        return ret;
     }
+    static void release(BaseObject *o);
+    static void releaseGlobal(void);
 };
 
 #endif

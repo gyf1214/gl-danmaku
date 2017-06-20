@@ -15,6 +15,8 @@ struct Texture {
     static GLuint wallLava();
     static GLuint white();
     static GLuint trail();
+
+    static void release();
 };
 
 #endif

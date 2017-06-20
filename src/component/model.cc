@@ -1,75 +1,95 @@
-#include "ext.hpp"
-#include "model.hpp"
-#include "texture.hpp"
+#include "../ext.hpp"
+#include "component/model.hpp"
+#include "component/texture.hpp"
 
 using namespace glm;
 using namespace mmd;
 
-Model::Model() : mmd::pmx::Model(), morphTex(0) {}
+class ModelImp : private MMDModel, public virtual Model {
+    std::vector<GLuint> textureSlot;
+    GLuint morphBuffer, morphTex, white;
+    const char *path;
+    bool loaded;
+public:
+    ModelImp(const char *path) : path(path), loaded(false) {}
 
-void Model::load(const char *path) {
-    Fs *fs = Fs::open(path);
-    mmd::pmx::Model::load(fs);
-    delete fs;
+    void setup() {
+        if (!loaded) {
+            loaded = true;
 
-    textureSlot.resize(textures.size(), 0);
-}
+            LOG << "load model from path: " << path;
+            Fs *fs = Fs::open(path);
+            MMDModel::load(fs);
+            delete fs;
+            LOG << "model name: " << header.name;
 
-void Model::loadTextures() {
-    Texture::white();
-    for (int i = 0; i < textures.size(); ++i) {
-        texture(i);
-    }
-}
+            int n = textures.size();
+            LOG << "load " << n << " textures";
+            textureSlot.resize(n, 0);
+            white = Texture::white();
+            for (int i = 0; i < n; ++i) {
+                textureSlot[i] = Texture::loadTexture(textures[i].c_str());
+                LOG << "texture " << i << ": " << textureSlot[i];
+            }
 
-GLuint Model::texture(int index) {
-    CHECK(index >= -1 && index < textures.size()) << "texture index out of bound!";
-    if (index == -1) return Texture::white();
-    if (!textureSlot[index]) {
-        textureSlot[index] = Texture::loadTexture(textures[index].c_str());
-    }
-    return textureSlot[index];
-}
+            LOG << "load morph texture";
+            glGenBuffers(1, &morphBuffer);
+            glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
+            LOG << "texture buffer: " << morphBuffer;
+            int m = morphs.size();
+            n = mesh.vertex.size();
+            vec4 *data = new vec4[n * m];
+            LOG << "size: " << n << "x" << m;
+            memset(data, 0, n * m * sizeof(vec4));
+            for (int i = 0; i < m; ++i) {
+                const auto &offset = morphs[i].offsets;
+                int t = offset.size();
+                for (int j = 0; j < t; ++j) {
+                    data[offset[j].index * m + i] = vec4(offset[j].translate, 0.0f);
+                }
+            }
+            glBufferData(GL_TEXTURE_BUFFER, n * m * sizeof(vec4), data, GL_STATIC_DRAW);
+            delete[] data;
 
-GLuint Model::morphTexture() {
-    if (!morphTex) loadMorphTexture();
-    return morphTex;
-}
-
-void Model::loadMorphTexture() {
-    glGenBuffers(1, &morphBuffer);
-    glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
-    int m = morphs.size();
-    int n = mesh.vertex.size();
-    vec4 *data = new vec4[n * m];
-    memset(data, 0, n * m * sizeof(vec4));
-    for (int i = 0; i < m; ++i) {
-        const auto &offset = morphs[i].offsets;
-        int t = offset.size();
-        for (int j = 0; j < t; ++j) {
-            data[offset[j].index * m + i] = vec4(offset[j].translate, 0.0f);
+            glGenTextures(1, &morphTex);
+            LOG << "morph texture: " << morphTex;
+            glBindTexture(GL_TEXTURE_BUFFER, morphTex);
+            glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
         }
     }
-    glBufferData(GL_TEXTURE_BUFFER, n * m * sizeof(vec4), data, GL_STATIC_DRAW);
-    delete[] data;
 
-    glGenTextures(1, &morphTex);
-    glBindTexture(GL_TEXTURE_BUFFER, morphTex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
-}
+    void reset() {}
+
+    ~ModelImp() {
+        LOG << "reset model: " << header.name;
+        LOG << "delete texture: " << morphTex;
+        glDeleteTextures(1, &morphTex);
+        LOG << "delete buffer: " << morphBuffer;
+        glDeleteBuffers(1, &morphBuffer);
+    }
+
+    GLuint texture(int index) const {
+        CHECK(index >= -1 && index < textures.size()) << "invalid texture slot!";
+        return index >= 0 ? textureSlot[index] : white;
+    }
+
+    GLuint morphTexture() const {
+        return morphTex;
+    }
+
+    const MMDModel *mmdModel() const {
+        return this;
+    }
+};
 
 #define defineModel(name, path) Model *Model::name() {\
-    static Model model;\
-    static bool loaded = false;\
-    if (!loaded) {\
-        model.load("assets/" path);\
-        loaded = true;\
-    }\
-    return &model;\
+    static Model *model = NULL;\
+    if (!model) model = Box::global<ModelImp>(path);\
+    return model;\
 }
 
-#define defineMotion(name, path) vmd::Motion *Model::name() {\
-    static vmd::Motion motion;\
+#define defineMotion(name, path) MMDMotion *Model::name() {\
+    static MMDMotion motion;\
     static bool loaded = false;\
     if (!loaded) {\
         Fs *fs = mmd::Fs::open("assets/" path);\

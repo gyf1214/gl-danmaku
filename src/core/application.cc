@@ -92,6 +92,7 @@ void Application::mainLoop() {
     }
 
     if (currentScene) SceneBox::release(currentScene);
+    Box::releaseGlobal();
 }
 
 void Application::run() {

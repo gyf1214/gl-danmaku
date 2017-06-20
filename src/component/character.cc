@@ -67,11 +67,17 @@ public:
     }
 
     void setup() {
+        LOG << "setup character";
+
+        LOG << "setup basic motion & key";
         BasicMotion::setup();
         KeyImp::setup();
 
         const MMDModel *mModel = model->mmdModel();
+        LOG << "MMD model: " << mModel->header.name;
+        LOG << "MMD motion: " << vMotion->header.name;
 
+        LOG << "setup physics";
         motion->loadModel(mModel);
         motion->loadMotion(vMotion);
         motion->updateGlobal(localTransform());
@@ -84,8 +90,14 @@ public:
     }
 
     void reset() {
+        LOG << "reset character";
+
+        LOG << "reset basic motion & key";
         BasicMotion::reset();
         KeyImp::reset();
+
+        LOG << "reset physics";
+        motion->reset();
     }
 
     void update() {
@@ -128,8 +140,13 @@ private:
         BindPoint(const CharacterImp *ch, int bone, vec3 origin)
             : ch(ch), bone(bone), origin(origin) {}
 
-        void setup() {}
-        void reset() {}
+        void setup() {
+            LOG << "setup bind point from character: "
+                << ch->model->mmdModel()->header.name;
+        }
+        void reset() {
+            LOG << "reset bind point";
+        }
         void update() {}
 
         vec3 position() const {

@@ -1,10 +1,13 @@
 #include "../ext.hpp"
 #include "component/texture.hpp"
 
+using namespace std;
+
 static const int PNG_BYTES_TO_CHECK = 4;
 
-GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
+static vector<GLuint> texes;
 
+GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
     FILE *fp;
     char buf[PNG_BYTES_TO_CHECK];
 
@@ -59,13 +62,25 @@ GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
     png_destroy_read_struct(&png, &info, 0);
     delete []data;
     fclose(fp);
+
+    texes.push_back(texture);
     return texture;
 }
 
-#define defineTexture(name, path, ...) static GLuint tex_##name = 0;\
-GLuint Texture::name() {\
-    if (!tex_##name) tex_##name = loadTexture("assets/" path, ##__VA_ARGS__);\
-    return tex_##name;\
+void Texture::release() {
+    LOG << "reset global textures";
+    int n = texes.size();
+    for (int i = 0; i < n; ++i) {
+        LOG << "delete texture: " << texes[i];
+        glDeleteTextures(1, &texes[i]);
+    }
+    texes.clear();
+}
+
+#define defineTexture(name, path, ...) GLuint Texture::name() {\
+    static GLuint tex = 0;\
+    if (!tex) tex = loadTexture("assets/" path, ##__VA_ARGS__);\
+    return tex;\
 }
 
 defineTexture(small, "small.png");
