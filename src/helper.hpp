@@ -1,6 +1,8 @@
 #ifndef __HELPER
 #define __HELPER
 
+#include "common.hpp"
+
 inline std::ostream &operator <<(std::ostream &o, const vec2 &v) {
     o << "(" << v.x << ", " << v.y << ")";
     return o;

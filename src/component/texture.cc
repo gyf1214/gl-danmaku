@@ -1,5 +1,5 @@
-#include "ext.hpp"
-#include "texture.hpp"
+#include "../ext.hpp"
+#include "component/texture.hpp"
 
 static const int PNG_BYTES_TO_CHECK = 4;
 

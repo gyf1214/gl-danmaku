@@ -1,5 +1,5 @@
 #include "../ext.hpp"
-#include "shader.hpp"
+#include "component/shader.hpp"
 
 GLuint Shader::compileShader(GLenum type, const char *src) {
     LOG << "load shader:\n" << src;

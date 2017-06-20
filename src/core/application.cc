@@ -1,4 +1,4 @@
-#include "ext.hpp"
+#include "../ext.hpp"
 #include "scene_box.hpp"
 
 static Scene *currentScene = NULL;
