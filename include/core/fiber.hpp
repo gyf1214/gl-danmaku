@@ -1,7 +1,7 @@
-#ifndef __FIBER
-#define __FIBER
+#ifndef __CORE_FIBER
+#define __CORE_FIBER
 
-#include "common.hpp"
+#include "../common.hpp"
 
 class Fiber {
 public:

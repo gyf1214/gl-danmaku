@@ -1,7 +1,7 @@
-#ifndef __APPLICATION
-#define __APPLICATION
+#ifndef __CORE_APPLICATION
+#define __CORE_APPLICATION
 
-#include "common.hpp"
+#include "scene.hpp"
 
 class Application {
     static void errorCallBack(int error, const char* desc);
