@@ -1,6 +1,10 @@
 #include "../ext.hpp"
 #include "component/shader.hpp"
 
+using namespace std;
+
+vector<GLuint> programs;
+
 GLuint Shader::compileShader(GLenum type, const char *src) {
     LOG << "load shader:\n" << src;
 
@@ -36,6 +40,15 @@ void Shader::linkProgram(GLuint program) {
 
         FAIL << "link program " << program << " failed:\n" << logStr;
     }
+    programs.push_back(program);
+}
+
+void Shader::release() {
+    int n = programs.size();
+    for (int i = 0; i < n; ++i) {
+        glDeleteProgram(programs[i]);
+    }
+    programs.clear();
 }
 
 GLuint Shader::programShader(const char *vshSrc, const char *fshSrc) {

@@ -62,9 +62,9 @@ public:
 
     ~ModelImp() {
         LOG << "reset model: " << header.name;
-        LOG << "delete texture: " << morphTex;
+        LOG << "delete morph texture: " << morphTex;
         glDeleteTextures(1, &morphTex);
-        LOG << "delete buffer: " << morphBuffer;
+        LOG << "delete morph buffer: " << morphBuffer;
         glDeleteBuffers(1, &morphBuffer);
     }
 

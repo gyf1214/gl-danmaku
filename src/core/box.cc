@@ -1,4 +1,6 @@
 #include "../ext.hpp"
+#include "component/texture.hpp"
+#include "component/shader.hpp"
 
 using namespace std;
 
@@ -30,4 +32,6 @@ void Box::releaseGlobal() {
         release(globals[i]);
     }
     globals.clear();
+    Texture::release();
+    Shader::release();
 }

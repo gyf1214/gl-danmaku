@@ -18,6 +18,8 @@ public:
     static GLuint trailTransform(void);
     static GLuint debug(void);
     static GLuint layer(void);
+
+    static void release(void);
 };
 
 #endif
