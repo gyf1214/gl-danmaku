@@ -1,4 +1,4 @@
-#include "program_renderer.hpp"
+#include "ext.hpp"
 #include "vertex/light.hpp"
 
 static const int circleSize = 128;
@@ -29,10 +29,15 @@ protoAttrib(Skybox) = {
     { "uv"      , Offset(Vertex, uv[0])      , 2, sizeof(Vertex) },
 };
 
-protoUnifom(Skybox) = {
+protoUniform(Skybox) = {
     "vMat", "pMat",
     "lightPosition", "lightColor", "ambient", "lightMaterial",
     "material", "diffuse", "normal", "specular", "emission"
+};
+
+protoTexture(Skybox) = {
+    Texture::lava, Texture::wall, Texture::wallNormal,
+    Texture::white, Texture::wallLava
 };
 
 static void push(int x, int y, float norm) {
@@ -75,27 +80,23 @@ static void setupVertices() {
     }
 }
 
-class Skybox : public ProgramRenderer<SkyboxProto> {
-    GLuint lava, wall, wallLava, normal, white;
+class Skybox : public ProgramBase<SkyboxProto>, public virtual Object {
+    Camera *camera;
+    LightManager *lights;
 public:
-    Skybox(Scene *scene) : ProgramRenderer(scene) {}
+    Skybox(Camera *camera, LightManager *lights)
+        : camera(camera), lights(lights) {}
 
     void setup() {
         setupVertices();
 
-        ProgramRenderer::setup();
+        ProgramBase::setup();
 
         bindBuffer(buffer[0]);
 
-        glUniform1i(uniform[7],  0);
-        glUniform1i(uniform[8],  1);
-        glUniform1i(uniform[9],  2);
-        glUniform1i(uniform[10], 3);
-        wall = Texture::wall();
-        lava = Texture::lava();
-        wallLava = Texture::wallLava();
-        normal = Texture::wallNormal();
-        white = Texture::white();
+        glUniform1i(uniform[7], 1);
+        glUniform1i(uniform[8], 2);
+        glUniform1i(uniform[9], 3);
     }
 
     void render() {
@@ -104,39 +105,26 @@ public:
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &camera->pMat()[0][0]);
 
-        Light light = scene -> light();
+        Light light = lights->current();
 
         glUniform4fv(uniform[2], 1, &light.position[0]);
         glUniform3fv(uniform[3], 1, &light.color[0]);
         glUniform3fv(uniform[4], 1, &light.ambient[0]);
         glUniform4fv(uniform[5], 1, &light.material[0]);
 
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, lava);
+        bindTextures();
 
+        glUniform1i(uniform[10], 0);
         glUniform4fv(uniform[6], 1, floorMaterial);
         glDrawArrays(GL_TRIANGLE_STRIP, wallSize, 4);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, wall);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, normal);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, white);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, wallLava);
-
-
+        glUniform1i(uniform[10], 4);
         glUniform4fv(uniform[6], 1, wallMaterial);
         glDrawArrays(GL_TRIANGLES, 0, wallSize);
 
         glDisable(GL_CULL_FACE);
     }
 };
-
-Renderer *ObjectBox::skybox(Scene *scene) {
-    return create<Skybox>(scene);
-}

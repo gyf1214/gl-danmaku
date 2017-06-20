@@ -2,6 +2,7 @@
 #define __COM_CHARACTER
 
 #include "transform.hpp"
+#include "model.hpp"
 
 class Keyframe : public virtual Component {
 public:
@@ -18,7 +19,8 @@ class Character : public virtual Motion, public virtual Keyframe {
 public:
     virtual Translate *bindPoint(int bone, vec3 origin) const = 0;
     virtual const std::vector<glm::mat4> &skins(void) const = 0;
-    virtual const std::vector<float> &face(int morph) const = 0;
+    virtual const std::vector<float> &faces(void) const = 0;
+    virtual const Model *model(void) const = 0;
 };
 
 #endif

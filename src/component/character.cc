@@ -45,7 +45,7 @@ class CharacterImp : public BasicMotion, public KeyImp {
     static const mat4 preTransform;
     static const mat4 invTransform;
 
-    Model *model;
+    Model *cModel;
     MMDMotion *vMotion;
     mmd::physics::Motion *motion;
 
@@ -58,8 +58,8 @@ class CharacterImp : public BasicMotion, public KeyImp {
         return invTransform * matrix() * preTransform;
     }
 public:
-    CharacterImp(Model *model, MMDMotion *vMotion, bool debug = false)
-        : model(model), vMotion(vMotion),
+    CharacterImp(Model *cModel, MMDMotion *vMotion, bool debug = false)
+        : cModel(cModel), vMotion(vMotion),
           motion(mmd::physics::Motion::create(debug)) {}
 
     ~CharacterImp() {
@@ -73,7 +73,7 @@ public:
         BasicMotion::setup();
         KeyImp::setup();
 
-        const MMDModel *mModel = model->mmdModel();
+        const MMDModel *mModel = cModel->mmdModel();
         LOG << "MMD model: " << mModel->header.name;
         LOG << "MMD motion: " << vMotion->header.name;
 
@@ -131,6 +131,7 @@ public:
 
     const vector<mat4> &skins() const { return bones; }
     const vector<float> &faces() const { return morphs; }
+    const Model *model() const { return cModel; }
 private:
     class BindPoint : public virtual Translate {
         const CharacterImp *ch;
@@ -142,7 +143,7 @@ private:
 
         void setup() {
             LOG << "setup bind point from character: "
-                << ch->model->mmdModel()->header.name;
+                << ch->cModel->mmdModel()->header.name;
         }
         void reset() {
             LOG << "reset bind point";

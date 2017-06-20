@@ -1,7 +1,7 @@
-#ifndef __PROGRAM_RENDERER
-#define __PROGRAM_RENDERER
+#ifndef __CORE_EXT_PROGRAM
+#define __CORE_EXT_PROGRAM
 
-#include "ext.hpp"
+#include "../ext.hpp"
 
 struct BufferProto {
     GLsizeiptr size;
@@ -31,34 +31,39 @@ struct AttribProto {
 };
 
 typedef const char *UniformProto;
+typedef GLuint (*TextureProto)(void);
 
 #define protoOpen(name, program) struct name##Proto {\
     static constexpr const char *Name = #name;\
     static constexpr auto Program = program;\
     static const BufferProto Buffers[];\
     static const AttribProto Attributes[];\
-    static const UniformProto Uniforms[];
+    static const UniformProto Uniforms[];\
+    static const TextureProto Textures[];
 
 #define proto(name, program) protoOpen(name, program)\
 }
 
 #define protoBuffer(name) const BufferProto name##Proto::Buffers[]
 #define protoAttrib(name) const AttribProto name##Proto::Attributes[]
-#define protoUnifom(name) const UniformProto name##Proto::Uniforms[]
+#define protoUniform(name) const UniformProto name##Proto::Uniforms[]
+#define protoTexture(name) const TextureProto name##Proto::Textures[]
 
 template <typename Proto>
-class ProgramBase {
+class ProgramBase : public virtual BaseObject {
 protected:
     static constexpr const char *Name = Proto::Name;
-    static constexpr int AttribSize = sizeof(Proto::Attributes) / sizeof(Proto::Attributes[0]);
-    static constexpr int UniformSize = sizeof(Proto::Uniforms) / sizeof(Proto::Uniforms[0]);
-    static constexpr int BufferSize = sizeof(Proto::Buffers) / sizeof(Proto::Buffers[0]);
+    static constexpr int AttribSize = sizeof(Proto::Attributes) / sizeof(AttribProto);
+    static constexpr int UniformSize = sizeof(Proto::Uniforms) / sizeof(UniformProto);
+    static constexpr int BufferSize = sizeof(Proto::Buffers) / sizeof(BufferProto);
+    static constexpr int TextureSize = sizeof(Proto::Textures) / sizeof(TextureProto);
 
     GLuint program;
     GLuint vertexArray;
     GLuint buffer[BufferSize ? BufferSize : 1];
     GLuint attribute[AttribSize ? AttribSize : 1];
     GLuint uniform[UniformSize ? UniformSize : 1];
+    GLuint texture[TextureSize ? TextureSize : 1];
 
     virtual void setupProgram() {
         LOG << "setup program";
@@ -105,8 +110,15 @@ protected:
         }
     }
 
-    virtual void bindAttribute(GLuint buf, int index) {
-        glBindBuffer(GL_ARRAY_BUFFER, buf);
+    virtual void setupTextures() {
+        LOG << "setup " << TextureSize << "textures";
+        for (int i = 0; i < TextureSize; ++i) {
+            texture[i] = Proto::Textures[i]();
+            LOG << "slot " << i << ": " << texture[i];
+        }
+    }
+
+    virtual void bindAttribute(int index) {
         const auto &proto = Proto::Attributes[index];
         if (proto.integer) {
             glVertexAttribIPointer(attribute[index], proto.size, proto.type,
@@ -120,7 +132,7 @@ protected:
     virtual void bindBuffer(GLuint buf) {
         glBindBuffer(GL_ARRAY_BUFFER, buf);
         for (int i = 0; i < AttribSize; ++i) {
-            bindAttribute(buf, i);
+            bindAttribute(i);
         }
     }
 
@@ -129,7 +141,14 @@ protected:
         glBindVertexArray(vertexArray);
     }
 
-    virtual void setupAll() {
+    virtual void bindTextures() {
+        for (int i = 0; i < TextureSize; ++i) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, texture[i]);
+        }
+    }
+public:
+    virtual void setup() {
         LOG << "setup object: " << ProgramBase<Proto>::Name;
         setupProgram();
         glUseProgram(program);
@@ -138,29 +157,16 @@ protected:
         setupBuffers();
         setupAttributes();
         setupUniforms();
+        setupTextures();
     }
 
-    virtual void resetAll() {
+    virtual void reset() {
         LOG << "reset object: " << ProgramBase<Proto>::Name;
         LOG << "delete array: " << vertexArray;
         if (BufferSize) {
             LOG << "delete " << BufferSize << " buffers";
             glDeleteBuffers(BufferSize, buffer);
         }
-    }
-};
-
-template <typename Proto>
-class ProgramRenderer : public ProgramBase<Proto>, public Renderer {
-protected:
-    ProgramRenderer(Scene *scene) : Renderer(scene) {}
-public:
-    void setup() {
-        this -> setupAll();
-    }
-
-    void reset() {
-        this -> resetAll();
     }
 };
 

@@ -19,7 +19,12 @@ class LightManager : public virtual Component {
 public:
     virtual const Light &light(int pass) const = 0;
     virtual Light &light(int pass) = 0;
+    virtual int count(void) const = 0;
     virtual int pass(void) const = 0;
+    virtual int &pass(void) = 0;
+
+    const Light &current(void) const { return light(pass()); }
+
     virtual void remove(int pass) = 0;
     virtual void push(const Light &light) = 0;
     virtual void pushAmbient(vec3 color) = 0;
