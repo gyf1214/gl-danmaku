@@ -44,8 +44,10 @@ void Shader::linkProgram(GLuint program) {
 }
 
 void Shader::release() {
+    LOG << "release global shaders";
     int n = programs.size();
     for (int i = 0; i < n; ++i) {
+        LOG << "delete program: " << programs[i];
         glDeleteProgram(programs[i]);
     }
     programs.clear();

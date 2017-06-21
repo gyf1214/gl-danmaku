@@ -27,6 +27,7 @@ public:
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
+        glBlendEquation(GL_FUNC_ADD);
 
         int n = light->count();
         for (int i = 1 ; i < n; ++i) {

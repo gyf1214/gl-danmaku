@@ -36,7 +36,7 @@ public:
         bindProgram();
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_BLEND);
-        glBlendEquationSeparate(GL_MAX, GL_MAX);
+        glBlendEquation(GL_MAX);
         glDepthFunc(GL_ALWAYS);
 
         glUniform1f(uniform[3], size * Application::bufferHeight /

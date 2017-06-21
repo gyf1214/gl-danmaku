@@ -7,6 +7,18 @@ static const int PNG_BYTES_TO_CHECK = 4;
 
 static vector<GLuint> texes;
 
+GLuint Texture::genTexture(GLuint inter, GLuint wraps, GLuint wrapt) {
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wraps);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapt);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, inter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, inter);
+    texes.push_back(texture);
+    return texture;
+}
+
 GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
     FILE *fp;
     char buf[PNG_BYTES_TO_CHECK];
@@ -46,24 +58,15 @@ GLuint Texture::loadTexture(const char *name, GLuint wraps, GLuint wrapt) {
         }
     }
 
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    GLuint texture = genTexture(GL_LINEAR, wraps, wrapt);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wraps);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapt);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     LOG << "generate texture: " << name << " -> " << texture;
 
     png_destroy_read_struct(&png, &info, 0);
     delete []data;
     fclose(fp);
-
-    texes.push_back(texture);
     return texture;
 }
 

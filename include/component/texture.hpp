@@ -4,6 +4,9 @@
 #include "common.hpp"
 
 struct Texture {
+    static GLuint genTexture(GLuint inter = GL_LINEAR,
+                             GLuint wraps = GL_CLAMP_TO_BORDER,
+                             GLuint wrapt = GL_CLAMP_TO_BORDER);
     static GLuint loadTexture(const char *name,
         GLuint wraps = GL_CLAMP_TO_BORDER,
         GLuint wrapt = GL_CLAMP_TO_BORDER);
