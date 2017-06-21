@@ -7,7 +7,7 @@ using namespace mmd;
 
 class ModelImp : private MMDModel, public virtual Model {
     std::vector<GLuint> textureSlot;
-    GLuint morphBuffer, morphTex, white;
+    GLuint morphBuf, morphTex, white;
 public:
     ModelImp(const char *path) {
         LOG << "load model from path: " << path;
@@ -26,9 +26,9 @@ public:
         }
 
         LOG << "load morph texture";
-        glGenBuffers(1, &morphBuffer);
-        glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
-        LOG << "texture buffer: " << morphBuffer;
+        glGenBuffers(1, &morphBuf);
+        glBindBuffer(GL_TEXTURE_BUFFER, morphBuf);
+        LOG << "texture buffer: " << morphBuf;
         int m = morphs.size();
         n = mesh.vertex.size();
         vec4 *data = new vec4[n * m];
@@ -47,7 +47,7 @@ public:
         glGenTextures(1, &morphTex);
         LOG << "morph texture: " << morphTex;
         glBindTexture(GL_TEXTURE_BUFFER, morphTex);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuf);
     }
 
     void setup() {}
@@ -57,8 +57,8 @@ public:
         LOG << "reset model: " << header.name;
         LOG << "delete morph texture: " << morphTex;
         glDeleteTextures(1, &morphTex);
-        LOG << "delete morph buffer: " << morphBuffer;
-        glDeleteBuffers(1, &morphBuffer);
+        LOG << "delete morph buffer: " << morphBuf;
+        glDeleteBuffers(1, &morphBuf);
     }
 
     GLuint texture(int index) const {
@@ -66,13 +66,8 @@ public:
         return index >= 0 ? textureSlot[index] : white;
     }
 
-    GLuint morphTexture() const {
-        return morphTex;
-    }
-
-    const MMDModel *mmdModel() const {
-        return this;
-    }
+    GLuint morphTexture() const { return morphTex; }
+    const MMDModel *mmdModel() const { return this; }
 };
 
 #define defineModel(name, path) Model *Model::name() {\

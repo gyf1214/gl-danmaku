@@ -18,10 +18,12 @@ class KeyImp : private MotionData<float>, public virtual Keyframe {
         return end * Application::elapse;
     }
 public:
-    void setup() {
+    KeyImp() {
+        playing = looping = false;
         now = 0.0f;
-        looping = playing = false;
     }
+
+    void setup() {}
     void reset() {}
     void update() {
         MotionData::update((float (*)(float, float, float))mix);
@@ -64,8 +66,9 @@ class CharacterImp : public BasicMotion, public KeyImp, public virtual Character
     }
 public:
     CharacterImp(Model *cModel, MMDMotion *vMotion, bool debug = false)
-        : cModel(cModel), vMotion(vMotion),
-          motion(mmd::physics::Motion::create(debug)) {}
+        : cModel(cModel), vMotion(vMotion) {
+        motion = mmd::physics::Motion::create(debug);
+    }
 
     ~CharacterImp() {
         delete motion;

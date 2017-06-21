@@ -111,7 +111,7 @@ protected:
     }
 
     virtual void setupTextures() {
-        LOG << "setup " << TextureSize << "textures";
+        LOG << "setup " << TextureSize << " textures";
         for (int i = 0; i < TextureSize; ++i) {
             texture[i] = Proto::Textures[i]();
             LOG << "slot " << i << ": " << texture[i];

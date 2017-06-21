@@ -32,7 +32,8 @@ public:
     void run() {
         reimu->teleport(-2.0f, 0.0f, 40.0f);
         suwako->teleport(2.0f, 0.0f, 40.0f);
-        // reimu->loop(10, 40);
+        reimu->loop(10, 40);
+        suwako->loop(10, 40);
         // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
         // await(reimu->playTo(60));
         // await(reimu->moveTo(0.0f, 4.0f, 45.0f, 3.0f));

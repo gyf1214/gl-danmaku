@@ -21,8 +21,22 @@ public:
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
-        // TODO
+        light->pass() = 0;
         BasicRenderer::render();
+
+        glDepthMask(GL_FALSE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+
+        int n = light->count();
+        for (int i = 1 ; i < n; ++i) {
+            light->pass() = i;
+            BasicRenderer::render();
+        }
+
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 
