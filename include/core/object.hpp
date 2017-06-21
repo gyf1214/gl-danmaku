@@ -10,14 +10,21 @@ public:
     virtual void reset(void) = 0;
 };
 
-class Object : public BaseObject {
+class Object : public virtual BaseObject {
 public:
     virtual void render(void) = 0;
+};
+
+class Renderer : public virtual Object {
+public:
+    virtual void push(Object *o) = 0;
 };
 
 class Component : public virtual BaseObject {
 public:
     virtual void update(void) = 0;
 };
+
+class Scene : public virtual Object, public virtual Component {};
 
 #endif

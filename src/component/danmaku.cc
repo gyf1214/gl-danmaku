@@ -48,7 +48,9 @@ public:
         end();
     }
 
-    GLuint outputBuffer() { return buffer[0]; }
+    GLuint outputBuffer() const { return buffer[0]; }
+    int offset() const { return 0; }
+    int size() const { return count * sizeof(Vertex); }
 };
 
 Particle *Particle::danmaku(Provider *provider) {

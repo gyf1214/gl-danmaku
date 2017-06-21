@@ -48,7 +48,7 @@ public:
         bindBuffer(particle->outputBuffer());
         bindTextures();
 
-        glDrawArrays(GL_POINTS, trailHead, trailSize);
+        glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
         glDepthFunc(GL_LEQUAL);
         glDisable(GL_BLEND);

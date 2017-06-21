@@ -112,3 +112,7 @@ public:
         src->reset();
     }
 };
+
+Provider *Provider::danmaku1() {
+    return Box::create<Danmaku1>();
+}

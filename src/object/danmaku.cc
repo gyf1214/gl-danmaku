@@ -45,7 +45,7 @@ public:
         bindBuffer(particle->outputBuffer());
         bindTextures();
 
-        glDrawArrays(GL_POINTS, 0, vertexSize);
+        glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);

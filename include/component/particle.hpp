@@ -7,7 +7,9 @@
 
 class Particle : public virtual Component {
 public:
-    virtual GLuint outputBuffer(void) = 0;
+    virtual GLuint outputBuffer(void) const = 0;
+    virtual int offset(void) const = 0;
+    virtual int size(void) const = 0;
 
     // Factories
     static Particle *danmaku(Provider *provider);

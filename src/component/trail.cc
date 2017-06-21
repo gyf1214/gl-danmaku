@@ -4,6 +4,9 @@
 
 using namespace glm;
 
+static constexpr int trailSize = 10000;
+static constexpr int trailHead = 5;
+
 static Vertex vertex[trailSize + trailHead];
 static constexpr float elapse = Application::elapse * 0.5f;
 
@@ -55,10 +58,6 @@ public:
         lastPos = bind->position();
     }
 
-    GLuint outputBuffer() {
-        return buffer[0];
-    }
-
     void update() {
         std::swap(buffer[0], buffer[1]);
 
@@ -77,6 +76,10 @@ public:
         glDrawArrays(GL_POINTS, 0, trailSize);
         end();
     }
+
+    GLuint outputBuffer() const { return buffer[0]; }
+    int offset() const { return trailHead; }
+    int size() const { return trailSize; }
 };
 
 Particle *Particle::trail(Translate *translate) {

@@ -1,7 +1,7 @@
 #ifndef __CORE_APPLICATION
 #define __CORE_APPLICATION
 
-#include "scene.hpp"
+#include "object.hpp"
 
 class Application {
     static void errorCallBack(int error, const char* desc);
