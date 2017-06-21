@@ -12,6 +12,7 @@ public:
     static Object *danmaku(Particle *particle, Camera *camera);
     static Object *skybox(Camera *camera, LightManager *light);
     static Object *trail(Particle *particle, Camera *camera, float size, vec3 color);
+    static Object *debug(bool output = false);
 };
 
 #endif

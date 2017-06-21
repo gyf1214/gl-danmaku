@@ -10,3 +10,7 @@ public:
     void render() { for (const auto &o : objects) o->render(); }
     void push(Object *o) { objects.push_back(o); }
 };
+
+Renderer *ObjectBox::renderer() {
+    return create<BasicRenderer>();
+}

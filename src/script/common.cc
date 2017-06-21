@@ -38,9 +38,12 @@ void BasicScript::setup() {
 }
 
 void BasicScript::reset() {
+    LOG << "reset script";
     delete fiber;
+    fiber = NULL;
 
-    for (const auto &c : coms) { c->reset(); }
+    for (const auto &c : coms) { Box::release(c); }
+    coms.clear();
 }
 
 void BasicScript::update() {

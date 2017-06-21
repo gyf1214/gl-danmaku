@@ -128,3 +128,7 @@ public:
         glDisable(GL_CULL_FACE);
     }
 };
+
+Object *ObjectBox::skybox(Camera *camera, LightManager *light) {
+    return create<Skybox>(camera, light);
+}

@@ -2,7 +2,7 @@
 #define __COM_EXT_SCRIPT
 
 #include "../ext.hpp"
-#include "component.hpp"
+#include "object_box.hpp"
 
 class BasicScript : public virtual Script {
     static void doFiber(void *self);
