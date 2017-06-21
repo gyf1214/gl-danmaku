@@ -27,8 +27,8 @@ public:
 
         LOG << "create opaque objects";
         Renderer *opaque = push(ObjectBox::opaque(light));
-        // opaque->push(ObjectBox::character(reimu, camera, light));
-        // opaque->push(ObjectBox::character(suwako, camera, light));
+        opaque->push(ObjectBox::character(reimu, camera, light));
+        opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
 
         LOG << "create trail";
