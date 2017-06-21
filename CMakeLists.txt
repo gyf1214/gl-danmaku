@@ -3,6 +3,12 @@ project(gl)
 
 find_package(PkgConfig REQUIRED)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
 set(EXECUTABLE_OUTPUT_PATH bin)
 set(TARGET main)
 aux_source_directory(src SRCS)
