@@ -10,6 +10,7 @@ public:
 
     static Renderer *renderer(void);
     static Renderer *opaque(LightManager *light);
+    static Renderer *layer(void);
 
     static Object *character(Character *character, Camera *camera, LightManager *light);
     static Object *danmaku(Particle *particle, Camera *camera);

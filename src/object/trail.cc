@@ -34,10 +34,12 @@ public:
 
     void render() {
         bindProgram();
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_BLEND);
         glBlendEquation(GL_MAX);
-        glDepthFunc(GL_ALWAYS);
+
 
         glUniform1f(uniform[3], size * Application::bufferHeight /
                                 (2.0f * tan(camera->fovy() / 2.0f)));
@@ -49,9 +51,9 @@ public:
 
         glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
-        glDepthFunc(GL_LEQUAL);
         glDisable(GL_BLEND);
         glDisable(GL_PROGRAM_POINT_SIZE);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 

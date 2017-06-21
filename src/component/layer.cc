@@ -81,6 +81,8 @@ public:
     void attach() {
         glUseProgram(program);
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
@@ -97,6 +99,7 @@ public:
 
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 
@@ -110,7 +113,7 @@ void Layer::release() {
     }
 }
 
-void Layer::clear(float alpha, vec3 color) {
+void Layer::clear(float alpha, const vec3 &color) {
     glClearColor(color.x, color.y, color.z, alpha);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }

@@ -5,11 +5,11 @@
 
 class Layer : public virtual BaseObject {
 public:
-    void select(void);
-    void attach(void);
+    virtual void select(void) = 0;
+    virtual void attach(void) = 0;
 
     static void detach(void);
-    static void clear(float alpha = 0.0f, vec3 color = vec3(0.0f));
+    static void clear(float alpha = 0.0f, const vec3 &color = vec3(0.0f));
     static void release(void);
     static Layer *temp(void);
 };

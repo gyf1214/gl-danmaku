@@ -21,17 +21,20 @@ public:
 
         LOG << "create particle";
         Particle *trail1 = push(Particle::trail(
-            push(reimu->bindPoint(-1, vec3(-9.5f, 13.8f, 0.2f)))));
+            push(reimu->bindPoint(0, vec3(-9.5f, 13.8f, 0.2f)))));
         Particle *trail2 = push(Particle::trail(
-            push(reimu->bindPoint(-1, vec3( 9.5f, 13.8f, 0.2f)))));
+            push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
 
         LOG << "create opaque objects";
         Renderer *opaque = push(ObjectBox::opaque(light));
         opaque->push(ObjectBox::character(reimu, camera, light));
         opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
-        opaque->push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
-        opaque->push(ObjectBox::trail(trail2, camera, 0.1f, vec3(1.0f)));
+
+        LOG << "create trail";
+        Renderer *trail = push(ObjectBox::layer());
+        trail->push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
+        trail->push(ObjectBox::trail(trail2, camera, 0.1f, vec3(1.0f)));
 
         LOG << "create other objects";
         push(ObjectBox::debug());

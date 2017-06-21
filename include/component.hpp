@@ -11,5 +11,6 @@
 #include "component/character.hpp"
 #include "component/provider.hpp"
 #include "component/particle.hpp"
+#include "component/layer.hpp"
 
 #endif

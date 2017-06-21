@@ -41,10 +41,48 @@ public:
     }
 };
 
+class OffScreenRenderer : public BasicRenderer {
+protected:
+    Layer *layer;
+    float alpha;
+    vec3 color;
+public:
+    OffScreenRenderer(Layer *layer, float alpha, vec3 color)
+        : layer(layer), alpha(alpha), color(color) {}
+
+    void render() {
+        layer->select();
+        Layer::clear(alpha, color);
+
+        BasicRenderer::render();
+
+        Layer::detach();
+    }
+};
+
+class LayerRenderer : public OffScreenRenderer {
+public:
+    LayerRenderer() : OffScreenRenderer(NULL, 0.0f, vec3(0.0f)) {}
+
+    void setup() {
+        layer = Layer::temp();
+        OffScreenRenderer::setup();
+    }
+
+    void render() {
+        OffScreenRenderer::render();
+        layer->attach();
+    }
+};
+
 Renderer *ObjectBox::renderer() {
     return create<BasicRenderer>();
 }
 
 Renderer *ObjectBox::opaque(LightManager *light) {
     return create<OpaqueRenderer>(light);
+}
+
+Renderer *ObjectBox::layer() {
+    return create<LayerRenderer>();
 }
