@@ -1,7 +1,7 @@
 #ifndef __DANMAKU_BUILDER
 #define __DANMAKU_BUILDER
 
-#include "common.hpp"
+#include "../ext.hpp"
 #include "vertex/danmaku.hpp"
 
 namespace Builder {

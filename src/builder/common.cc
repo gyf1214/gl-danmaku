@@ -1,5 +1,4 @@
-#include "../ext.hpp"
-#include "builder.hpp"
+#include "common.hpp"
 
 namespace Builder {
     Base::Base() : refcnt(0), next(NULL) {}
