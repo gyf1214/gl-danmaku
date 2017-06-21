@@ -14,6 +14,8 @@ struct Texture {
     static GLuint lava();
     static GLuint wallLava();
     static GLuint white();
+    static GLuint wall1();
+    static GLuint wall2();
 };
 
 #endif

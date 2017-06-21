@@ -9,11 +9,11 @@ public:
     Scene1() : SceneExt(true, false, 3) {}
 
     void setupObjects() {
-        Transformer *transform = ObjectBox::danmakuTransform(this);
+//        Transformer *transform = ObjectBox::danmakuTransform(this);
         objects.push_back(ObjectBox::skybox(this));
-        objects.push_back(ObjectBox::character(this, Model::reimu()));
-        objects.push_back(transform);
-        objects.push_back(ObjectBox::danmaku(this, transform));
+//        objects.push_back(ObjectBox::character(this, Model::reimu()));
+//        objects.push_back(transform);
+//        objects.push_back(ObjectBox::danmaku(this, transform));
     }
 
     void setupCamera() {

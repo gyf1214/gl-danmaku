@@ -2,13 +2,17 @@
 #include "vertex/light.hpp"
 
 static const int circleSize = 128;
-static const int wallSize = 6 * circleSize;
+static const int wallSize1 = 6 * circleSize;
+static const int wallSize2 = 6 * circleSize;
+static const int wallSize = wallSize1 + wallSize2;
 static const int floorSize = 4;
 static const int vertexSize = wallSize + floorSize;
 static const float radius = 40.0f;
-static const float heightScale = 1.0f;
-static const float height = radius * M_PI * 2.0f * heightScale;
-static const float uvScale = 20.0f;
+static const float height1 = 1.0f * M_PI * radius;
+static const float height2 = 1.0f * M_PI * radius;
+static const float height = height1 + height2;
+static const float uScale = 16.0f;
+static const float vScale = 64.0f;
 
 static const float wallMaterial[]  = { 1.0f, 0.5f, 0.8f, 100.0f };
 static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
@@ -35,32 +39,41 @@ protoUnifom = {
     "material", "diffuse", "normal", "specular", "emission"
 };
 
-static void push(int x, int y, float norm) {
-    float t = (float)x / (float)circleSize;
-    float angle = t * M_PI * 2.0f;
-    float yy = y * height;
+static void pushVertex(float theta, float z) {
+    float u = theta / (2.0f * M_PI);
+    float v = z / height;
 
-    vertices[cnt].uv = vec2(t * uvScale, y * uvScale * heightScale);
-    vertices[cnt].position = vec3(radius * cos(angle), -radius * sin(angle), yy);
-    vertices[cnt].normal = vec3(-cos(norm), sin(norm), 0.0f);
-    vertices[cnt].tangent = vec3(-sin(norm), -cos(norm), 0.0f);
-    // vertices[cnt].tangent = vec3(0.0f, 0.0f, 0.0f);
+    vertices[cnt].uv = vec2(u * uScale, v * vScale);
+    vertices[cnt].position = vec3(radius * cos(theta), radius * sin(theta), z);
+    vertices[cnt].normal = vec3(-cos(theta), -sin(theta), 0.0f);
+    vertices[cnt].tangent = vec3(sin(theta), -cos(theta), 0.0f);
     ++cnt;
+}
+
+static void pushRectangle(float theta1, float theta2, float z1, float z2) {
+    pushVertex(theta1, z1);
+    pushVertex(theta1, z2);
+    pushVertex(theta2, z2);
+    pushVertex(theta2, z2);
+    pushVertex(theta2, z1);
+    pushVertex(theta1, z1);
 }
 
 static void setupVertices() {
     cnt = 0;
-    const float angle2 = 2.0f * M_PI / (float)circleSize;
 
     for (int i = 0; i < circleSize; ++i) {
-        float angle0 = (float)i * angle2;
-        float angle1 = (float)(i + 1) * angle2;
-        push(i    ,  1, angle0);
-        push(i    ,  0, angle0);
-        push(i + 1,  1, angle1);
-        push(i + 1,  1, angle1);
-        push(i    ,  0, angle0);
-        push(i + 1,  0, angle1);
+        float theta1 = (float)i / (float)circleSize * 2.0f * M_PI;
+        float theta2 = (float)(i + 1) / (float)circleSize * 2.0f * M_PI;
+
+        pushRectangle(theta1, theta2, 0, height1);
+    }
+
+    for (int i = 0; i < circleSize; ++i) {
+        float theta1 = (float)i / (float)circleSize * 2.0f * M_PI;
+        float theta2 = (float)(i + 1) / (float)circleSize * 2.0f * M_PI;
+
+        pushRectangle(theta1, theta2, height1, height1 + height2);
     }
 
     for (int i = 0; i < 2; ++i) {
@@ -76,7 +89,7 @@ static void setupVertices() {
 }
 
 class Skybox : public ProgramRenderer<Proto> {
-    GLuint lava, wall, wallLava, normal, white;
+    GLuint lava, wall, wallLava, normal, white, wall1, wall2;
 public:
     Skybox(Scene *scene) : ProgramRenderer(scene) {}
 
@@ -96,6 +109,8 @@ public:
         wallLava = Texture::wallLava();
         normal = Texture::wallNormal();
         white = Texture::white();
+        wall1 = Texture::wall1();
+        wall2 = Texture::wall2();
     }
 
     void render() {
@@ -127,11 +142,16 @@ public:
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, white);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, wallLava);
-
+        glBindTexture(GL_TEXTURE_2D, wall1);
 
         glUniform4fv(uniform[6], 1, wallMaterial);
-        glDrawArrays(GL_TRIANGLES, 0, wallSize);
+        glDrawArrays(GL_TRIANGLES, 0, wallSize1);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, wall2);
+
+        glUniform4fv(uniform[6], 1, wallMaterial);
+        glDrawArrays(GL_TRIANGLES, wallSize1, wallSize2);
 
         glDisable(GL_CULL_FACE);
     }
