@@ -8,56 +8,49 @@ using namespace mmd;
 class ModelImp : private MMDModel, public virtual Model {
     std::vector<GLuint> textureSlot;
     GLuint morphBuffer, morphTex, white;
-    const char *path;
-    bool loaded;
 public:
-    ModelImp(const char *path) : path(path), loaded(false) {}
+    ModelImp(const char *path) {
+        LOG << "load model from path: " << path;
+        Fs *fs = Fs::open(path);
+        MMDModel::load(fs);
+        delete fs;
+        LOG << "model name: " << header.name;
 
-    void setup() {
-        if (!loaded) {
-            loaded = true;
-
-            LOG << "load model from path: " << path;
-            Fs *fs = Fs::open(path);
-            MMDModel::load(fs);
-            delete fs;
-            LOG << "model name: " << header.name;
-
-            int n = textures.size();
-            LOG << "load " << n << " textures";
-            textureSlot.resize(n, 0);
-            white = Texture::white();
-            for (int i = 0; i < n; ++i) {
-                textureSlot[i] = Texture::loadTexture(textures[i].c_str());
-                LOG << "texture " << i << ": " << textureSlot[i];
-            }
-
-            LOG << "load morph texture";
-            glGenBuffers(1, &morphBuffer);
-            glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
-            LOG << "texture buffer: " << morphBuffer;
-            int m = morphs.size();
-            n = mesh.vertex.size();
-            vec4 *data = new vec4[n * m];
-            LOG << "size: " << n << "x" << m;
-            memset(data, 0, n * m * sizeof(vec4));
-            for (int i = 0; i < m; ++i) {
-                const auto &offset = morphs[i].offsets;
-                int t = offset.size();
-                for (int j = 0; j < t; ++j) {
-                    data[offset[j].index * m + i] = vec4(offset[j].translate, 0.0f);
-                }
-            }
-            glBufferData(GL_TEXTURE_BUFFER, n * m * sizeof(vec4), data, GL_STATIC_DRAW);
-            delete[] data;
-
-            glGenTextures(1, &morphTex);
-            LOG << "morph texture: " << morphTex;
-            glBindTexture(GL_TEXTURE_BUFFER, morphTex);
-            glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
+        int n = textures.size();
+        LOG << "load " << n << " textures";
+        textureSlot.resize(n, 0);
+        white = Texture::white();
+        for (int i = 0; i < n; ++i) {
+            textureSlot[i] = Texture::loadTexture(textures[i].c_str());
+            LOG << "texture " << i << ": " << textureSlot[i];
         }
+
+        LOG << "load morph texture";
+        glGenBuffers(1, &morphBuffer);
+        glBindBuffer(GL_TEXTURE_BUFFER, morphBuffer);
+        LOG << "texture buffer: " << morphBuffer;
+        int m = morphs.size();
+        n = mesh.vertex.size();
+        vec4 *data = new vec4[n * m];
+        LOG << "size: " << n << "x" << m;
+        memset(data, 0, n * m * sizeof(vec4));
+        for (int i = 0; i < m; ++i) {
+            const auto &offset = morphs[i].offsets;
+            int t = offset.size();
+            for (int j = 0; j < t; ++j) {
+                data[offset[j].index * m + i] = vec4(offset[j].translate, 0.0f);
+            }
+        }
+        glBufferData(GL_TEXTURE_BUFFER, n * m * sizeof(vec4), data, GL_STATIC_DRAW);
+        delete[] data;
+
+        glGenTextures(1, &morphTex);
+        LOG << "morph texture: " << morphTex;
+        glBindTexture(GL_TEXTURE_BUFFER, morphTex);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, morphBuffer);
     }
 
+    void setup() {}
     void reset() {}
 
     ~ModelImp() {
@@ -84,7 +77,7 @@ public:
 
 #define defineModel(name, path) Model *Model::name() {\
     static Model *model = NULL;\
-    if (!model) model = Box::global<ModelImp>(path);\
+    if (!model) model = Box::global<ModelImp>("assets/" path);\
     return model;\
 }
 

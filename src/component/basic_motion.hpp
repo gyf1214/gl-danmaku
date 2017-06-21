@@ -31,6 +31,8 @@ class BasicMotion : public virtual Motion {
     MotionData<vec3> pos;
     MotionData<glm::quat> rot;
 public:
+    BasicMotion();
+
     void setup(void);
     void reset(void);
     void update(void);

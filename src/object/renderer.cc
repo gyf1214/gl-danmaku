@@ -2,7 +2,8 @@
 
 using namespace std;
 
-class BasicRenderer : public Renderer {
+class BasicRenderer : public virtual Renderer {
+protected:
     vector<Object *> objects;
 public:
     void setup() { for (const auto &o : objects) o->setup(); }
@@ -11,6 +12,24 @@ public:
     void push(Object *o) { objects.push_back(o); }
 };
 
+class OpaqueRenderer : public BasicRenderer {
+    LightManager *light;
+public:
+    OpaqueRenderer(LightManager *light) : light(light) {}
+
+    void render() {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
+        // TODO
+        BasicRenderer::render();
+    }
+};
+
 Renderer *ObjectBox::renderer() {
     return create<BasicRenderer>();
+}
+
+Renderer *ObjectBox::opaque(LightManager *light) {
+    return create<OpaqueRenderer>(light);
 }

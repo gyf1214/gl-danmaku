@@ -7,7 +7,10 @@
 class ObjectBox : public Box {
 public:
     static Scene *scene(Script *script);
+
     static Renderer *renderer(void);
+    static Renderer *opaque(LightManager *light);
+
     static Object *character(Character *character, Camera *camera, LightManager *light);
     static Object *danmaku(Particle *particle, Camera *camera);
     static Object *skybox(Camera *camera, LightManager *light);

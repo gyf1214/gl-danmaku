@@ -19,7 +19,10 @@ public:
         : pos(pos), horizonAngle(horizon), verticalAngle(vertical),
           fov(fov) {}
 
-    void setup() { LOG << "setup free camera"; }
+    void setup() {
+        LOG << "setup free camera";
+        Application::setCursor(centerX, centerY);
+    }
     void reset() { LOG << "reset free camera"; }
     void update() {
         double posX, posY;

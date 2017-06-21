@@ -18,7 +18,6 @@ public:
     static U *global(Ts ...args) {
         U *ret = create<U>(args...);
         track(ret);
-        ret->setup();
         return ret;
     }
     static void release(BaseObject *o);

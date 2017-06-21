@@ -60,7 +60,7 @@ class CharacterImp : public BasicMotion, public KeyImp, public virtual Character
     bool resetPhysics;
 
     mat4 localTransform() {
-        return invTransform * matrix() * preTransform;
+        return preTransform * matrix() * invTransform;
     }
 public:
     CharacterImp(Model *cModel, MMDMotion *vMotion, bool debug = false)

@@ -3,13 +3,14 @@
 
 using namespace glm;
 
-void BasicMotion::setup() {
+BasicMotion::BasicMotion() {
     pos.now = vec3(0.0f);
     pos.playing = pos.looping = false;
     rot.now = quat();
     rot.playing = rot.playing = false;
 }
 
+void BasicMotion::setup() {}
 void BasicMotion::reset() {}
 
 void BasicMotion::update() {
@@ -25,13 +26,9 @@ mat4 BasicMotion::matrix() const {
     return translate(pos.now) * mat4_cast(rot.now);
 }
 
-void BasicMotion::teleport(vec3 p) {
-    pos.now = p;
-}
+void BasicMotion::teleport(vec3 p) { pos.now = p; }
 
-void BasicMotion::move(vec3 p) {
-    pos.now = p;
-}
+void BasicMotion::move(vec3 p) { pos.now = p; }
 
 float BasicMotion::moveTo(vec3 p, float speed) {
     vec3 cur = pos.now;
@@ -43,9 +40,7 @@ float BasicMotion::moveTo(vec3 p, float speed) {
     return pos.end * Application::elapse;
 }
 
-void BasicMotion::lookAt(quat dir) {
-    rot.now = dir;
-}
+void BasicMotion::lookAt(quat dir) { rot.now = dir; }
 
 float BasicMotion::rotateTo(quat dir, float speed) {
     float dis = acos(dot(dir, rot.now));
