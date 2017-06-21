@@ -1,9 +1,11 @@
-#include "transform_renderer.hpp"
+#include "program_particle.hpp"
+#include "component/transform.hpp"
 #include "vertex/trail.hpp"
 
-static Vertex vertex[trailSize + trailHead];
-
 using namespace glm;
+
+static Vertex vertex[trailSize + trailHead];
+static constexpr float elapse = Application::elapse * 0.5f;
 
 proto(TrailTransform, Shader::trailTransform);
 
@@ -17,10 +19,12 @@ protoAttrib(TrailTransform) = {
     { "alpha0"   , Offset(Vertex, alpha)      , 1, sizeof(Vertex) }
 };
 
-protoUnifom(TrailTransform) = {
+protoUniform(TrailTransform) = {
     "elapse", "position1", "alpha1",
     "position2", "alpha2"
 };
+
+protoTexture(TrailTransform) = {};
 
 static void setupVertices() {
     memset(vertex, 0, sizeof(vertex));
@@ -30,9 +34,9 @@ static void setupVertices() {
 
 }
 
-static constexpr float elapse = Application::elapse * 0.5f;
-
-class TrailTransform : public TransformRenderer<TrailTransformProto> {
+class Trail : public ProgramParticle<TrailTransformProto> {
+    Translate *bind;
+    vec3 lastPos;
 protected:
     void begin(GLenum mode) {
         glEnable(GL_RASTERIZER_DISCARD);
@@ -40,32 +44,15 @@ protected:
                           trailHead * sizeof(Vertex), trailSize * sizeof(Vertex));
         glBeginTransformFeedback(mode);
     }
-
-    struct {
-        Character *character;
-        int bone;
-        vec3 pos;
-        vec3 now;
-
-        vec3 update() {
-            return now = character->getGlobal(bone, pos);
-        }
-    } bind;
 public:
-    TrailTransform(Scene *scene, Character *character, int bone, vec3 pos)
-    : TransformRenderer(scene) {
-        bind.character = character;
-        bind.bone = bone;
-        bind.pos = pos;
-    }
-
+    Trail(Translate *bind) : bind(bind) {}
+    
     void setup() {
         setupVertices();
-        TransformRenderer::setup();
+        ProgramParticle::setup();
 
         glUniform1f(uniform[0], elapse);
-
-        bind.update();
+        lastPos = bind->position();
     }
 
     GLuint outputBuffer() {
@@ -77,19 +64,12 @@ public:
 
         bindProgram();
 
-        vec3 tmp = bind.now;
-        bind.update();
-
-        // if (distance(tmp, bind.now) < 1e-4) {
-        //     glUniform1f(uniform[2], 0.0f);
-        //     glUniform1f(uniform[4], 0.0f);
-        // } else {
         glUniform1f(uniform[2], 1.0f);
         glUniform1f(uniform[4], 1.0f - elapse);
-        // }
 
-        glUniform3fv(uniform[3], 1, &tmp[0]);
-        glUniform3fv(uniform[1], 1, &bind.now[0]);
+        glUniform3fv(uniform[3], 1, &lastPos[0]);
+        glUniform3fv(uniform[1], 1, &bind->position()[0]);
+        lastPos = bind->position();
 
         bindBuffer(buffer[1]);
 
@@ -98,8 +78,3 @@ public:
         end();
     }
 };
-
-Transformer *ObjectBox::trailTransform(Scene *scene, Character *character,
-                                       int bone, vec3 pos) {
-    return new TrailTransform(scene, character, bone, pos);
-}
