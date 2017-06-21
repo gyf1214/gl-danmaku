@@ -18,7 +18,7 @@ public:
         ++tick;
         double now = glfwGetTime();
         if (now - timer > 1.0) {
-            LOG << "fps: " << tick;
+            INFO << "fps: " << tick;
             tick = 0;
             timer = now;
         }

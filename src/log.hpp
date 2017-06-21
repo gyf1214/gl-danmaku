@@ -9,25 +9,24 @@ struct LogStream {
 
     LogStream(std::ostream &o, const char *file, int line, bool log, bool fail)
     : o(o), log(log), fail(fail) {
-#ifndef NDEBUG
         if (log) o << "[" << file << ":" << line << "]\t";
-#endif
     }
 
     ~LogStream() {
-#ifndef NDEBUG
         if (log) o << std::endl;
-#endif
         if (fail) abort();
     }
 
     template <typename T>
     const LogStream &operator <<(T x) const {
-#ifndef NDEBUG
         if (log) o << x;
-#endif
         return *this;
     }
+};
+
+struct EmptyStream {
+    template <typename T>
+    const EmptyStream &operator <<(T x) const { return *this; }
 };
 
 #ifndef __FILENAME__
@@ -40,14 +39,16 @@ struct LogStream {
 #define DEFAULT_LOG std::cerr
 #endif
 
-#define EMPTY       LOG_TO(DEFAULT_LOG, false, false)
-#define LOG         LOG_TO(DEFAULT_LOG, true, false)
+#define EMPTY       EmptyStream()
 #define FAIL        LOG_TO(DEFAULT_LOG, true, true)
+#define INFO        LOG_TO(DEFAULT_LOG, true, false)
 
 #ifndef NDEBUG
 #define LOG_IF(x)   ({ bool __log = (x) ? true : false; LOG_TO(DEFAULT_LOG, __log, false); })
+#define LOG         INFO
 #else
 #define LOG_IF(x)   EMPTY
+#define LOG         EMPTY
 #endif
 
 #ifndef NCHECK
