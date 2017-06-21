@@ -46,7 +46,7 @@ protected:
     }
 public:
     Trail(Translate *bind) : bind(bind) {}
-    
+
     void setup() {
         setupVertices();
         ProgramParticle::setup();
@@ -78,3 +78,7 @@ public:
         end();
     }
 };
+
+Particle *Particle::trail(Translate *translate) {
+    return Box::create<Trail>(translate);
+}

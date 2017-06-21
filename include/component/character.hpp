@@ -21,6 +21,9 @@ public:
     virtual const std::vector<glm::mat4> &skins(void) const = 0;
     virtual const std::vector<float> &faces(void) const = 0;
     virtual const Model *model(void) const = 0;
+
+    // Factories
+    static Character *basic(Model *model, MMDMotion *motion);
 };
 
 #endif

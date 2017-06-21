@@ -39,9 +39,14 @@ public:
         doPlay(start, stop, speed, true);
     }
     void loopTo(float stop, float speed) { doPlay(now, stop, speed, true); }
+    void fix(float start) {
+        now = start;
+        looping = playing = false;
+    }
+    void pause() { looping = playing = false; }
 };
 
-class CharacterImp : public BasicMotion, public KeyImp {
+class CharacterImp : public BasicMotion, public KeyImp, public virtual Character {
     static const mat4 preTransform;
     static const mat4 invTransform;
 
@@ -172,3 +177,7 @@ const mat4 CharacterImp::preTransform(
 );
 
 const mat4 CharacterImp::invTransform = inverse(preTransform);
+
+Character *Character::basic(Model *model, MMDMotion *motion) {
+    return Box::create<CharacterImp>(model, motion);
+}

@@ -50,3 +50,7 @@ public:
 
     GLuint outputBuffer() { return buffer[0]; }
 };
+
+Particle *Particle::danmaku(Provider *provider) {
+    return Box::create<Danmaku>(provider);
+}
