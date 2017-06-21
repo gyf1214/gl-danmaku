@@ -1,6 +1,4 @@
 #include "ext.hpp"
-#include "../core/program.hpp"
-#include "component/particle.hpp"
 #include "vertex/danmaku.hpp"
 
 proto(Danmaku, Shader::danmaku);
@@ -18,11 +16,11 @@ protoUniform(Danmaku) = { "vMat", "pMat", "texture0" };
 
 protoTexture(Danmaku) = { Texture::etama };
 
-class Danmaku : public ProgramBase<DanmakuProto>, public virtual Object {
+class DanmakuObject : public ProgramBase<DanmakuProto>, public virtual Object {
     Particle *particle;
     Camera *camera;
 public:
-    Danmaku(Particle *particle, Camera *camera)
+    DanmakuObject(Particle *particle, Camera *camera)
         : particle(particle), camera(camera) {}
 
     void setup() {
@@ -51,3 +49,7 @@ public:
         glDepthMask(GL_TRUE);
     }
 };
+
+Object *ObjectBox::danmaku(Particle *particle, Camera *camera) {
+    return Box::create<DanmakuObject>(particle, camera);
+}

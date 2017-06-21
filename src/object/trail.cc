@@ -1,5 +1,4 @@
 #include "ext.hpp"
-#include "component/particle.hpp"
 #include "vertex/trail.hpp"
 
 proto(Trail, Shader::trail);
@@ -23,7 +22,7 @@ class TrailObject : public ProgramBase<TrailProto>, public virtual Object {
     float size;
     vec3 color;
 public:
-    TrailObject(Camera *camera, Particle *particle, float size, vec3 color)
+    TrailObject(Particle *particle, Camera *camera, float size, vec3 color)
         : camera(camera), particle(particle), size(size), color(color) {}
 
     void setup() {
@@ -55,3 +54,7 @@ public:
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
 };
+
+Object *ObjectBox::trail(Particle *particle, Camera *camera, float size, vec3 color) {
+    return Box::create<TrailObject>(particle, camera, size, color);
+}

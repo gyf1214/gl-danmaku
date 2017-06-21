@@ -27,9 +27,9 @@ public:
 
     virtual void remove(int pass) = 0;
     virtual void push(const Light &light) = 0;
-    virtual void pushAmbient(vec3 color) = 0;
-    virtual void pushPoint(vec3 pos, vec3 color, float radius, float alpha) = 0;
-    virtual void pushParallel(vec3 dir, vec3 color) = 0;
+    virtual void ambient(vec3 color) = 0;
+    virtual void point(vec3 pos, vec3 color, float radius, float alpha) = 0;
+    virtual void parallel(vec3 dir, vec3 color) = 0;
 
     // Factories
     static LightManager *basic(void);

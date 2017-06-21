@@ -1,8 +1,25 @@
-#include "scene_ext.hpp"
-#include "scene_box.hpp"
-#include "object_box.hpp"
+#include "common.hpp"
 
 using namespace glm;
+
+class Scene1 : public BasicScript {
+    Character *reimu, *suwako;
+public:
+    void createObjects(Renderer *root) {
+        LOG << "create objects for scene1";
+        BasicScript::createObjects(root);
+
+        LOG << "create camera & light";
+        camera = push(Camera::free(vec3(0.0f, -10.0f, 45.0f), M_PI / 2.0f, 0.0f, 45.0f));
+        light = push(LightManager::basic());
+        light->ambient(vec3(0.0f, 0.0f, 0.0f));
+        light->point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f);
+
+        LOG << "create character";
+        reimu = push(Character::basic(Model::reimu(), Model::test2()));
+        suwako = push(Character::basic(Model::suwako(), Model::test2()));
+    }
+};
 
 class Scene1 : public SceneExt {
     Character *reimu, *utsuho, *suwako;
@@ -37,8 +54,8 @@ public:
     Light light() {
         static Light lights[] = {
             ambient(0.0f, 0.0f, 0.0f),
-            point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f),
-            direction(vec3(0.0f, 0.0f, 1.0f), vec3(1.0f, 0.6f, 0.2f)),
+            point(),
+            direction(
         };
 
         CHECK(currentPass < sizeof(lights) / sizeof(Light)) << "invalid pass!";

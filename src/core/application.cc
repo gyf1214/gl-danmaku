@@ -1,5 +1,4 @@
 #include "../ext.hpp"
-#include "scene_box.hpp"
 
 static Scene *currentScene = NULL;
 static Scene *newScene = NULL;
@@ -20,7 +19,6 @@ void Application::keyboardCallback(GLFWwindow* window, int key,
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         setClose();
     }
-    currentScene -> onKey(key, scancode, action, mods);
 }
 
 void Application::setup() {
@@ -77,21 +75,21 @@ void Application::mainLoop() {
 
         if (newScene != currentScene) {
             LOG << "change scene";
-            SceneBox::release(currentScene);
+            Box::release(currentScene);
             currentScene = newScene;
-            if (currentScene) currentScene -> setup();
+            if (currentScene) currentScene->setup();
         }
 
         if (currentScene) {
-            currentScene -> update();
-            currentScene -> render();
+            currentScene->update();
+            currentScene->render();
         }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    if (currentScene) SceneBox::release(currentScene);
+    if (currentScene) Box::release(currentScene);
     Box::releaseGlobal();
 }
 

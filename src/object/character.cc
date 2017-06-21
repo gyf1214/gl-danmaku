@@ -1,5 +1,4 @@
 #include "ext.hpp"
-#include "component/character.hpp"
 
 using namespace glm;
 using namespace std;
@@ -143,3 +142,7 @@ public:
         glDisable(GL_CULL_FACE);
     }
 };
+
+Object *ObjectBox::character(Character *ch, Camera *cam, LightManager *light) {
+    return Box::create<CharacterObject>(ch, cam, light);
+}
