@@ -17,6 +17,7 @@ static const char *vsh = R"(
 
     void main(void) {
         show = time.x <= 0.0 && time.y > 0.0 ? 1 : 0;
+        // show = 1;
         gl_Position = vMat * vec4(position, 1.0);
         velocityOut = vMat * vec4(velocity, 0.0);
         uvOut = uvIndex;

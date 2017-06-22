@@ -32,6 +32,8 @@ public:
     void render() {
         bindProgram();
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
@@ -44,9 +46,11 @@ public:
         bindTextures();
 
         glDrawArrays(GL_POINTS, particle->offset(), particle->size());
+        LOG << particle->size();
 
-        glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 

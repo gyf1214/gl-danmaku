@@ -26,7 +26,7 @@ class Danmaku : public ProgramParticle<DanmakuTransformProto> {
 public:
     Danmaku(Provider *provider) : provider(provider) {}
 
-    virtual void setupBuffers() {
+    void setupBuffers() {
         if (!BufferSize) return;
         glGenBuffers(BufferSize, buffer);
         LOG << "generate " << BufferSize << " buffers";
@@ -36,6 +36,13 @@ public:
         glBufferData(GL_ARRAY_BUFFER, size, provider->data(), GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
         glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+        LOG << count;
+    }
+
+    void setup() {
+        provider->setup();
+        ProgramParticle::setup();
+        Box::release(provider);
     }
 
     void update() {
@@ -50,7 +57,7 @@ public:
 
     GLuint outputBuffer() const { return buffer[0]; }
     int offset() const { return 0; }
-    int size() const { return count * sizeof(Vertex); }
+    int size() const { return count; }
 };
 
 Particle *Particle::danmaku(Provider *provider) {
