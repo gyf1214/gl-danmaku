@@ -1,22 +1,22 @@
 #ifndef __OBJECT_BOX
 #define __OBJECT_BOX
 
-#include "box.hpp"
-#include "renderer.hpp"
-#include "model.hpp"
+#include "core.hpp"
+#include "component.hpp"
 
-class ObjectBox : public Box<Renderer> {
+class ObjectBox : public Box {
 public:
-    static Renderer *danmaku(Scene *scene, Transformer *trans);
-    static Transformer *danmakuTransform(Scene *scene);
-    static Renderer *skybox(Scene *scene);
-    static Character *character(Scene *scene, Model *model,
-                                mmd::vmd::Motion *motion, bool debug);
+    static Scene *scene(Script *script);
 
-    static Transformer *trailTransform(Scene *scene, Character *character,
-                                       int bone, vec3 pos);
-    static Renderer *trail(Scene *scene, Transformer *transform,
-                           float size, vec3 color);
+    static Renderer *renderer(void);
+    static Renderer *opaque(LightManager *light);
+    static Renderer *layer(void);
+
+    static Object *character(Character *character, Camera *camera, LightManager *light);
+    static Object *danmaku(Particle *particle, Camera *camera);
+    static Object *skybox(Camera *camera, LightManager *light);
+    static Object *trail(Particle *particle, Camera *camera, float size, vec3 color);
+    static Object *debug(bool output = false);
 };
 
 #endif

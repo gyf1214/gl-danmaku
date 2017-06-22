@@ -15,9 +15,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/random.hpp>
 
-#include "application.hpp"
-#include "renderer.hpp"
-#include "scene.hpp"
+#include "core.hpp"
 
 #include "helper.hpp"
 #include "log.hpp"

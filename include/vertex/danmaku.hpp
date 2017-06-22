@@ -11,6 +11,4 @@ typedef struct {
     vec4 uvIndex;
 } Vertex;
 
-constexpr int vertexSize = 14400;
-
 #endif

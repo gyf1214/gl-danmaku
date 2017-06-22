@@ -1,17 +1,14 @@
-#include "../ext.hpp"
-#include "builder.hpp"
+#include "common.hpp"
+
+using namespace std;
 
 namespace Builder {
     class Source : public Base {
-        Vertex *now;
-        int cnt;
+        vector<Vertex> &src;
+        // Vertex *src;
     public:
-        Source(Vertex *now, int cnt) : now(now), cnt(cnt) {}
-        void pass(Vertex &v, int i) {
-            CHECK(cnt > 0) << "vertex exceeded!";
-            *now++ = v;
-            --cnt;
-        }
+        Source(vector<Vertex> &src) : src(src) {}
+        void pass(Vertex &v, int i) { src.push_back(v); }
     };
 
     class Generator : public Base {
@@ -25,9 +22,7 @@ namespace Builder {
             }
         }
         void pass(Vertex &v, int i) {
-            for (int j = 0; j < cnt; ++j) {
-                emit(v, j);
-            }
+            for (int j = 0; j < cnt; ++j) { emit(v, j); }
         }
     };
 
@@ -91,7 +86,7 @@ namespace Builder {
         }
     };
 
-    Base *source(Vertex *now, int cnt) { return new Source(now, cnt); }
+    Base *source(vector<Vertex> &src) { return new Source(src); }
     Base *generator(int cnt) { return new Generator(cnt); }
     Base *emitter(float start, float interval) {
         return new Emitter(start, interval);

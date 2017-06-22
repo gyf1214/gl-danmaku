@@ -2,8 +2,7 @@
 #define __OBJECT_EXT
 
 #include "../ext.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
+#include "../core/program.hpp"
 #include "object_box.hpp"
 
 #endif

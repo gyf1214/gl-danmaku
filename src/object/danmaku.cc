@@ -1,11 +1,9 @@
-#include "program_renderer.hpp"
+#include "ext.hpp"
 #include "vertex/danmaku.hpp"
 
 proto(Danmaku, Shader::danmaku);
 
-protoBuffer(Danmaku) = {
-    // { sizeof(uvData), uvData },
-};
+protoBuffer(Danmaku) = {};
 
 protoAttrib(Danmaku) = {
     { "time"    , Offset(Vertex, time[0])    , 4, sizeof(Vertex) },
@@ -14,48 +12,47 @@ protoAttrib(Danmaku) = {
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
 };
 
-protoUnifom(Danmaku) = { "vMat", "pMat", "texture0" };
+protoUniform(Danmaku) = { "vMat", "pMat", "texture0" };
 
-class Danmaku : public ProgramRenderer<DanmakuProto> {
-    GLuint texture0;
-    Transformer *transform;
+protoTexture(Danmaku) = { Texture::etama };
+
+class DanmakuObject : public ProgramBase<DanmakuProto>, public virtual Object {
+    Particle *particle;
+    Camera *camera;
 public:
-    Danmaku(Scene *scene, Transformer *trans)
-        : ProgramRenderer(scene), transform(trans) {}
+    DanmakuObject(Particle *particle, Camera *camera)
+        : particle(particle), camera(camera) {}
 
     void setup() {
-        ProgramRenderer::setup();
+        ProgramBase::setup();
 
         glUniform1i(uniform[2], 0);
-        texture0 = Texture::etama();
     }
 
     void render() {
-        if (scene->pass() > 0) return;
-
         bindProgram();
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
         glDepthMask(GL_FALSE);
 
-        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &scene -> vMat()[0][0]);
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &camera->pMat()[0][0]);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture0);
+        bindBuffer(particle->outputBuffer());
+        bindTextures();
 
-        bindBuffer(transform -> outputBuffer());
+        glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
-        glDrawArrays(GL_POINTS, 0, vertexSize);
-
-        glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
     }
 };
 
-
-Renderer *ObjectBox::danmaku(Scene *scene, Transformer *trans) {
-    return create<Danmaku>(scene, trans);
+Object *ObjectBox::danmaku(Particle *particle, Camera *camera) {
+    return Box::create<DanmakuObject>(particle, camera);
 }

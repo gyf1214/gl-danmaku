@@ -1,4 +1,4 @@
-#include "shader.hpp"
+#include "component/shader.hpp"
 
 static GLuint program = 0;
 

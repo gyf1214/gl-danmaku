@@ -12,13 +12,14 @@
 #include "mmd/pmx.hpp"
 #include "mmd/vmd.hpp"
 
+typedef mmd::pmx::Model MMDModel;
+typedef mmd::vmd::Motion MMDMotion;
+
 #define Offset(type, member)    ((void *)(&(((type *)0)->member)))
 #define Alias(src, tar)         inline decltype(src) &tar() { return tar; }
 
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
-
-class Scene;
 
 #endif
