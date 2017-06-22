@@ -52,7 +52,7 @@ namespace Builder {
     };
 
     // Misc
-    Base *source(std::vector<Vertex> &src);
+    Base *source(std::vector<Vertex> &pool);
     Base *type(int type, int color, int scale, float size);
 
     // Generators

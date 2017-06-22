@@ -36,7 +36,6 @@ public:
         glBufferData(GL_ARRAY_BUFFER, size, provider->data(), GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
         glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
-        LOG << count;
     }
 
     void setup() {

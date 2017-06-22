@@ -46,7 +46,6 @@ public:
         bindTextures();
 
         glDrawArrays(GL_POINTS, particle->offset(), particle->size());
-        LOG << particle->size();
 
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);

@@ -2,6 +2,7 @@
 #include "component/provider.hpp"
 #include "vertex/danmaku.hpp"
 #include "../builder/common.hpp"
+#include <array>
 
 using namespace Builder;
 
@@ -13,10 +14,14 @@ public:
     void setup() {
         LOG << "setup danmaku vertices";
         srand(time(NULL));
+        pool.resize(0);
         setupDanmaku();
         LOG << "done setup danmaku vertices";
     }
-    void reset() { LOG << "reset danmaku provider"; pool.clear(); }
+    void reset() {
+        LOG << "reset danmaku provider";
+        pool.clear();
+    }
     size_t size() const { return sizeof(Vertex) * pool.size(); }
     const void *data() const { return pool.data(); }
 };
@@ -38,10 +43,10 @@ public:
         //     << src << Emit();
         //
         Chain(generator(1))
-            << point(0.0f, -5.0f, 20.0f)
+            << point(0.0f, -5.0f, 40.0f)
             << sphere(5, 5)
             << generator(10)
-            << emitter(0.0f, 0.1f)
+            << emitter(1.0f, 0.1f)
             << type(0, 16, 8, 0.3f)
             << linearSpeed(3.0f, 0.0f)
             << dieAfter(3.0f)

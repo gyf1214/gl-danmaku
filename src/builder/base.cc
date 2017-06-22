@@ -5,6 +5,7 @@ using namespace std;
 namespace Builder {
     class Source : public Base {
         vector<Vertex> &src;
+        // Vertex *src;
     public:
         Source(vector<Vertex> &src) : src(src) {}
         void pass(Vertex &v, int i) { src.push_back(v); }
