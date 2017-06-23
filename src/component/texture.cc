@@ -94,3 +94,5 @@ defineTexture(lava, "lava2.png");
 defineTexture(wallLava, "lava3.png", GL_MIRRORED_REPEAT, GL_CLAMP_TO_BORDER);
 defineTexture(white, "white.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 defineTexture(trail, "trail.png");
+defineTexture(wall1, "wall1.png", GL_MIRRORED_REPEAT, GL_REPEAT);
+defineTexture(wall2, "wall2.png", GL_MIRRORED_REPEAT, GL_REPEAT);

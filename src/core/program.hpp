@@ -147,6 +147,11 @@ protected:
             glBindTexture(GL_TEXTURE_2D, texture[i]);
         }
     }
+
+    virtual void bindTexture(GLenum target, GLuint tex) {
+        glActiveTexture(target);
+        glBindTexture(GL_TEXTURE_2D, tex);
+    }
 public:
     virtual void setup() {
         LOG << "setup object: " << ProgramBase<Proto>::Name;

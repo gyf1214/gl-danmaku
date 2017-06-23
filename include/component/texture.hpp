@@ -18,6 +18,8 @@ struct Texture {
     static GLuint wallLava();
     static GLuint white();
     static GLuint trail();
+    static GLuint wall1();
+    static GLuint wall2();
 
     static void release();
 };
