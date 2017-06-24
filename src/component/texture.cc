@@ -96,3 +96,4 @@ defineTexture(white, "white.png", GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 defineTexture(trail, "trail.png");
 defineTexture(wall1, "wall1.png", GL_MIRRORED_REPEAT, GL_REPEAT);
 defineTexture(wall2, "wall2.png", GL_MIRRORED_REPEAT, GL_REPEAT);
+defineTexture(wall3, "wall3.png", GL_MIRRORED_REPEAT, GL_REPEAT);

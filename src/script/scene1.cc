@@ -13,7 +13,7 @@ public:
         camera = push(Camera::free(vec3(0.0f, -10.0f, 40.0f), M_PI / 2.0f, 0.0f, 45.0f));
         light = push(LightManager::basic());
         light->ambient(vec3(0.0f, 0.0f, 0.0f));
-        light->point(vec3(0.0f, 0.0f, 0.0f), vec3(1.0f, 0.6f, 0.2f), 40.0f, 0.5f);
+        light->point(vec3(0.0f, 0.0f, 0.0f), vec3(1.2f, 0.6f, 0.2f), 40.0f, 0.5f);
 
         LOG << "create character";
         reimu = push(Character::basic(Model::reimu(), Model::test2()));

@@ -14,7 +14,7 @@ static const float height = height1 + height2;
 static const float uScale = 16.0f;
 static const float vScale = 64.0f;
 
-static const float wallMaterial[]  = { 1.0f, 0.5f, 0.8f, 100.0f };
+static const float wallMaterial[]  = { 0.8f, 0.5f, 1.0f, 100.0f };
 static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static Vertex vertices[vertexSize];
@@ -41,7 +41,7 @@ protoUniform(Skybox) = {
 
 protoTexture(Skybox) = {
     Texture::lava, Texture::wall, Texture::wallNormal,
-    Texture::white, Texture::wallLava, Texture::wall1, Texture::wall2
+    Texture::white, Texture::wall3, Texture::wall1, Texture::wall2
 };
 
 static void pushVertex(float theta, float z) {
@@ -132,13 +132,14 @@ public:
         glUniform4fv(uniform[6], 1, floorMaterial);
         glDrawArrays(GL_TRIANGLE_STRIP, wallSize, 4);
 
-        bindTexture(GL_TEXTURE0, texture[1]);
+        bindTexture(GL_TEXTURE0, texture[4]);
         bindTexture(GL_TEXTURE1, texture[2]);
-        bindTexture(GL_TEXTURE2, texture[3]);
+        bindTexture(GL_TEXTURE2, texture[4]);
         bindTexture(GL_TEXTURE3, texture[5]);
         glUniform4fv(uniform[6], 1, wallMaterial);
         glDrawArrays(GL_TRIANGLES, 0, wallSize1);
 
+        bindTexture(GL_TEXTURE0, texture[1]);
         bindTexture(GL_TEXTURE3, texture[6]);
         // glUniform4fv(uniform[6], 1, wallMaterial);
         glDrawArrays(GL_TRIANGLES, wallSize1, wallSize2);

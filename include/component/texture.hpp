@@ -20,6 +20,7 @@ struct Texture {
     static GLuint trail();
     static GLuint wall1();
     static GLuint wall2();
+    static GLuint wall3();
 
     static void release();
 };

@@ -74,7 +74,7 @@ public:
     vec3 direction() const { return dir; }
     float fovy() const { return radians(fov); }
     mat4 vMat() const { return lookAt(pos, pos + dir, cross(dir, left)); }
-    mat4 pMat() const { return perspective(radians(fov), wh, 1.0f, 100.0f); }
+    mat4 pMat() const { return perspective(radians(fov), wh, 1.0f, 300.0f); }
 };
 
 Camera *Camera::free(vec3 pos, float horizon, float vertical, float fov) {
