@@ -19,11 +19,14 @@ protoTexture(Trail) = { Texture::trail };
 class TrailObject : public ProgramBase<TrailProto>, public virtual Object {
     Camera *camera;
     Particle *particle;
+    Layer *layer;
     float size;
     vec3 color;
 public:
-    TrailObject(Particle *particle, Camera *camera, float size, vec3 color)
-        : camera(camera), particle(particle), size(size), color(color) {}
+    TrailObject(Particle *particle, Camera *camera,
+                Layer *layer, float size, vec3 color)
+        : camera(camera), particle(particle), layer(layer),
+          size(size), color(color) {}
 
     void setup() {
         ProgramBase::setup();
@@ -33,13 +36,15 @@ public:
     }
 
     void render() {
+        layer->select();
+        Layer::clear(0.0f);
+
         bindProgram();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_ALWAYS);
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_BLEND);
         glBlendEquation(GL_MAX);
-
 
         glUniform1f(uniform[3], size * Application::bufferHeight /
                                 (2.0f * tan(camera->fovy() / 2.0f)));
@@ -54,9 +59,12 @@ public:
         glDisable(GL_BLEND);
         glDisable(GL_PROGRAM_POINT_SIZE);
         glDisable(GL_DEPTH_TEST);
+
+        Layer::detach();
+        layer->attach();
     }
 };
 
-Object *ObjectBox::trail(Particle *particle, Camera *camera, float size, vec3 color) {
-    return Box::create<TrailObject>(particle, camera, size, color);
+Object *ObjectBox::trail(Particle *particle, Camera *camera, Layer *layer, float size, vec3 color) {
+    return Box::create<TrailObject>(particle, camera, layer, size, color);
 }
