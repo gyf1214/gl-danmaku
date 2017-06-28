@@ -12,9 +12,9 @@ static const float height1 = 1.0f * M_PI * radius;
 static const float height2 = 1.0f * M_PI * radius;
 static const float height = height1 + height2;
 static const float uScale = 16.0f;
-static const float vScale = 64.0f;
+static const float vScale = 32.0f;
 
-static const float wallMaterial[]  = { 1.0f, 0.5f, 1.0f, 100.0f };
+static const float wallMaterial[]  = { 1.0f, 0.5f, 1.0f, 10.0f };
 static const float floorMaterial[] = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 static Vertex vertices[vertexSize];
