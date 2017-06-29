@@ -43,7 +43,7 @@ public:
         //     << src << Emit();
         //
         Chain(generator(1))
-            << point(0.0f, -5.0f, 40.0f)
+            << point(0.0f, -30.0f, 60.0f)
             << sphere(5, 5)
             << generator(10)
             << emitter(1.0f, 0.1f)

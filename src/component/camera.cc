@@ -3,7 +3,7 @@
 
 using namespace glm;
 
-static constexpr float speed = 10.0f;
+static constexpr float speed = 50.0f;
 static constexpr float scrollSpeed = 5.0f;
 static constexpr float mouseSpeed = 0.1f;
 static constexpr double centerX = Application::width / 2;
