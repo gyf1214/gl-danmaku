@@ -47,9 +47,9 @@ public:
             << sphere(5, 5)
             << generator(10)
             << emitter(1.0f, 0.1f)
-            << type(0, 16, 8, 0.3f)
-            << linearSpeed(3.0f, 0.0f)
-            << dieAfter(3.0f)
+            << type(0, 16, 8, 1.0f)
+            << linearSpeed(10.0f, 0.0f)
+            << dieAfter(10.0f)
             << src << Emit();
         //
         // Chain(generator(1))
