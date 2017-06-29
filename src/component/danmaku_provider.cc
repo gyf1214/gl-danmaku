@@ -43,12 +43,21 @@ public:
         //     << src << Emit();
         //
         Chain(generator(1))
-            << point(0.0f, -30.0f, 60.0f)
+            << point(0.0f, -20.0f, 60.0f)
             << sphere(5, 5)
             << generator(10)
-            << emitter(1.0f, 0.1f)
+            << emitter(3.0f, 0.1f)
             << type(0, 16, 8, 1.0f)
             << linearSpeed(10.0f, 0.0f)
+            << dieAfter(10.0f)
+            << src << Emit();
+
+        Chain(generator(3))
+            << line(vec3(-1.0f, 20.0f, 60.0f), vec3(1.0f, 0.0f, 0.0f))
+            << generator(20)
+            << emitter(1.0f, 0.1f)
+            << type(12, 16, 4, 0.5f)
+            << direction(vec3(0.0f, -20.0f, 0.0f))
             << dieAfter(10.0f)
             << src << Emit();
         //

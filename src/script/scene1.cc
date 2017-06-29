@@ -10,7 +10,7 @@ public:
         BasicScript::createObjects(root);
 
         LOG << "create camera & light";
-        camera = push(Camera::free(vec3(0.0f, -10.0f, 40.0f), M_PI / 2.0f, 0.0f, 45.0f));
+        camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
         light = push(LightManager::basic());
         light->ambient(vec3(0.0f, 0.0f, 0.0f));
         light->point(vec3(0.0f, 0.0f, 0.0f), vec3(0.9f, 0.45f, 0.1f), 40.0f, 0.5f);
@@ -45,8 +45,9 @@ public:
     }
 
     void run() {
-        reimu->teleport(-2.0f, 0.0f, 40.0f);
-        suwako->teleport(2.0f, 0.0f, 40.0f);
+        reimu->teleport(0.0f, 20.0f, 59.0f);
+        suwako->teleport(0.0f, -20.0f, 59.0f);
+        suwako->lookAt(quat(vec3(0.0f, 0.0f, M_PI)));
         // reimu->loop(10, 40);
         // suwako->loop(10, 40);
         // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
