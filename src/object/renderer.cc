@@ -75,6 +75,15 @@ public:
     }
 };
 
+class TransparentRenderer : public BasicRenderer {
+    GLuint depth0, depth1;
+public:
+    void setup() {
+        depth0 = Texture::genDepth();
+        depth1 = Texture::genDepth();
+    }
+};
+
 Renderer *ObjectBox::renderer() {
     return create<BasicRenderer>();
 }

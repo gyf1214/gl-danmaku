@@ -15,7 +15,6 @@ GLuint Texture::genTexture(GLuint inter, GLuint wraps, GLuint wrapt) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapt);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, inter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, inter);
-    texes.push_back(texture);
     return texture;
 }
 
@@ -80,9 +79,28 @@ void Texture::release() {
     texes.clear();
 }
 
+GLuint Texture::genDepth() {
+    GLuint ret = genTexture(GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 Application::bufferWidth, Application::bufferHeight,
+                 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    return ret;
+}
+
+GLuint Texture::genScreen() {
+    GLuint ret = genTexture(GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+         Application::bufferWidth, Application::bufferHeight,
+         0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    return ret;
+}
+
 #define defineTexture(name, path, ...) GLuint Texture::name() {\
     static GLuint tex = 0;\
-    if (!tex) tex = loadTexture("assets/" path, ##__VA_ARGS__);\
+    if (!tex) {\
+        tex = loadTexture("assets/" path, ##__VA_ARGS__);\
+        texes.push_back(tex);\
+    }\
     return tex;\
 }
 

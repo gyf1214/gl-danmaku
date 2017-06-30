@@ -49,16 +49,10 @@ public:
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-        depth = Texture::genTexture(GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                     Application::bufferWidth, Application::bufferHeight,
-                     0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        depth = Texture::genDepth();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
 
-        color = Texture::genTexture(GL_NEAREST);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                     Application::bufferWidth, Application::bufferHeight,
-                     0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        color = Texture::genScreen();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color, 0);
 
         LOG << "fbo: " << framebuffer;
@@ -74,6 +68,10 @@ public:
         LOG << "reset layer";
         LOG << "delete framebuffer: " << framebuffer;
         glDeleteFramebuffers(1, &framebuffer);
+        LOG << "delete depth texture: " << depth;
+        glDeleteTextures(1, &depth);
+        LOG << "delete color texture: " << color;
+        glDeleteTextures(1, &color);
     }
 
     void select() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
