@@ -37,7 +37,7 @@ public:
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
+        // glDepthMask(GL_FALSE);
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &camera->pMat()[0][0]);
@@ -47,7 +47,7 @@ public:
 
         glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
-        glDepthMask(GL_TRUE);
+        // glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
         glDisable(GL_DEPTH_TEST);
     }

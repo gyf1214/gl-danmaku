@@ -56,11 +56,11 @@ public:
             << line(vec3(-1.0f, 20.0f, 60.0f), vec3(1.0f, 0.0f, 0.0f))
             << generator(20)
             << emitter(1.0f, 0.1f)
-            << type(12, 16, 4, 0.5f)
+            << type(8, 16, 4, 0.5f)
             << direction(vec3(0.0f, -20.0f, 0.0f))
             << dieAfter(10.0f)
             << src << Emit();
-        //
+
         // Chain(generator(1))
         //     << point(0.0f, 0.0f, 20.0f)
         //     << direction(5.0f, 0.0f, 0.0f)
