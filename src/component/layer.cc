@@ -43,7 +43,7 @@ static void setupRenderer() {
 class LayerImp : public virtual Layer {
     GLuint framebuffer, depth, color;
 public:
-    LayerImp() {
+    void setup() {
         LOG << "generate framebuffer for layer";
 
         glGenFramebuffers(1, &framebuffer);
@@ -63,7 +63,6 @@ public:
         if (!program) setupRenderer();
     }
 
-    void setup() {}
     void reset() {
         LOG << "reset layer";
         LOG << "delete framebuffer: " << framebuffer;
@@ -99,6 +98,9 @@ public:
         glDisable(GL_BLEND);
         glDisable(GL_DEPTH_TEST);
     }
+
+    GLuint colorTexture() { return color; }
+    GLuint depthTexture() { return depth; }
 };
 
 void Layer::release() {
@@ -120,8 +122,15 @@ void Layer::detach() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+Layer *Layer::basic() {
+    return Box::create<LayerImp>();
+}
+
 Layer *Layer::temp() {
     static Layer *ret = NULL;
-    if (!ret) ret = Box::global<LayerImp>();
+    if (!ret) {
+        ret = Box::global<LayerImp>();
+        ret->setup();
+    }
     return ret;
 }

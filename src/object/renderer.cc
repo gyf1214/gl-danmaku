@@ -12,17 +12,28 @@ public:
     void push(Object *o) { objects.push_back(o); }
 };
 
-class OpaqueRenderer : public BasicRenderer {
+class OffscreenRenderer : public BasicRenderer {
+protected:
+    Layer *layer;
+public:
+    OffscreenRenderer(Layer *layer) : layer(layer) {}
+};
+
+class OpaqueRenderer : public OffscreenRenderer {
     LightManager *light;
 public:
-    OpaqueRenderer(LightManager *light) : light(light) {}
+    OpaqueRenderer(LightManager *light, Layer *layer)
+        : OffscreenRenderer(layer), light(light) {}
 
     void render() {
+        layer->select();
+        Layer::clear(1.0f);
+
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
 
         light->pass() = 0;
-        BasicRenderer::render();
+        OffscreenRenderer::render();
 
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
@@ -38,58 +49,64 @@ public:
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
         glDisable(GL_DEPTH_TEST);
-    }
-};
-
-class OffScreenRenderer : public BasicRenderer {
-protected:
-    Layer *layer;
-    float alpha;
-    vec3 color;
-public:
-    OffScreenRenderer(Layer *layer, float alpha, vec3 color)
-        : layer(layer), alpha(alpha), color(color) {}
-
-    void render() {
-        layer->select();
-        Layer::clear(alpha, color);
-
-        BasicRenderer::render();
 
         Layer::detach();
     }
 };
 
-class LayerRenderer : public OffScreenRenderer {
-public:
-    LayerRenderer() : OffScreenRenderer(NULL, 0.0f, vec3(0.0f)) {}
+class LayerRenderer : public BasicRenderer {
 
-    void setup() {
-        layer = Layer::temp();
-        OffScreenRenderer::setup();
-    }
-
-    void render() {
-        OffScreenRenderer::render();
-        layer->attach();
-    }
 };
 
-class TransparentRenderer : public BasicRenderer {
-    GLuint depth0, depth1;
-public:
-    void setup() {
-        depth0 = Texture::genDepth();
-        depth1 = Texture::genDepth();
-    }
-};
+// class OffScreenRenderer : public BasicRenderer {
+// protected:
+//     Layer *layer;
+//     float alpha;
+//     vec3 color;
+// public:
+//     OffScreenRenderer(Layer *layer, float alpha, vec3 color)
+//         : layer(layer), alpha(alpha), color(color) {}
+//
+//     void render() {
+//         layer->select();
+//         Layer::clear(alpha, color);
+//
+//         BasicRenderer::render();
+//
+//         Layer::detach();
+//     }
+// };
+//
+// class LayerRenderer : public OffScreenRenderer {
+// public:
+//     LayerRenderer() : OffScreenRenderer(NULL, 0.0f, vec3(0.0f)) {}
+//
+//     void setup() {
+//         layer = Layer::temp();
+//         OffScreenRenderer::setup();
+//     }
+//
+//     void render() {
+//         OffScreenRenderer::render();
+//         layer->attach();
+//     }
+// };
+//
+// class TransparentRenderer : public BasicRenderer {
+//     GLuint depth0, depth1;
+// public:
+//     void setup() {
+//         depth0 = Texture::genDepth();
+//         depth1 = Texture::genDepth();
+//     }
+// };
 
 Renderer *ObjectBox::renderer() {
     return create<BasicRenderer>();
 }
 
-Renderer *ObjectBox::opaque(LightManager *light) {
-    return create<OpaqueRenderer>(light);
+Renderer *ObjectBox::opaque(LightManager *light, Layer *layer) {
+    return create<OpaqueRenderer>(light, layer);
 }
 
 Renderer *ObjectBox::layer() {

@@ -9,7 +9,7 @@ public:
     static Scene *scene(Script *script);
 
     static Renderer *renderer(void);
-    static Renderer *opaque(LightManager *light);
+    static Renderer *opaque(LightManager *light, Layer *layer);
     static Renderer *layer(void);
 
     static Object *character(Character *character, Camera *camera, LightManager *light);

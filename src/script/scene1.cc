@@ -20,25 +20,28 @@ public:
         suwako = push(Character::basic(Model::suwako(), Model::test2()));
 
         LOG << "create particle";
-        Particle *trail1 = push(Particle::trail(
-            push(reimu->bindPoint(0, vec3(-9.5f, 13.8f, 0.2f)))));
-        Particle *trail2 = push(Particle::trail(
-            push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
-        Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
+        // Particle *trail1 = push(Particle::trail(
+        //     push(reimu->bindPoint(0, vec3(-9.5f, 13.8f, 0.2f)))));
+        // Particle *trail2 = push(Particle::trail(
+        //     push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
+        // Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
+
+        Layer *layer1 = push(Layer::basic());
+        Layer *layer2 = push(Layer::basic());
 
         LOG << "create opaque objects";
-        Renderer *opaque = push(ObjectBox::opaque(light));
+        Renderer *opaque = push(ObjectBox::opaque(light, layer1));
         opaque->push(ObjectBox::character(reimu, camera, light));
         opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
 
-        LOG << "create trail";
+        // LOG << "create trail";
         // Renderer *trail = push(ObjectBox::layer());
-        push(ObjectBox::trail(trail1, camera, Layer::temp(), 0.1f, vec3(1.0f)));
-        push(ObjectBox::trail(trail2, camera, Layer::temp(), 0.1f, vec3(1.0f)));
+        // push(ObjectBox::trail(trail1, camera, Layer::temp(), 0.1f, vec3(1.0f)));
+        // push(ObjectBox::trail(trail2, camera, Layer::temp(), 0.1f, vec3(1.0f)));
 
-        LOG << "create danmaku";
-        push(ObjectBox::danmaku(danmaku, camera));
+        // LOG << "create danmaku";
+        // push(ObjectBox::danmaku(danmaku, camera));
 
         LOG << "create other objects";
         push(ObjectBox::debug());
