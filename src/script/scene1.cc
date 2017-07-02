@@ -5,9 +5,15 @@ using namespace glm;
 class Scene1 : public BasicScript {
     Character *reimu, *suwako;
 public:
-    void createObjects(Renderer *root) {
+    Renderer *createObjects() {
         LOG << "create objects for scene1";
-        BasicScript::createObjects(root);
+
+        LOG << "create temp layers";
+        Layer *layer1 = push(Layer::basic());
+        // Layer *layer2 = push(Layer::basic());
+
+        LOG << "create root renderer";
+        root = ObjectBox::target(layer1);
 
         LOG << "create camera & light";
         camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
@@ -26,9 +32,6 @@ public:
         //     push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
         // Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
 
-        Layer *layer1 = push(Layer::basic());
-        Layer *layer2 = push(Layer::basic());
-
         LOG << "create opaque objects";
         Renderer *opaque = push(ObjectBox::opaque(light, layer1));
         opaque->push(ObjectBox::character(reimu, camera, light));
@@ -45,6 +48,9 @@ public:
 
         LOG << "create other objects";
         push(ObjectBox::debug());
+
+        tracks.push_back(root);
+        return root;
     }
 
     void run() {

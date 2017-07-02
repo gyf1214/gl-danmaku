@@ -12,18 +12,18 @@ public:
     void push(Object *o) { objects.push_back(o); }
 };
 
-class OffscreenRenderer : public BasicRenderer {
+class LayerRenderer : public BasicRenderer {
 protected:
     Layer *layer;
 public:
-    OffscreenRenderer(Layer *layer) : layer(layer) {}
+    LayerRenderer(Layer *layer) : layer(layer) {}
 };
 
-class OpaqueRenderer : public OffscreenRenderer {
+class OpaqueRenderer : public LayerRenderer {
     LightManager *light;
 public:
     OpaqueRenderer(LightManager *light, Layer *layer)
-        : OffscreenRenderer(layer), light(light) {}
+        : LayerRenderer(layer), light(light) {}
 
     void render() {
         layer->select();
@@ -33,7 +33,7 @@ public:
         glDepthFunc(GL_LEQUAL);
 
         light->pass() = 0;
-        OffscreenRenderer::render();
+        LayerRenderer::render();
 
         glDepthMask(GL_FALSE);
         glEnable(GL_BLEND);
@@ -43,7 +43,7 @@ public:
         int n = light->count();
         for (int i = 1 ; i < n; ++i) {
             light->pass() = i;
-            BasicRenderer::render();
+            LayerRenderer::render();
         }
 
         glDisable(GL_BLEND);
@@ -54,8 +54,15 @@ public:
     }
 };
 
-class LayerRenderer : public BasicRenderer {
+class TargetRenderer : public LayerRenderer {
+public:
+    TargetRenderer(Layer *target) : LayerRenderer(target) {}
 
+    void render() {
+        LayerRenderer::render();
+
+        layer->blit();
+    }
 };
 
 // class OffScreenRenderer : public BasicRenderer {
@@ -109,6 +116,10 @@ Renderer *ObjectBox::opaque(LightManager *light, Layer *layer) {
     return create<OpaqueRenderer>(light, layer);
 }
 
-Renderer *ObjectBox::layer() {
-    return create<LayerRenderer>();
+Renderer *ObjectBox::target(Layer *layer) {
+    return create<TargetRenderer>(layer);
 }
+
+// Renderer *ObjectBox::layer() {
+//     return create<LayerRenderer>();
+// }

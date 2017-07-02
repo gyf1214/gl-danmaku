@@ -25,10 +25,6 @@ void BasicScript::awaitUntil(float x) {
     Fiber::yield();
 }
 
-void BasicScript::createObjects(Renderer *root) {
-    this->root = root;
-}
-
 void BasicScript::setup() {
     nextEvent = 0.0f;
     waiting = false;

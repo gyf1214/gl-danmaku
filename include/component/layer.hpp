@@ -7,6 +7,7 @@ class Layer : public virtual BaseObject {
 public:
     virtual void select(void) = 0;
     virtual void attach(void) = 0;
+    virtual void blit(void) = 0;
     virtual GLuint colorTexture(void) = 0;
     virtual GLuint depthTexture(void) = 0;
 

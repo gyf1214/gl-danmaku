@@ -5,7 +5,7 @@
 
 class Script : public virtual Component {
 public:
-    virtual void createObjects(Renderer *root) = 0;
+    virtual Renderer *createObjects(void) = 0;
     virtual void run(void) = 0;
 
     // Factories

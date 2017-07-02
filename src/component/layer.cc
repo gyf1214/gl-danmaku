@@ -99,6 +99,16 @@ public:
         glDisable(GL_DEPTH_TEST);
     }
 
+    void blit() {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(0, 0, Application::bufferWidth, Application::bufferHeight,
+                          0, 0, Application::bufferWidth, Application::bufferHeight,
+                          GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
     GLuint colorTexture() { return color; }
     GLuint depthTexture() { return depth; }
 };

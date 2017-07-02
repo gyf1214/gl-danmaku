@@ -31,7 +31,6 @@ public:
     void setup();
     void reset();
     void update();
-    void createObjects(Renderer *root);
 };
 
 #endif
