@@ -17,6 +17,7 @@ public:
     static void release(void);
     static Layer *basic(void);
     static Layer *bare(GLuint color, GLuint depth);
+    static Layer *msaa(void);
     static Layer *temp(void);
 };
 

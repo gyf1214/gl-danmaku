@@ -52,6 +52,7 @@ public:
 
         // layer->snapshot();
         Layer::detach();
+        layer->blit();
     }
 };
 
@@ -141,7 +142,14 @@ public:
         }
 
         glDisable(GL_DEPTH_TEST);
-        layer0->blit();
+
+        Layer::detach();
+        // layer0->blit();
+        glEnable(GL_BLEND);
+        glBlendFuncSeparate(GL_ONE, GL_SRC_ALPHA, GL_ZERO, GL_ONE);
+        glBlendEquation(GL_FUNC_ADD);
+        layer0->attach();
+        glDisable(GL_BLEND);
     }
 
     void reset() {
