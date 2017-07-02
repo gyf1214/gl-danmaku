@@ -31,6 +31,7 @@ public:
         opaque->push(ObjectBox::character(reimu, camera, light));
         opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
+        opaque->push(ObjectBox::skybox_dynamic(camera, light));
 
         LOG << "create trail";
         // Renderer *trail = push(ObjectBox::layer());

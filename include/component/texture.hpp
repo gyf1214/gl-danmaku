@@ -24,6 +24,7 @@ struct Texture {
     static GLuint wall2_ref();
     static GLuint wall2_nor();
     static GLuint wall2_emi();
+    static GLuint lavaflow();
 
     static void release();
 };

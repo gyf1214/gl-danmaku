@@ -13,6 +13,7 @@ public:
     static GLuint danmakuTransform(void);
     static GLuint base(void);
     static GLuint lambert(void);
+    static GLuint lambert_dynamic(void);
     static GLuint character(void);
     static GLuint trail(void);
     static GLuint trailTransform(void);

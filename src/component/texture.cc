@@ -100,3 +100,4 @@ defineTexture(wall1_emi, "wall1_emi.png", GL_MIRRORED_REPEAT, GL_REPEAT);
 defineTexture(wall2_ref, "wall2_ref.png", GL_MIRRORED_REPEAT, GL_REPEAT);
 defineTexture(wall2_nor, "wall2_nor.png", GL_MIRRORED_REPEAT, GL_REPEAT);
 defineTexture(wall2_emi, "wall2_emi.png", GL_MIRRORED_REPEAT, GL_REPEAT);
+defineTexture(lavaflow, "lava2.png", GL_MIRRORED_REPEAT, GL_MIRRORED_REPEAT);
