@@ -28,12 +28,30 @@ static const char *fsh = R"(
     out vec4 fragColor;
 
     void main(void) {
-        fragColor = texture(color, uvOut);
-        // fragColor = vec4(texture(color, uvOut).a, 0.0, 0.0, 1.0);
+        vec4 c = texture(color, uvOut);
+        if (c.a < 0.01) discard;
+        fragColor = c;
         gl_FragDepth = texture(depth, uvOut).r;
-        // fragColor = vec4(texture(depth, uvOut).r * 10.0 - 9.0, 0.0, 0.0, 1.0);
     }
 )";
+
+// static const char *fsh_background = R"(
+//     #version 330 core
+//     precision highp float;
+//
+//     in vec2 uvOut;
+//
+//     uniform sampler2D back;
+//
+//     out vec4 fragColor;
+//
+//     void main(void) {
+//         fragColor = texture(color, uvOut);
+//         // fragColor = vec4(texture(color, uvOut).a, 0.0, 0.0, 1.0);
+//         gl_FragDepth = texture(depth, uvOut).r;
+//         // fragColor = vec4(texture(depth, uvOut).r * 10.0 - 9.0, 0.0, 0.0, 1.0);
+//     }
+// )";
 
 GLuint Shader::layer() {
     if (!program) program = programShader(vsh, fsh);

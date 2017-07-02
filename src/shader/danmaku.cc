@@ -65,10 +65,26 @@ static const char *fsh = R"(
     in vec2 uv;
     out vec4 fragColor;
     uniform sampler2D texture0;
+    uniform sampler2D color0;
+    uniform sampler2D depth0;
+    uniform sampler2D depth1;
+    uniform vec2 size;
 
     void main(void) {
         vec4 color = texture(texture0, uv);
         if (color.a < 0.01) discard;
+
+        vec2 coord = gl_FragCoord.xy / size;
+
+        float d0 = texture(depth0, coord).x;
+        if (gl_FragCoord.z <= d0) discard;
+
+        float d1 = texture(depth1, coord).x;
+        if (gl_FragCoord.z > d1) discard;
+
+        vec4 c0 = texture(color0, coord);
+        if (c0.a < 0.01) discard;
+
         fragColor = vec4(color.rgb * color.a, color.a);
     }
 )";

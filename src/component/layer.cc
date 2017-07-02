@@ -40,24 +40,28 @@ static void setupRenderer() {
     glUniform1i(depth, 1);
 }
 
-class LayerImp : public virtual Layer {
+inline static void blitWindow() {
+    glBlitFramebuffer(0, 0, Application::bufferWidth, Application::bufferHeight,
+                      0, 0, Application::bufferWidth, Application::bufferHeight,
+                      GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+}
+
+class LayerBare : public virtual Layer {
+protected:
     GLuint framebuffer, depth, color;
 public:
+    LayerBare(GLuint color, GLuint depth) : depth(depth), color(color) {}
+
     void setup() {
         LOG << "generate framebuffer for layer";
-
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-        depth = Texture::genDepth();
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
-
-        color = Texture::genScreen();
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color, 0);
-
         LOG << "fbo: " << framebuffer;
-        LOG << "color texture: " << color;
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
         LOG << "depth texture: " << depth;
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color, 0);
+        LOG << "color texture: " << color;
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         if (!program) setupRenderer();
@@ -67,23 +71,29 @@ public:
         LOG << "reset layer";
         LOG << "delete framebuffer: " << framebuffer;
         glDeleteFramebuffers(1, &framebuffer);
-        LOG << "delete depth texture: " << depth;
-        glDeleteTextures(1, &depth);
-        LOG << "delete color texture: " << color;
-        glDeleteTextures(1, &color);
     }
 
     void select() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
 
+    void blit() {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        blitWindow();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void snapshot() {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+        blitWindow();
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    }
+
+    GLuint colorTexture() { return color; }
+    GLuint depthTexture() { return depth; }
+
     void attach() {
         glUseProgram(program);
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
-        glDepthMask(GL_FALSE);
 
         glBindVertexArray(vao);
 
@@ -93,24 +103,26 @@ public:
         glBindTexture(GL_TEXTURE_2D, depth);
 
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
+};
 
-        glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);
-        glDisable(GL_DEPTH_TEST);
+class LayerBasic : public LayerBare {
+public:
+    LayerBasic() : LayerBare(0, 0) {}
+
+    void setup() {
+        depth = Texture::genDepth();
+        color = Texture::genScreen();
+        LayerBare::setup();
     }
 
-    void blit() {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glBlitFramebuffer(0, 0, Application::bufferWidth, Application::bufferHeight,
-                          0, 0, Application::bufferWidth, Application::bufferHeight,
-                          GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    void reset() {
+        LayerBare::reset();
+        LOG << "delete depth texture: " << depth;
+        glDeleteTextures(1, &depth);
+        LOG << "delete color texture: " << color;
+        glDeleteTextures(1, &color);
     }
-
-    GLuint colorTexture() { return color; }
-    GLuint depthTexture() { return depth; }
 };
 
 void Layer::release() {
@@ -133,13 +145,17 @@ void Layer::detach() {
 }
 
 Layer *Layer::basic() {
-    return Box::create<LayerImp>();
+    return Box::create<LayerBasic>();
+}
+
+Layer *Layer::bare(GLuint color, GLuint depth) {
+    return Box::create<LayerBare>(color, depth);
 }
 
 Layer *Layer::temp() {
     static Layer *ret = NULL;
     if (!ret) {
-        ret = Box::global<LayerImp>();
+        ret = Box::global<LayerBasic>();
         ret->setup();
     }
     return ret;

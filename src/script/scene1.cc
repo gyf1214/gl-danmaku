@@ -13,7 +13,7 @@ public:
         // Layer *layer2 = push(Layer::basic());
 
         LOG << "create root renderer";
-        root = ObjectBox::target(layer1);
+        root = ObjectBox::renderer();
 
         LOG << "create camera & light";
         camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
@@ -30,7 +30,7 @@ public:
         //     push(reimu->bindPoint(0, vec3(-9.5f, 13.8f, 0.2f)))));
         // Particle *trail2 = push(Particle::trail(
         //     push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
-        // Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
+        Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
 
         LOG << "create opaque objects";
         Renderer *opaque = push(ObjectBox::opaque(light, layer1));
@@ -38,13 +38,16 @@ public:
         opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
 
+        LOG << "create transparent objects";
+        Renderer *transparent = push(ObjectBox::transparent(layer1));
+
         // LOG << "create trail";
         // Renderer *trail = push(ObjectBox::layer());
         // push(ObjectBox::trail(trail1, camera, Layer::temp(), 0.1f, vec3(1.0f)));
         // push(ObjectBox::trail(trail2, camera, Layer::temp(), 0.1f, vec3(1.0f)));
 
-        // LOG << "create danmaku";
-        // push(ObjectBox::danmaku(danmaku, camera));
+        LOG << "create danmaku";
+        transparent->push(ObjectBox::danmaku(danmaku, camera));
 
         LOG << "create other objects";
         push(ObjectBox::debug());

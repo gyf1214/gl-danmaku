@@ -36,8 +36,8 @@ public:
     }
 
     void render() {
-        layer->select();
-        Layer::clear(0.0f);
+        // layer->select();
+        // Layer::clear(0.0f);
 
         bindProgram();
         glEnable(GL_DEPTH_TEST);
@@ -60,8 +60,8 @@ public:
         glDisable(GL_PROGRAM_POINT_SIZE);
         glDisable(GL_DEPTH_TEST);
 
-        Layer::detach();
-        layer->attach();
+        // Layer::detach();
+        // layer->attach();
     }
 };
 

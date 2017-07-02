@@ -12,7 +12,11 @@ protoAttrib(Danmaku) = {
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
 };
 
-protoUniform(Danmaku) = { "vMat", "pMat", "texture0" };
+protoUniform(Danmaku) = {
+    "vMat", "pMat", "texture0",
+    "color0", "depth0", "depth1", "size"
+    // "depth0", "depth1", "size"
+};
 
 protoTexture(Danmaku) = { Texture::etama };
 
@@ -27,16 +31,25 @@ public:
         ProgramBase::setup();
 
         glUniform1i(uniform[2], 0);
+        glUniform1i(uniform[3], 5);
+        glUniform1i(uniform[4], 6);
+        glUniform1i(uniform[5], 7);
+
+        float size[] = {
+            (float)Application::bufferWidth,
+            (float)Application::bufferHeight
+        };
+        glUniform2fv(uniform[6], 1, size);
     }
 
     void render() {
         bindProgram();
 
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
+        // glEnable(GL_DEPTH_TEST);
+        // glDepthFunc(GL_LEQUAL);
+        // glEnable(GL_BLEND);
+        // glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        // glBlendEquation(GL_FUNC_ADD);
         // glDepthMask(GL_FALSE);
 
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
@@ -48,8 +61,8 @@ public:
         glDrawArrays(GL_POINTS, particle->offset(), particle->size());
 
         // glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);
-        glDisable(GL_DEPTH_TEST);
+        // glDisable(GL_BLEND);
+        // glDisable(GL_DEPTH_TEST);
     }
 };
 
