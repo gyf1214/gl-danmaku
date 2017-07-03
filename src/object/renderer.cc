@@ -2,6 +2,71 @@
 
 using namespace std;
 
+static float vertices[] = {
+    0.0f, 0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 1.0f, 1.0f
+};
+
+static GLuint vbo = 0;
+
+class LayerProgram : public virtual Object {
+public:
+    GLuint program, vao, uv, color, depth;
+
+    LayerProgram(GLuint program) : program(program) {}
+
+    void setup() {
+        LOG << "setup layer program";
+
+        if (!vbo) {
+            LOG << "create quad buffer";
+            glGenBuffers(1, &vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+            LOG << "buffer: " << vbo;
+        } else {
+            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        }
+
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
+        LOG << "vertex array: " << vao;
+
+        glUseProgram(program);
+        uv = glGetAttribLocation(program, "uv");
+        color = glGetUniformLocation(program, "color");
+        depth = glGetUniformLocation(program, "depth");
+        LOG << "program: " << program;
+        LOG << "uv attribute: " << uv;
+        LOG << "color uniform: " << color;
+        LOG << "depth uniform: " << depth;
+
+        glUniform1i(color, 0);
+        glUniform1i(depth, 1);
+
+        glEnableVertexAttribArray(uv);
+        glVertexAttribPointer(uv, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), NULL);
+    }
+
+    void reset() {
+        LOG << "reset layer program";
+        LOG << "delete vao: " << vao;
+        glDeleteVertexArrays(1, &vao);
+    }
+
+    void bind(Layer *layer) {
+        glUseProgram(program);
+        glBindVertexArray(vao);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, layer->colorTexture());
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, layer->depthTexture());
+    }
+
+    void render() { glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); }
+};
+
 class BasicRenderer : public virtual Renderer {
 protected:
     vector<Object *> objects;
@@ -52,48 +117,14 @@ public:
 
         // layer->snapshot();
         Layer::detach();
-        layer->blit();
+        // layer->blit();
     }
 };
-
-// static float vertices[] = {
-//     0.0f, 0.0f, 1.0f, 0.0f,
-//     0.0f, 1.0f, 1.0f, 1.0f
-// };
-//
-// static GLuint vbo = 0;
-//
-// static GLuint setupLayerRenderer(GLuint program) {
-//     LOG << "setup layer renderer";
-//
-//     if (!vbo) {
-//         LOG << "create quad buffer";
-//         glGenBuffers(1, &vbo);
-//         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//         LOG << "buffer: " << vbo;
-//     }
-//
-//     GLuint vao;
-//     glGenVertexArrays(1, &vao);
-//     glBindVertexArray(vao);
-//     LOG << "vertex array: " << vao;
-//
-//     glUseProgram(program);
-//     GLuint uv = glGetAttribLocation(program, "uv");
-//     LOG << "program: " << program;
-//     LOG << "uv attribute: " << uv;
-//
-//     glEnableVertexAttribArray(uv);
-//     glVertexAttribPointer(uv, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), NULL);
-//
-//     return vao;
-// }
 
 class TransparentRenderer : public LayerRenderer {
     Layer *layer0, *layer1;
     int pass;
-    // GLuint vao;
+    LayerProgram *program;
 public:
     TransparentRenderer(Layer *layer, int pass)
         : LayerRenderer(layer), pass(pass) {}
@@ -103,7 +134,9 @@ public:
         layer0->setup();
         layer1 = Layer::basic();
         layer1->setup();
-        // vao = setupLayerRenderer()
+
+        program = Box::create<LayerProgram>(Shader::layer());
+        program->setup();
 
         LayerRenderer::setup();
     }
@@ -131,45 +164,73 @@ public:
             LayerRenderer::render();
 
             layer0->select();
+            program->bind(layer1);
+
             glDepthFunc(GL_ALWAYS);
             glEnable(GL_BLEND);
             glBlendFuncSeparate(GL_DST_ALPHA, GL_ONE, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
 
-            layer1->attach();
+            program->render();
 
             glDisable(GL_BLEND);
         }
 
         glDisable(GL_DEPTH_TEST);
 
-        Layer::detach();
-        // layer0->blit();
+        layer->select();
+        program->bind(layer0);
+
         glEnable(GL_BLEND);
         glBlendFuncSeparate(GL_ONE, GL_SRC_ALPHA, GL_ZERO, GL_ONE);
         glBlendEquation(GL_FUNC_ADD);
-        layer0->attach();
+
+        program->render();
+
         glDisable(GL_BLEND);
+
+        Layer::detach();
     }
 
     void reset() {
         Box::release(layer0);
         Box::release(layer1);
+        Box::release(program);
 
         LayerRenderer::reset();
     }
 };
 
-// class TargetRenderer : public LayerRenderer {
-// public:
-//     TargetRenderer(Layer *target) : LayerRenderer(target) {}
-//
-//     void render() {
-//         LayerRenderer::render();
-//
-//         // layer->blit();
-//     }
-// };
+class TargetRenderer : public LayerRenderer {
+    LayerProgram *program;
+public:
+    TargetRenderer(Layer *target) : LayerRenderer(target) {}
+
+    void setup() {
+        program = Box::create<LayerProgram>(Shader::fxaa());
+        program->setup();
+
+        LayerRenderer::setup();
+    }
+
+    void reset() {
+        Box::release(program);
+
+        LayerRenderer::reset();
+    }
+
+    void render() {
+        LayerRenderer::render();
+
+        program->bind(layer);
+        program->render();
+        // layer->blit();
+
+        // TODO: MAGIC CODE
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+};
 
 // class OffScreenRenderer : public BasicRenderer {
 // protected:
@@ -226,9 +287,9 @@ Renderer *ObjectBox::transparent(Layer *layer) {
     return create<TransparentRenderer>(layer, 7);
 }
 
-// Renderer *ObjectBox::target(Layer *layer) {
-//     return create<TargetRenderer>(layer);
-// }
+Renderer *ObjectBox::target(Layer *layer) {
+    return create<TargetRenderer>(layer);
+}
 
 // Renderer *ObjectBox::layer() {
 //     return create<LayerRenderer>();

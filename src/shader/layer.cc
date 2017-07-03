@@ -1,7 +1,5 @@
 #include "component/shader.hpp"
 
-static GLuint program = 0;
-
 static const char *vsh = R"(
     #version 330 core
     precision highp float;
@@ -29,13 +27,37 @@ static const char *fsh = R"(
 
     void main(void) {
         vec4 c = texture(color, uvOut);
-        if (c.a < 0.01) discard;
+        // if (c.a < 0.01) discard;
         fragColor = c;
         gl_FragDepth = texture(depth, uvOut).r;
     }
 )";
 
+static const char *fsh_fxaa = R"(
+    #version 330 core
+    precision highp float;
+
+    in vec2 uvOut;
+
+    uniform sampler2D color;
+    uniform sampler2D depth;
+
+    out vec4 fragColor;
+
+    void main(void) {
+        fragColor = vec4(texture(color, uvOut).rgb, 1.0);
+        gl_FragDepth = texture(depth, uvOut).x;
+    }
+)";
+
 GLuint Shader::layer() {
+    static GLuint program = 0;
     if (!program) program = programShader(vsh, fsh);
+    return program;
+}
+
+GLuint Shader::fxaa() {
+    static GLuint program = 0;
+    if (!program) program = programShader(vsh, fsh_fxaa);
     return program;
 }

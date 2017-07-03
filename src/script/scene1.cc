@@ -13,7 +13,7 @@ public:
         // Layer *layer2 = push(Layer::basic());
 
         LOG << "create root renderer";
-        root = ObjectBox::renderer();
+        root = ObjectBox::target(layer1);
 
         LOG << "create camera & light";
         camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));

@@ -6,7 +6,7 @@
 class Layer : public virtual BaseObject {
 public:
     virtual void select(void) = 0;
-    virtual void attach(void) = 0;
+    // virtual void attach(void) = 0;
     virtual void blit(void) = 0;
     virtual void snapshot(void) = 0;
     virtual GLuint colorTexture(void) = 0;
