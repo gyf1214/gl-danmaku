@@ -17,6 +17,7 @@ public:
         pool.resize(0);
         setupDanmaku();
         LOG << "done setup danmaku vertices";
+        LOG << "danmaku size: " << pool.size();
     }
     void reset() {
         LOG << "reset danmaku provider";
@@ -26,137 +27,165 @@ public:
     const void *data() const { return pool.data(); }
 };
 
+static Chain utsuho_1_non() {
+    return Chain(sphereSpread(10, 10))
+        << generator(20)
+        << emitter(0.0f, 0.1f)
+        << type(0, 16, 8, 1.0f)
+        << linearSpeed(10.0f, 0.0f)
+        << dieAfter(20.0f);
+}
+
+static Chain self_1() {
+    return Chain(generator(3))
+        << line(vec3(-1.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f))
+        << generator(20)
+        << emitter(0.0f, 0.1f)
+        << type(8, 16, 4, 0.5f)
+        << direction(vec3(0.0f, -20.0f, 0.0f))
+        << dieAfter(20.0f);
+}
+
+static Chain utsuho_1_card() {
+    Chain c1 = Chain(sphereSpread(0, 1))
+        << type(0, 0, 16, 10.0f)
+        << linearSpeed(1.0f, 0.0f);
+
+    Chain c2 = Chain(generator(30))
+        << generator(20)
+        << emitter(1.0f, 0.5f)
+        << randomDirection()
+        << type(0, 24, 8, 2.0f)
+        << linearSpeed(4.0f, 0.0f);
+
+    return Chain(Multi() << c1 << c2)
+        << dieAfter(200.0f);
+}
+
+static Chain utsuho_2_non_single(vec3 dir) {
+    vec3 k = glm::sphericalRand(1.0f);
+    k = normalize(k - dot(k, dir) * dir);
+    vec3 t = cross(k, dir);
+
+    return Chain(generator(3))
+        << circleSpread(k, t, M_PI / 1.5f);
+}
+
+static Chain utsuho_2_non_spline(const vec3 &p0, const vec3 &p1,
+                                 const vec3 &p2, const vec3 &p3,
+                                 int N, float elapse) {
+    Multi gens;
+    for (int i = 0; i < N; ++i) {
+        vec3 pos = catmullRom(p0, p1, p2, p3, (float)i / (float)N);
+        vec3 dir = catmullRomNorm(p0, p1, p2, p3, (float)i / (float)N);
+
+        gens << (utsuho_2_non_single(dir)
+                 << addPosition(pos)
+                 << addTime((float)i / (float)N * elapse));
+    }
+    return Chain(gens);
+}
+
+static Chain utsuho_2_non_common() {
+    return Chain(generator(15))
+        << type(8, 24, 8, 2.0f)
+        << linearSpeed(0.5f, 0.8f)
+        << dieAfter(100.0f);
+}
+
+static Chain utsuho_2_card() {
+    Chain c1 = Chain(generator(100))
+        << randomBox(vec3(-25.0f, -25.0f, 40.0f), vec3(25.0f, 25.0f, 50.0f))
+        << emitter(0.0f, 0.2f)
+        << direction(0.0f, 0.0f, -10.0f)
+        << type(0, 0, 16, 10.0f);
+
+    Chain c2 = Chain(generator(50))
+        << randomBox(vec3(-10.0f, -10.0f, 40.0f), vec3(10.0f, 10.0f, 50.0f))
+        << emitter(0.0f, 0.5f)
+        << generator(20)
+        << randomDirection()
+        << linearSpeed(5.0f, 0.0f)
+        << addVelocity(0.0f, 0.0f, -10.0f)
+        << type(0, 24, 8, 2.0f);
+
+    return Chain(Multi() << c1 << c2)
+        << dieAfter(30.0f);
+}
+
+static Chain utsuho_2_extra() {
+    return Chain(generator(100))
+        << randomDirection()
+        << linearSpeed(8.0f, 0.0f)
+        << generator(10)
+        << emitter(0.0f, 0.5f)
+        << type(16, 24, 8, 5.0f)
+        << dieAfter(30.0f);
+}
+
+static Chain utsuho_3_card() {
+    Multi tens;
+    tens << (Chain(circleSpread(vec3(1.0f, 0.0f, 0.0f),
+                                vec3(0.0f, 1.0f, 0.0f), M_PI / 2.5f))
+             << (Multi() << linearSpeed(5.0f, 0.0f) << linearSpeed(12.0f, 0.0f))
+             << dieAfter(1.0f))
+         << (Chain(Multi() << circle(vec3(5.0f, 0.0f, 0.0f),
+                                     vec3(0.0f, 5.0f, 0.0f), M_PI / 2.5f)
+                           << circle(vec3(12.0f, 0.0f, 0.0f),
+                                     vec3(0.0f, 12.0f, 0.0f), M_PI / 2.5f))
+             << emitter(1.0f, 0.0f)
+             << circleSpread(vec3(0.0f, -2.0f, 0.0f),
+                             vec3(2.0f, 0.0f, 0.0f), M_PI / 2.5f)
+             << circleMotion(vec3(0.0f, 0.0f, 0.0f))
+             << dieAfter(100.0f));
+
+    return Chain(generator(5)) << tens
+        << type(0, 0, 16, 10.0f);
+}
+
 class Danmaku1 : public DanmakuProvider {
 public:
     void setupDanmaku() {
-        Base *src = source(pool)->set();
+        Emit dst = Emit(source(pool));
 
         // KEEP: utsuho-1-non
 
-        // Chain(generator(1))
-        //     << sphereSpread(10, 10)
-        //     << generator(20)
-        //     << emitter(0.0f, 0.1f)
-        //     << type(0, 16, 8, 1.0f)
-        //     << linearSpeed(10.0f, 0.0f)
-        //     << dieAfter(10.0f)
-        //     << src << Emit();
+        // utsuho_1_non() << addPosition(0.0f, 0.0f, 60.0f)
+        //                << addTime(2.0f) << dst;
 
         // KEEP: self-1
 
-        // Chain(generator(3))
-        //     << line(vec3(-1.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f))
-        //     << generator(20)
-        //     << emitter(0.0f, 0.1f)
-        //     << type(8, 16, 4, 0.5f)
-        //     << direction(vec3(0.0f, -20.0f, 0.0f))
-        //     << dieAfter(10.0f)
-        //     << src << Emit();
+        // self_1() << addPosition(0.0f, 20.0f, 60.0f)
+        //          << addTime(2.0f) << dst;
 
         // KEEP: utsuho-1-card
 
-        // Chain(generator(1))
-        //     << emitter(0.0f, 0.0f)
-        //     << sphereSpread(0, 1)
-        //     << type(0, 0, 16, 20.0f)
-        //     << linearSpeed(1.0f, 0.0f)
-        //     << dieAfter(100.0f)
-        //     << src << Emit();
-        //
-        // Chain(generator(30))
-        //     << generator(20)
-        //     << emitter(1.0f, 0.5f)
-        //     << randomDirection()
-        //     << type(0, 24, 8, 2.0f)
-        //     << linearSpeed(4.0f, 0.0f)
-        //     << dieAfter(100.0f)
-        //     << src << Emit();
+        // utsuho_1_card() << addPosition(0.0f, 0.0f, 60.0f)
+        //                 << addTime(2.0f) << dst;
 
         // KEEP: utsuho-2-non
 
-        // Multi gens;
-        //
-        // int N = 10;
         // vec3 p0 = vec3(-60.0f,  10.0f, 60.0f);
         // vec3 p1 = vec3(-30.0f, -20.0f, 60.0f);
         // vec3 p2 = vec3( 30.0f, -20.0f, 60.0f);
         // vec3 p3 = vec3( 60.0f,  10.0f, 60.0f);
-        // for (int i = 0; i < N; ++i) {
-        //     vec3 pos = catmullRom(p0, p1, p2, p3, (float)i / (float)N);
-        //     vec3 dir = catmullRomNorm(p0, p1, p2, p3, (float)i / (float)N);
-        //
-        //     vec3 k = glm::sphericalRand(1.0f);
-        //     k = normalize(k - dot(k, dir) * dir);
-        //     vec3 t = cross(k, dir);
-        //
-        //     Chain c = Chain(point(pos))
-        //         << emitter((float)i / 3.0f, 0.0f)
-        //         << generator(3)
-        //         << circleSpread(k, t, M_PI / 1.5f);
-        //
-        //     gens << c;
-        // }
-        //
-        // Chain(generator(1))
-        //     << gens
-        //     << generator(15)
-        //     << type(8, 24, 8, 2.0f)
-        //     << linearSpeed(0.5f, 0.8f)
-        //     << dieAfter(100.0f)
-        //     << src << Emit();
+        // utsuho_2_non_spline(p0, p1, p2, p3, 10, 2.0f)
+        //     << utsuho_2_non_common() << addTime(2.0f) << dst;
 
         // KEEP: utsuho-2-card
 
-        // Chain(generator(100))
-        //     << randomBox(vec3(-25.0f, -25.0f, 40.0f), vec3(25.0f, 25.0f, 50.0f))
-        //     << emitter(0.0f, 0.2f)
-        //     << direction(0.0f, 0.0f, -10.0f)
-        //     << type(0, 0, 16, 10.0f)
-        //     << dieAfter(30.0f)
-        //     << src << Emit();
-        //
-        // Chain(generator(50))
-        //     << randomBox(vec3(-10.0f, -10.0f, 40.0f), vec3(10.0f, 10.0f, 50.0f))
-        //     << emitter(0.0f, 0.5f)
-        //     << generator(20)
-        //     << randomDirection()
-        //     << linearSpeed(5.0f, 0.0f)
-        //     << addVelocity(0.0f, 0.0f, -10.0f)
-        //     << type(0, 24, 8, 2.0f)
-        //     << dieAfter(30.0f)
-        //     << src << Emit();
+        // utsuho_2_card() << addPosition(0.0f, 0.0f, 60.0f)
+        //                 << addTime(2.0f) << dst;
 
-        // KEEP: utsuho-2-non extra
+        // KEEP: utsuho-2-extra
 
-        // Chain(generator(100))
-        //     << randomDirection()
-        //     << linearSpeed(8.0f, 0.0f)
-        //     << generator(10)
-        //     << emitter(0.0f, 0.5f)
-        //     << type(16, 24, 8, 5.0f)
-        //     << dieAfter(30.0f)
-        //     << src << Emit();
+        // utsuho_2_extra() << addPosition(0.0f, 0.0f, 60.0f)
+        //                  << addTime(2.0f) << dst;
 
         // KEEP: utsuho-3-card
 
-        // Multi tens;
-        // tens << (Chain(circleSpread(vec3(1.0f, 0.0f, 0.0f),
-        //                             vec3(0.0f, 1.0f, 0.0f), M_PI / 2.5f))
-        //          << (Multi() << linearSpeed(5.0f, 0.0f) << linearSpeed(12.0f, 0.0f))
-        //          << dieAfter(1.0f))
-        //      << (Chain(Multi() << circle(vec3(5.0f, 0.0f, 0.0f),
-        //                                  vec3(0.0f, 5.0f, 0.0f), M_PI / 2.5f)
-        //                        << circle(vec3(12.0f, 0.0f, 0.0f),
-        //                                  vec3(0.0f, 12.0f, 0.0f), M_PI / 2.5f))
-        //          << emitter(1.0f, 0.0f)
-        //          << circleSpread(vec3(0.0f, -2.0f, 0.0f),
-        //                          vec3(2.0f, 0.0f, 0.0f), M_PI / 2.5f)
-        //          << circleMotion(vec3(0.0f, 0.0f, 0.0f))
-        //          << dieAfter(100.0f));
-        //
-        // Chain(generator(5)) << tens
-        //     << type(0, 0, 16, 10.0f)
-        //     << src << Emit();
+        // utsuho_3_card() << addPosition(0.0f, 0.0f, 60.0f)
+        //                 << addTime(2.0f) << dst;
 
         // END: KEEP
 
@@ -233,8 +262,6 @@ public:
         //     << emitter(2.0f, 0.05f)
         //     << type(0, 16, 8, 0.3f)
         //     << src << Emit();
-
-        src->reset();
     }
 };
 

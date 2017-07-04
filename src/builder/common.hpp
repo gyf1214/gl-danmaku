@@ -24,7 +24,17 @@ namespace Builder {
         virtual void chain(Base *b);
     };
 
-    struct Emit {};
+    class Emit {
+        Base *base;
+    public:
+        Emit(Base *base);
+        Emit(const Emit &e);
+        ~Emit();
+
+        Emit &operator =(const Emit &c);
+
+        Base *source(void) const;
+    };
 
     class Chain {
         Base *start, *end;
@@ -37,6 +47,7 @@ namespace Builder {
         Chain &operator =(const Chain &c);
 
         void emit(Vertex &v, int i) const;
+        void generate(void) const;
         Chain operator <<(Base *b) const;
         Chain operator <<(const Chain &c) const;
         void operator <<(const Emit &e) const;
@@ -88,6 +99,7 @@ namespace Builder {
     // Additive
     Base *addPosition(const vec3 &p);
     Base *addVelocity(const vec3 &v);
+    Base *addTime(float t);
 
 #define inlineVec3(name) inline Base *name(float x, float y, float z) {\
     return name(vec3(x, y, z));\

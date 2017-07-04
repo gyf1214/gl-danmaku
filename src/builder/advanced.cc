@@ -98,10 +98,12 @@ namespace Builder {
 
     class Additive : public Base {
         vec3 p, v, a;
+        vec4 t;
     public:
-        Additive(const vec3 &p, const vec3 &v, const vec3 &a)
-            : p(p), v(v), a(a) {}
+        Additive(const vec3 &p, const vec3 &v, const vec3 &a, const vec4 &t)
+            : p(p), v(v), a(a), t(t) {}
         void pass(Vertex vv, int i) {
+            vv.time += t;
             vv.position += p;
             vv.velocity += v;
             if (vv.acceleration.a > 0.0f) {
@@ -150,10 +152,14 @@ namespace Builder {
     }
     Base *addPosition(const vec3 &p) {
         vec3 zero(0.0f, 0.0f, 0.0f);
-        return new Additive(p, zero, zero);
+        return new Additive(p, zero, zero, vec4(0.0f));
     }
     Base *addVelocity(const vec3 &v) {
         vec3 zero(0.0f, 0.0f, 0.0f);
-        return new Additive(zero, v, zero);
+        return new Additive(zero, v, zero, vec4(0.0f));
+    }
+    Base *addTime(float t) {
+        vec3 zero(0.0f, 0.0f, 0.0f);
+        return new Additive(zero, zero, zero, vec4(t, t, t, t));
     }
 }

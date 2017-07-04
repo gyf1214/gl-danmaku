@@ -7,9 +7,25 @@ namespace Builder {
     Base &Base::operator =(const Base &b) { return *this; }
     Base *Base::set() { ++refcnt; return this; }
     void Base::reset() { if (--refcnt <= 0) delete this; }
-    void Base::generate(void) {}
+    void Base::generate(void) {
+        Vertex v;
+        v.velocity = v.position = vec3(0.0f);
+        v.acceleration = vec4(0.0f);
+        v.time = vec4(0.0f, INFINITY, 0.0f, INFINITY);
+        pass(v, 0);
+    }
     void Base::emit(const Vertex &v, int i) { next -> pass(v, i); }
     void Base::chain(Base *b) { next = b -> set(); }
+
+    Emit::Emit(Base *base) : base(base->set()) {}
+    Emit::Emit(const Emit &e) : base(e.base->set()) {}
+    Emit::~Emit() { base->reset(); }
+    Emit &Emit::operator=(const Emit &c) {
+        base->reset();
+        base = c.base->set();
+        return *this;
+    }
+    Base *Emit::source() const { return base; }
 
     Chain::Chain(Base *x) : start(x -> set()), end(x -> set()) {}
     Chain::Chain(Base *s, Base *e)
@@ -37,11 +53,16 @@ namespace Builder {
     }
 
     void Chain::operator <<(const Emit &e) const {
+        end->chain(e.source());
         start -> generate();
     }
 
     void Chain::emit(Vertex &v, int i) const {
         start -> pass(v, i);
+    }
+
+    void Chain::generate() const {
+        start -> generate();
     }
 
     class MultiBase : public Base {
@@ -50,6 +71,7 @@ namespace Builder {
         void push(const Chain &c) { base.push_back(c); }
         void push(Base *b) { base.push_back(Chain(b)); }
         void pass(Vertex v, int i) { for (const auto &x : base) x.emit(v, i); }
+        void generate() { for (const auto &x : base) x.generate(); }
         void chain(Base *b) { for (const auto &x : base) x << b; }
     };
 
