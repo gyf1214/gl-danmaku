@@ -223,6 +223,11 @@ public:
         LayerRenderer::render();
 
         program->bind(layer);
+        GLuint res = glGetUniformLocation(program->program, "resolution");
+        float resolution[] = {
+            (float)Application::bufferWidth, (float)Application::bufferHeight
+        };
+        glUniform2fv(res, 1, resolution);
         program->render();
         // layer->blit();
 
