@@ -42,7 +42,10 @@ static const char *gsh = R"(
         for (int i = 0; i < gl_in.length(); ++i) {
             if (show[i] == 1) {
                 vec4 vPosition = gl_in[i].gl_Position;
-                vec2 dir = normalize(velocityOut[i].xy);
+                vec2 dir = vec2(1.0, 0.0);
+                if (length(velocityOut[i].xy) > 0.0) {
+                    dir = normalize(velocityOut[i].xy);
+                }
                 vec2 norm = vec2(-dir.y, dir.x);
                 for (int j = 0; j < 4; ++j) {
                     uv = vec2(j % 2, j / 2);

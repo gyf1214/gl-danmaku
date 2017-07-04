@@ -40,10 +40,10 @@ namespace Builder {
         }
     };
 
-    class Sphere : public Base {
+    class SphereSpread : public Base {
         int split, height;
     public:
-        Sphere(int split, int height) : split(split), height(height) {}
+        SphereSpread(int split, int height) : split(split), height(height) {}
         void pass(Vertex &v, int t) {
             for (int i = -height; i <= height; ++i) {
                 float a0 = (float)i / (float)(height + 1) * M_PI / 2.0f;
@@ -84,11 +84,11 @@ namespace Builder {
         }
     };
 
-    class Circle : public Base {
+    class CircleSpread : public Base {
         vec3 x, y;
         float angle;
     public:
-        Circle(const vec3 &x, const vec3 &y, float angle)
+        CircleSpread(const vec3 &x, const vec3 &y, float angle)
             : x(x), y(y), angle(angle) {}
         void pass(Vertex &v, int i) {
             v.velocity = x * (float)cos(angle * i) + y * (float)sin(angle * i);
@@ -109,6 +109,18 @@ namespace Builder {
         }
     };
 
+    class Circle : public Base {
+        vec3 x, y;
+        float angle;
+    public:
+        Circle(const vec3 &x, const vec3 &y, float angle)
+            : x(x), y(y), angle(angle) {}
+        void pass(Vertex &v, int i) {
+            v.position = x * (float)cos(angle * i) + y * (float)sin(angle * i);
+            emit(v, i);
+        }
+    };
+
     Base *targetTime(const vec3 &pos, float time) {
         return new Target(pos, 1.0f / time, false);
     }
@@ -119,11 +131,16 @@ namespace Builder {
         return new Line(pos, dir);
     }
     Base *linearSpeed(float base, float k) { return new LinearSpeed(base, k); }
-    Base *sphere(int split, int height) { return new Sphere(split, height); }
+    Base *sphereSpread(int split, int height) {
+        return new SphereSpread(split, height);
+    }
     Base *circleMotion(const vec3 &center) {
         return new CircleMotion(center);
     }
     Base *crossBias(const vec3 &base) { return new CrossBias(base); }
+    Base *circleSpread(const vec3 &x, const vec3 &y, float angle) {
+        return new CircleSpread(x, y, angle);
+    }
     Base *circle(const vec3 &x, const vec3 &y, float angle) {
         return new Circle(x, y, angle);
     }

@@ -65,6 +65,7 @@ namespace Builder {
     // Position Pass
     Base *point(const vec3 &pos);
     Base *line(const vec3 &start, const vec3 &dir);
+    Base *circle(const vec3 &x, const vec3 &y, float angle);
     Base *randomBox(const vec3 &min, const vec3 &max);
 
     // Motion Pass
@@ -72,13 +73,11 @@ namespace Builder {
     Base *targetTime(const vec3 &pos, float time);
     Base *targetNorm(const vec3 &pos, float speed);
     Base *linearSpeed(float base, float k);
+    Base *sphereSpread(int split, int height);
+    Base *circleSpread(const vec3 &x, const vec3 &y, float angle);
     Base *circleMotion(const vec3 &center);
     Base *crossBias(const vec3 &base);
-    Base *circle(const vec3 &x, const vec3 &y, float angle);
     Base *randomDirection(void);
-
-    // Both
-    Base *sphere(int split, int height);
 
     // Additive
     Base *addPosition(const vec3 &p);
