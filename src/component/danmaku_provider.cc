@@ -137,10 +137,12 @@ public:
         //     << randomDirection()
         //     << linearSpeed(8.0f, 0.0f)
         //     << generator(10)
-        //     << emitter(1.0f, 0.2f)
+        //     << emitter(1.0f, 0.5f)
         //     << type(16, 24, 8, 5.0f)
         //     << dieAfter(30.0f)
         //     << src << Emit();
+
+        // KEEP: utsuho-3-card
 
         // END: KEEP
 
