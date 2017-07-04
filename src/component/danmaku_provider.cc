@@ -34,7 +34,6 @@ public:
         // KEEP: utsuho-1-non
 
         // Chain(generator(1))
-        //     << point(0.0f, -20.0f, 60.0f)
         //     << sphereSpread(10, 10)
         //     << generator(20)
         //     << emitter(0.0f, 0.1f)
@@ -46,7 +45,7 @@ public:
         // KEEP: self-1
 
         // Chain(generator(3))
-        //     << line(vec3(-1.0f, 20.0f, 60.0f), vec3(1.0f, 0.0f, 0.0f))
+        //     << line(vec3(-1.0f, 0.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f))
         //     << generator(20)
         //     << emitter(0.0f, 0.1f)
         //     << type(8, 16, 4, 0.5f)
@@ -57,16 +56,14 @@ public:
         // KEEP: utsuho-1-card
 
         // Chain(generator(1))
-        //     << point(0.0f, -20.0f, 60.0f)
         //     << emitter(0.0f, 0.0f)
         //     << sphereSpread(0, 1)
         //     << type(0, 0, 16, 20.0f)
-        //     << linearSpeed(0.7f, 0.0f)
+        //     << linearSpeed(1.0f, 0.0f)
         //     << dieAfter(100.0f)
         //     << src << Emit();
         //
         // Chain(generator(30))
-        //     << point(0.0f, -20.0f, 60.0f)
         //     << generator(20)
         //     << emitter(1.0f, 0.5f)
         //     << randomDirection()
@@ -93,7 +90,7 @@ public:
         //     vec3 t = cross(k, dir);
         //
         //     Chain c = Chain(point(pos))
-        //         << emitter(1.0f + (float)i / 3.0f, 0.0f)
+        //         << emitter((float)i / 3.0f, 0.0f)
         //         << generator(3)
         //         << circleSpread(k, t, M_PI / 1.5f);
         //
@@ -111,16 +108,16 @@ public:
         // KEEP: utsuho-2-card
 
         // Chain(generator(100))
-        //     << randomBox(vec3(-25.0f, -25.0f, 100.0f), vec3(25.0f, 25.0f, 110.0f))
-        //     << emitter(1.0f, 0.2f)
+        //     << randomBox(vec3(-25.0f, -25.0f, 40.0f), vec3(25.0f, 25.0f, 50.0f))
+        //     << emitter(0.0f, 0.2f)
         //     << direction(0.0f, 0.0f, -10.0f)
         //     << type(0, 0, 16, 10.0f)
         //     << dieAfter(30.0f)
         //     << src << Emit();
         //
         // Chain(generator(50))
-        //     << randomBox(vec3(-10.0f, -10.0f, 100.0f), vec3(10.0f, 10.0f, 110.0f))
-        //     << emitter(1.0f, 0.5f)
+        //     << randomBox(vec3(-10.0f, -10.0f, 40.0f), vec3(10.0f, 10.0f, 50.0f))
+        //     << emitter(0.0f, 0.5f)
         //     << generator(20)
         //     << randomDirection()
         //     << linearSpeed(5.0f, 0.0f)
@@ -132,63 +129,33 @@ public:
         // KEEP: utsuho-2-non extra
 
         // Chain(generator(100))
-        //     << point(0.0f, -20.0f, 60.0f)
         //     << randomDirection()
         //     << linearSpeed(8.0f, 0.0f)
         //     << generator(10)
-        //     << emitter(1.0f, 0.5f)
+        //     << emitter(0.0f, 0.5f)
         //     << type(16, 24, 8, 5.0f)
         //     << dieAfter(30.0f)
         //     << src << Emit();
 
         // KEEP: utsuho-3-card
 
-        // Chain(generator(5))
-        //     << point(0.0f, 0.0f, 60.0f)
-        //     << circleSpread(vec3(1.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), M_PI / 2.5f)
-        //     << emitter(1.0f, 0.0f)
-        //     << linearSpeed(5.0f, 0.0f)
-        //     << type(0, 0, 16, 10.0f)
-        //     << dieAfter(1.0f)
-        //     << src << Emit();
+        // Multi tens;
+        // tens << (Chain(circleSpread(vec3(1.0f, 0.0f, 0.0f),
+        //                             vec3(0.0f, 1.0f, 0.0f), M_PI / 2.5f))
+        //          << (Multi() << linearSpeed(5.0f, 0.0f) << linearSpeed(12.0f, 0.0f))
+        //          << dieAfter(1.0f))
+        //      << (Chain(Multi() << circle(vec3(5.0f, 0.0f, 0.0f),
+        //                                  vec3(0.0f, 5.0f, 0.0f), M_PI / 2.5f)
+        //                        << circle(vec3(12.0f, 0.0f, 0.0f),
+        //                                  vec3(0.0f, 12.0f, 0.0f), M_PI / 2.5f))
+        //          << emitter(1.0f, 0.0f)
+        //          << circleSpread(vec3(0.0f, -2.0f, 0.0f),
+        //                          vec3(2.0f, 0.0f, 0.0f), M_PI / 2.5f)
+        //          << circleMotion(vec3(0.0f, 0.0f, 0.0f))
+        //          << dieAfter(100.0f));
         //
-        // Chain(generator(5))
-        //     << circle(vec3(5.0f, 0.0f, 0.0f), vec3(0.0f, 5.0f, 0.0f), M_PI / 2.5f)
-        //     << addPosition(0.0f, 0.0f, 60.0f)
-        //     << emitter(2.0f, 0.0f)
-        //     << circleSpread(vec3(0.0f, -2.0f, 0.0f), vec3(2.0f, 0.0f, 0.0f), M_PI / 2.5f)
-        //     << circleMotion(vec3(0.0f, 0.0f, 60.0f))
+        // Chain(generator(5)) << tens
         //     << type(0, 0, 16, 10.0f)
-        //     << dieAfter(100.0f)
-        //     << src << Emit();
-        //
-        // Chain(generator(5))
-        //     << point(0.0f, 0.0f, 60.0f)
-        //     << circleSpread(vec3(0.0f, 1.0f, 0.0f), vec3(1.0f, 0.0f, 0.0f), M_PI / 2.5f)
-        //     << emitter(1.0f, 0.0f)
-        //     << linearSpeed(12.0f, 0.0f)
-        //     << type(0, 0, 16, 10.0f)
-        //     << dieAfter(1.0f)
-        //     << src << Emit();
-        //
-        // Chain(generator(5))
-        //     << circle(vec3(0.0f, 12.0f, 0.0f), vec3(12.0f, 0.0f, 0.0f), M_PI / 2.5f)
-        //     << addPosition(0.0f, 0.0f, 60.0f)
-        //     << emitter(2.0f, 0.0f)
-        //     << circleSpread(vec3(-4.0f, 0.0f, 0.0f), vec3(0.0f, 4.0f, 0.0f), M_PI / 2.5f)
-        //     << circleMotion(vec3(0.0f, 0.0f, 60.0f))
-        //     << type(0, 0, 16, 10.0f)
-        //     << dieAfter(100.0f)
-        //     << src << Emit();
-        //
-        // Chain(generator(20))
-        //     << point(0.0f, 0.0f, 60.0f)
-        //     << emitter(2.0f, 1.0f)
-        //     << generator(100)
-        //     << randomDirection()
-        //     << linearSpeed(5.0f, 0.0f)
-        //     << type(8, 24, 8, 2.0f)
-        //     << dieAfter(100.0f)
         //     << src << Emit();
 
         // END: KEEP

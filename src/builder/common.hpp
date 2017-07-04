@@ -13,12 +13,14 @@ namespace Builder {
         Base(const Base &c);
         virtual ~Base();
 
+        Base &operator =(const Base &b);
+
         Base *set();
         void reset();
 
         virtual void generate(void);
-        virtual void pass(Vertex &v, int i);
-        virtual void emit(Vertex &v, int i);
+        virtual void pass(Vertex v, int i) = 0;
+        virtual void emit(const Vertex &v, int i);
         virtual void chain(Base *b);
     };
 
@@ -31,6 +33,8 @@ namespace Builder {
         Chain(Base *s, Base *e);
         Chain(const Chain &c);
         ~Chain();
+
+        Chain &operator =(const Chain &c);
 
         void emit(Vertex &v, int i) const;
         Chain operator <<(Base *b) const;
@@ -45,6 +49,8 @@ namespace Builder {
         Multi();
         Multi(const Multi &);
         ~Multi();
+
+        Multi &operator =(const Multi &);
 
         const Multi &operator <<(Base *b) const;
         const Multi &operator <<(const Chain &m) const;
