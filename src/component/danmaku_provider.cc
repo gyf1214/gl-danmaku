@@ -31,6 +31,51 @@ public:
     void setupDanmaku() {
         Base *src = source(pool)->set();
 
+        // KEEP: utsuho-1-non
+
+        // Chain(generator(1))
+        //     << point(0.0f, -20.0f, 60.0f)
+        //     << sphere(10, 10)
+        //     << generator(20)
+        //     << emitter(0.0f, 0.1f)
+        //     << type(0, 16, 8, 1.0f)
+        //     << linearSpeed(10.0f, 0.0f)
+        //     << dieAfter(10.0f)
+        //     << src << Emit();
+
+        // KEEP: self-1
+
+        // Chain(generator(3))
+        //     << line(vec3(-1.0f, 20.0f, 60.0f), vec3(1.0f, 0.0f, 0.0f))
+        //     << generator(20)
+        //     << emitter(0.0f, 0.1f)
+        //     << type(8, 16, 4, 0.5f)
+        //     << direction(vec3(0.0f, -20.0f, 0.0f))
+        //     << dieAfter(10.0f)
+        //     << src << Emit();
+
+        // KEEP: utsuho-1-card
+
+        // Chain(generator(1))
+        //     << point(0.0f, -20.0f, 60.0f)
+        //     << emitter(0.0f, 0.0f)
+        //     << sphere(0, 1)
+        //     << type(0, 0, 16, 20.0f)
+        //     << linearSpeed(0.7f, 0.0f)
+        //     << dieAfter(100.0f)
+        //     << src << Emit();
+        //
+        // Chain(generator(30))
+        //     << point(0.0f, -20.0f, 60.0f)
+        //     << generator(20)
+        //     << emitter(1.0f, 0.5f)
+        //     << randomDirection()
+        //     << type(0, 24, 8, 2.0f)
+        //     << linearSpeed(4.0f, 0.0f)
+        //     << dieAfter(100.0f)
+        //     << src << Emit();
+
+
         // Chain(generator(10))
         //     << line(vec3(-2.0f, 5.0f, 20.0f),
         //             vec3(4.0f, 0.0f, 0.0f) / 5.0f)
@@ -42,24 +87,6 @@ public:
         //     << dieAfter(60.0f)
         //     << src << Emit();
         //
-        Chain(generator(1))
-            << point(0.0f, -20.0f, 60.0f)
-            << sphere(10, 10)
-            << generator(20)
-            << emitter(0.0f, 0.1f)
-            << type(0, 16, 8, 1.0f)
-            << linearSpeed(10.0f, 0.0f)
-            << dieAfter(10.0f)
-            << src << Emit();
-
-        Chain(generator(3))
-            << line(vec3(-1.0f, 20.0f, 60.0f), vec3(1.0f, 0.0f, 0.0f))
-            << generator(20)
-            << emitter(0.0f, 0.1f)
-            << type(8, 16, 4, 0.5f)
-            << direction(vec3(0.0f, -20.0f, 0.0f))
-            << dieAfter(10.0f)
-            << src << Emit();
 
         // Chain(generator(1))
         //     << point(0.0f, 0.0f, 20.0f)

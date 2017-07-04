@@ -74,6 +74,7 @@ namespace Builder {
     Base *circleMotion(const vec3 &center);
     Base *crossBias(const vec3 &base);
     Base *circle(const vec3 &x, const vec3 &y, float angle);
+    Base *randomDirection(void);
 
     // Both
     Base *sphere(int split, int height);
