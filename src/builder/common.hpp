@@ -65,6 +65,7 @@ namespace Builder {
     // Position Pass
     Base *point(const vec3 &pos);
     Base *line(const vec3 &start, const vec3 &dir);
+    Base *randomBox(const vec3 &min, const vec3 &max);
 
     // Motion Pass
     Base *direction(const vec3 &dir);

@@ -75,6 +75,74 @@ public:
         //     << dieAfter(100.0f)
         //     << src << Emit();
 
+        // KEEP: utsuho-2-non
+
+        // Multi gens;
+        //
+        // int N = 10;
+        // vec3 p0 = vec3(-60.0f,  10.0f, 60.0f);
+        // vec3 p1 = vec3(-30.0f, -20.0f, 60.0f);
+        // vec3 p2 = vec3( 30.0f, -20.0f, 60.0f);
+        // vec3 p3 = vec3( 60.0f,  10.0f, 60.0f);
+        // for (int i = 0; i < N; ++i) {
+        //     vec3 pos = catmullRom(p0, p1, p2, p3, (float)i / (float)N);
+        //     vec3 dir = catmullRomNorm(p0, p1, p2, p3, (float)i / (float)N);
+        //
+        //     vec3 k = glm::sphericalRand(1.0f);
+        //     k = normalize(k - dot(k, dir) * dir);
+        //     vec3 t = cross(k, dir);
+        //
+        //     Chain c = Chain(point(pos))
+        //         << emitter(1.0f + (float)i / 3.0f, 0.0f)
+        //         << generator(3)
+        //         << circle(k, t, M_PI / 1.5f);
+        //
+        //     gens << c;
+        // }
+        //
+        // Chain(generator(1))
+        //     << gens
+        //     << generator(15)
+        //     << type(8, 24, 8, 2.0f)
+        //     << linearSpeed(0.5f, 0.8f)
+        //     << dieAfter(100.0f)
+        //     << src << Emit();
+
+        // KEEP: utsuho-2-card
+
+        // Chain(generator(100))
+        //     << randomBox(vec3(-25.0f, -25.0f, 100.0f), vec3(25.0f, 25.0f, 110.0f))
+        //     << emitter(1.0f, 0.2f)
+        //     << direction(0.0f, 0.0f, -10.0f)
+        //     << type(0, 0, 16, 10.0f)
+        //     << dieAfter(30.0f)
+        //     << src << Emit();
+        //
+        // Chain(generator(50))
+        //     << randomBox(vec3(-10.0f, -10.0f, 100.0f), vec3(10.0f, 10.0f, 110.0f))
+        //     << emitter(1.0f, 0.5f)
+        //     << generator(20)
+        //     << randomDirection()
+        //     << linearSpeed(5.0f, 0.0f)
+        //     << addVelocity(0.0f, 0.0f, -10.0f)
+        //     << type(0, 24, 8, 2.0f)
+        //     << dieAfter(30.0f)
+        //     << src << Emit();
+
+
+        // KEEP: utsuho-2-non extra
+
+        // Chain(generator(100))
+        //     << point(0.0f, -20.0f, 60.0f)
+        //     << randomDirection()
+        //     << linearSpeed(8.0f, 0.0f)
+        //     << generator(10)
+        //     << emitter(1.0f, 0.2f)
+        //     << type(16, 24, 8, 5.0f)
+        //     << dieAfter(30.0f)
+        //     << src << Emit();
+
+        // END: KEEP
 
         // Chain(generator(10))
         //     << line(vec3(-2.0f, 5.0f, 20.0f),
