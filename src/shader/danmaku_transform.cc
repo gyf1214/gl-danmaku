@@ -25,7 +25,7 @@ static const char *vsh = R"(
     out vec4 acceleration;
     out vec4 uvIndex;
 
-    const float elapse = 1.0 / 60.0;
+    uniform float elapse;
 
     void main() {
         time = time0 - vec4(elapse);

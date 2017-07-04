@@ -6,9 +6,11 @@ static GLFWwindow *window = NULL;
 
 int Application::bufferWidth;
 int Application::bufferHeight;
-constexpr float Application::elapse;
+constexpr float Application::constantElapse;
 constexpr int Application::width;
 constexpr int Application::height;
+
+static double last, now;
 
 void Application::errorCallBack(int error, const char* description) {
     FAIL << "glfw error " << error << ": " << description;
@@ -77,11 +79,15 @@ void Application::mainLoop() {
             LOG << "change scene";
             Box::release(currentScene);
             currentScene = newScene;
-            if (currentScene) currentScene->setup();
-        }
-
-        if (currentScene) {
+            if (currentScene) {
+                currentScene->setup();
+                last = glfwGetTime();
+                currentScene->render();
+            }
+        } else if (currentScene) {
+            now = glfwGetTime();
             currentScene->update();
+            last = now;
             currentScene->render();
         }
 
@@ -136,4 +142,8 @@ void Application::getCursor(double &x, double &y) {
 
 int Application::getKey(int key) {
     return glfwGetKey(window, key);
+}
+
+float Application::elapse() {
+    return now - last;
 }

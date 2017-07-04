@@ -18,17 +18,17 @@ class Motion : public virtual Transform {
 public:
     virtual void teleport(vec3 pos) = 0;
     virtual void move(vec3 pos) = 0;
-    virtual float moveTo(vec3 pos, float speed) = 0;
+    virtual float moveTo(vec3 pos, float time) = 0;
 
     virtual void lookAt(glm::quat dir) = 0;
-    virtual float rotateTo(glm::quat dir, float speed) = 0;
-    virtual float rotateLocal(glm::quat r, float speed) = 0;
-    virtual float rotateGlobal(glm::quat r, float speed) = 0;
+    virtual float rotateTo(glm::quat dir, float time) = 0;
+    virtual float rotateLocal(glm::quat r, float time) = 0;
+    virtual float rotateGlobal(glm::quat r, float time) = 0;
 
     void teleport(float x, float y, float z) { teleport(vec3(x, y, z)); }
     void move(float x, float y, float z) { move(vec3(x, y, z)); }
-    float moveTo(float x, float y, float z, float speed) {
-        return moveTo(vec3(x, y, z), speed);
+    float moveTo(float x, float y, float z, float time) {
+        return moveTo(vec3(x, y, z), time);
     }
 };
 

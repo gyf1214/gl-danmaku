@@ -44,8 +44,8 @@ public:
         //
         Chain(generator(1))
             << point(0.0f, -20.0f, 60.0f)
-            << sphere(5, 5)
-            << generator(10)
+            << sphere(10, 10)
+            << generator(20)
             << emitter(0.0f, 0.1f)
             << type(0, 16, 8, 1.0f)
             << linearSpeed(10.0f, 0.0f)

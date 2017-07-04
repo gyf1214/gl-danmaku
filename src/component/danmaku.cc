@@ -17,7 +17,7 @@ protoAttrib(DanmakuTransform) = {
     { "uvIndex0"     , Offset(Vertex, uvIndex[0])     , 4, sizeof(Vertex) },
 };
 
-protoUniform(DanmakuTransform) = {};
+protoUniform(DanmakuTransform) = { "elapse" };
 protoTexture(DanmakuTransform) = {};
 
 class Danmaku : public ProgramParticle<DanmakuTransformProto> {
@@ -47,6 +47,9 @@ public:
     void update() {
         std::swap(buffer[0], buffer[1]);
         bindProgram();
+
+        glUniform1f(uniform[0], Application::elapse());
+
         bindBuffer(buffer[1]);
 
         begin(GL_POINTS);

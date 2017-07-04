@@ -60,7 +60,7 @@ public:
         reimu->teleport(0.0f, 20.0f, 59.0f);
         suwako->teleport(0.0f, -20.0f, 59.0f);
         suwako->lookAt(quat(vec3(0.0f, 0.0f, M_PI)));
-        // reimu->loop(10, 40);
+        reimu->loop(10, 40);
         // suwako->loop(10, 40);
         // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
         // await(reimu->playTo(60));

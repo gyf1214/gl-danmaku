@@ -15,13 +15,13 @@ void BasicScript::await() {
 
 void BasicScript::await(float x) {
     waiting = true;
-    nextEvent = frame + x / Application::elapse;
+    nextEvent = frame + x;
     Fiber::yield();
 }
 
 void BasicScript::awaitUntil(float x) {
     waiting = true;
-    nextEvent = x / Application::elapse;
+    nextEvent = x;
     Fiber::yield();
 }
 
@@ -54,4 +54,6 @@ void BasicScript::update() {
     }
 
     for (const auto &c : coms) { c->update(); }
+
+    frame += Application::elapse();
 }
