@@ -137,10 +137,6 @@ public:
         center->waypoint(40.0f, 0.0f, 62.5f, 1.5f);
         await(lookat->waypoint(0.0f, 0.0f, 62.0f, 1.5f));
 
-        trails[0]->enable(true);
-        trailBinds[0]->teleport(0.0f, 20.0f, 60.0f);
-        trailBinds[0]->moveTo(0.0f, -20.0f, 60.0f, 2.0f);
-
         // 1-non end
         light->remove(2, 0.5f);
 
@@ -153,8 +149,6 @@ public:
         await(1.2f);
         center->teleport(0.2f, -18.5f, 60.4f);
         lookat->teleport(0.0f, -20.0f, 60.5f);
-
-        trails[0]->enable(false);
 
         // suwako far
         await(2.0f);
