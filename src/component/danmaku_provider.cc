@@ -127,20 +127,41 @@ static Chain utsuho_3_card() {
     Multi tens;
     tens << (Chain(circleSpread(vec3(1.0f, 0.0f, 0.0f),
                                 vec3(0.0f, 1.0f, 0.0f), M_PI / 2.5f))
-             << (Multi() << linearSpeed(5.0f, 0.0f) << linearSpeed(12.0f, 0.0f))
-             << dieAfter(1.0f))
-         << (Chain(Multi() << circle(vec3(5.0f, 0.0f, 0.0f),
-                                     vec3(0.0f, 5.0f, 0.0f), M_PI / 2.5f)
-                           << circle(vec3(12.0f, 0.0f, 0.0f),
-                                     vec3(0.0f, 12.0f, 0.0f), M_PI / 2.5f))
-             << emitter(1.0f, 0.0f)
-             << circleSpread(vec3(0.0f, -2.0f, 0.0f),
-                             vec3(2.0f, 0.0f, 0.0f), M_PI / 2.5f)
-             << circleMotion(vec3(0.0f, 0.0f, 0.0f))
-             << dieAfter(100.0f));
+             << linearSpeed(4.0f, 0.0f)
+             << dieAfter(2.0f))
 
-    return Chain(generator(5)) << tens
-        << type(0, 0, 16, 10.0f);
+         << (Chain(circleSpread(vec3(0.0f, 1.0f, 0.0f),
+                                vec3(1.0f, 0.0f, 0.0f), M_PI / 2.5f))
+             << linearSpeed(10.0f, 0.0f)
+             << dieAfter(2.0f))
+
+         << (Chain(circle(vec3(8.0f, 0.0f, 0.0f),
+                          vec3(0.0f, 8.0f, 0.0f), M_PI / 2.5f))
+             << emitter(2.0f, 0.0f)
+             << circleSpread(vec3(0.0f, -2.0f, 0.0f),
+                             vec3(2.0f,  0.0f, 0.0f), M_PI / 2.5f)
+             << circleMotion(vec3(0.0f, 0.0f, 0.0f))
+             << dieAfter(50.0f))
+
+         << (Chain(circle(vec3(0.0f, 20.0f, 0.0f),
+                          vec3(20.0f, 0.0f, 0.0f), M_PI / 2.5f))
+             << emitter(2.0f, 0.0f)
+             << circleSpread(vec3(-2.0f, 0.0f, 0.0f),
+                             vec3( 0.0f, 2.0f, 0.0f), M_PI / 2.5f)
+             << circleMotion(vec3(0.0f, 0.0f, 0.0f))
+             << dieAfter(50.0f));
+
+    Multi all = Multi()
+        << (Chain(generator(20))
+            << emitter(1.0f, 1.0f)
+            << generator(100)
+            << randomDirection()
+            << linearSpeed(5.0f, 0.0f)
+            << type(8, 24, 8, 2.0f)
+            << dieAfter(50.0f))
+        << (Chain(generator(5)) << tens << type(0, 0, 16, 15.0f));
+
+    return Chain(all);
 }
 
 class Danmaku1 : public DanmakuProvider {
