@@ -1,4 +1,4 @@
-#include "ext.hpp"
+#include "layer_program.hpp"
 #include "vertex/trail.hpp"
 
 proto(Trail, Shader::trail);
@@ -20,6 +20,7 @@ class TrailObject : public ProgramBase<TrailProto>, public virtual Object {
     Camera *camera;
     Particle *particle;
     Layer *layer;
+    LayerProgram *program;
     float size;
     vec3 color;
 public:
@@ -28,10 +29,28 @@ public:
 
     void setup() {
         layer = Layer::temp();
+        program = Box::create<LayerProgram>(Shader::layerTransparent());
+        program->setup();
+        glUseProgram(program->program);
+
+        GLuint color0 = glGetUniformLocation(program->program, "color0");
+        GLuint depth0 = glGetUniformLocation(program->program, "depth0");
+        GLuint depth1 = glGetUniformLocation(program->program, "depth1");
+
+        glUniform1i(color0, 5);
+        glUniform1i(depth0, 6);
+        glUniform1i(depth1, 7);
+
         ProgramBase::setup();
 
         glUniform3fv(uniform[4], 1, &color[0]);
         glUniform1i(uniform[2], 0);
+    }
+
+    void reset() {
+        ProgramBase::reset();
+
+        Box::release(program);
     }
 
     void render() {
@@ -42,7 +61,6 @@ public:
         Layer::clear(0.0f);
 
         bindProgram();
-        glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_ALWAYS);
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_BLEND);
@@ -60,7 +78,14 @@ public:
 
         glDisable(GL_BLEND);
         glDisable(GL_PROGRAM_POINT_SIZE);
-        glDisable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
+        // Layer::detach();
+        // layer->blit();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        program->bind(layer);
+        program->render();
 
         // Layer::detach();
         // layer->attach();

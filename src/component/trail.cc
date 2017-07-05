@@ -8,7 +8,6 @@ static constexpr int trailSize = 10000;
 static constexpr int trailHead = 5;
 
 static Vertex vertex[trailSize + trailHead];
-static constexpr float elapse = Application::constantElapse * 0.5f;
 
 proto(TrailTransform, Shader::trailTransform);
 
@@ -54,7 +53,6 @@ public:
         setupVertices();
         ProgramParticle::setup();
 
-        glUniform1f(uniform[0], elapse);
         lastPos = bind->position();
     }
 
@@ -63,8 +61,9 @@ public:
 
         bindProgram();
 
+        glUniform1f(uniform[0], Application::elapse());
         glUniform1f(uniform[2], 1.0f);
-        glUniform1f(uniform[4], 1.0f - elapse);
+        glUniform1f(uniform[4], 1.0f - Application::elapse());
 
         glUniform3fv(uniform[3], 1, &lastPos[0]);
         glUniform3fv(uniform[1], 1, &bind->position()[0]);

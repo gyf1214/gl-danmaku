@@ -33,6 +33,40 @@ static const char *fsh = R"(
     }
 )";
 
+static const char *fsh_transparent = R"(
+    #version 330 core
+    precision highp float;
+
+    in vec2 uvOut;
+
+    uniform sampler2D color;
+    uniform sampler2D depth;
+    uniform sampler2D color0;
+    uniform sampler2D depth0;
+    uniform sampler2D depth1;
+
+    out vec4 fragColor;
+
+    void main(void) {
+        vec4 color = texture(color, uvOut);
+        if (color.a < 0.01) discard;
+
+        float d = texture(depth, uvOut).r;
+
+        float d0 = texture(depth0, uvOut).x;
+        if (d <= d0) discard;
+
+        float d1 = texture(depth1, uvOut).x;
+        if (d > d1) discard;
+
+        vec4 c0 = texture(color0, uvOut);
+        if (c0.a < 0.01) discard;
+
+        fragColor = vec4(color.rgb * color.a, color.a);
+        gl_FragDepth = d;
+    }
+)";
+
 static const char *fsh_fxaa = R"(
     #version 330 core
     precision highp float;
@@ -112,5 +146,11 @@ GLuint Shader::layer() {
 GLuint Shader::fxaa() {
     static GLuint program = 0;
     if (!program) program = programShader(vsh, fsh_fxaa);
+    return program;
+}
+
+GLuint Shader::layerTransparent() {
+    static GLuint program = 0;
+    if (!program) program = programShader(vsh, fsh_transparent);
     return program;
 }

@@ -61,6 +61,11 @@ inline vec3 catmullRomNorm(vec3 a0, vec3 a1, vec3 a2, vec3 a3, float t) {
     return normalize(c3 * t * t * 3.0f + c2 * t * 2.0f + c1);
 }
 
+template <typename U, typename V>
+inline void removeVector(std::vector<U> &v, const V &x) {
+    v.erase(std::remove(v.begin(), v.end(), x), v.end());
+}
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
 #endif

@@ -2,10 +2,44 @@
 
 using namespace glm;
 
+static constexpr int trailsCount = 4;
+
 class Scene1 : public BasicScript {
     Character *reimu, *suwako;
     Motion *center, *lookat;
+    Renderer *transparent;
+    Motion *trailMotions[trailsCount];
+    Particle *trails[trailsCount];
+    Object *trailObjects[trailsCount];
 public:
+    void createTrails() {
+        for (int i = 0; i < trailsCount; ++i) {
+            trailMotions[i] = Motion::spline();
+            trails[i] = Particle::trail(trailMotions[i]);
+            trailObjects[i] = ObjectBox::trail(trails[i], camera,
+                                               0.5f, vec3(0.5f, 0.5f, 1.0f));
+            tracks.push_back(trailMotions[i]);
+            tracks.push_back(trails[i]);
+            tracks.push_back(trailObjects[i]);
+        }
+    }
+
+    void removeTrails() {
+        for (int i = 0; i < trailsCount; ++i) disableTrail(i);
+    }
+
+    void enableTrail(int i) {
+        coms.push_back(trailMotions[i]);
+        coms.push_back(trails[i]);
+        transparent->push(trailObjects[i]);
+    }
+
+    void disableTrail(int i) {
+        removeVector(coms, trailMotions[i]);
+        removeVector(coms, trails[i]);
+        transparent->remove(trailObjects[i]);
+    }
+
     Renderer *createObjects() {
         LOG << "create objects for scene1";
 
@@ -15,6 +49,7 @@ public:
 
         LOG << "create root renderer";
         root = ObjectBox::target(layer1);
+        // root = ObjectBox::renderer();
 
         LOG << "create camera & light";
         center = push(Motion::spline());
@@ -30,10 +65,11 @@ public:
         suwako = push(Character::basic(Model::suwako(), Model::test2()));
 
         LOG << "create particle";
-        // Particle *trail1 = push(Particle::trail(
-        //     push(reimu->bindPoint(0, vec3(-9.5f, 13.8f, 0.2f)))));
-        // Particle *trail2 = push(Particle::trail(
-        //     push(reimu->bindPoint(0, vec3( 9.5f, 13.8f, 0.2f)))));
+        Particle *trail1 = push(Particle::trail(
+            push(reimu->bindPoint(-1, vec3(-6.5f, 13.8f, 0.3f)))));
+        Particle *trail2 = push(Particle::trail(
+            push(reimu->bindPoint(-1, vec3( 6.5f, 13.8f, 0.3f)))));
+
         Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
 
         LOG << "create opaque objects";
@@ -44,21 +80,29 @@ public:
         opaque->push(ObjectBox::skybox_dynamic(camera, light));
 
         LOG << "create transparent objects";
-        Renderer *transparent = push(ObjectBox::transparent(layer1));
+        transparent = push(ObjectBox::transparent(layer1));
 
-        // LOG << "create trail";
+        LOG << "create trail";
+        createTrails();
         // Renderer *trail = push(ObjectBox::layer());
-        // push(ObjectBox::trail(trail1, camera, Layer::temp(), 0.1f, vec3(1.0f)));
-        // push(ObjectBox::trail(trail2, camera, Layer::temp(), 0.1f, vec3(1.0f)));
+        transparent->push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
+        transparent->push(ObjectBox::trail(trail2, camera, 0.1f, vec3(1.0f)));
 
         LOG << "create danmaku";
         transparent->push(ObjectBox::danmaku(danmaku, camera));
+
+        // push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
 
         LOG << "create other objects";
         push(ObjectBox::debug());
 
         tracks.push_back(root);
         return root;
+    }
+
+    void reset() {
+        removeTrails();
+        BasicScript::reset();
     }
 
     void run() {
