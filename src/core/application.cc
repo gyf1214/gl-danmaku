@@ -81,14 +81,14 @@ void Application::mainLoop() {
             currentScene = newScene;
             if (currentScene) {
                 currentScene->setup();
-                last = glfwGetTime();
+                now = last = glfwGetTime();
                 currentScene->render();
             }
         } else if (currentScene) {
             now = glfwGetTime();
             currentScene->update();
-            last = now;
             currentScene->render();
+            last = now;
         }
 
         glfwSwapBuffers(window);
