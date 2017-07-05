@@ -28,6 +28,7 @@ struct MotionData {
 };
 
 class BasicMotion : public virtual Motion {
+protected:
     MotionData<vec3> pos;
     MotionData<glm::quat> rot;
 public:
@@ -44,6 +45,7 @@ public:
     void teleport(vec3 pos);
     void move(vec3 pos);
     float moveTo(vec3 pos, float time);
+    float waypoint(vec3 pos, float time);
 
     void lookAt(glm::quat dir);
     float rotateTo(glm::quat dir, float time);

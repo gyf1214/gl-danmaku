@@ -50,7 +50,59 @@ public:
     void pause() { looping = playing = false; }
 };
 
-class CharacterImp : public BasicMotion, public KeyImp, public virtual Character {
+class SplineMotion : public BasicMotion {
+    vector<vec3> points;
+    vector<float> lines;
+    float current, sum;
+    int now;
+public:
+    void setup() {
+        points.clear();
+        lines.clear();
+        current = 0.0f;
+
+        BasicMotion::setup();
+    }
+
+    void update() {
+        BasicMotion::update();
+
+        if (!lines.empty()) {
+            current += Application::elapse();
+            for (; now < lines.size() && current > lines[now]; ++now) current -= lines[now];
+            if (now >= lines.size()) {
+                pos.now = points[lines.size() + 1];
+                lines.clear();
+                points.clear();
+            } else {
+                pos.now = catmullRom(points[now], points[now + 1], points[now + 2],
+                                     points[now + 3], current / lines[now]);
+            }
+        }
+    }
+
+    float waypoint(vec3 p, float time) {
+        if (lines.empty()) {
+            lines.push_back(time);
+            sum = time;
+            current = 0.0f;
+            now = 0;
+            points.push_back(pos.now);
+            points.push_back(pos.now);
+            points.push_back(p);
+            points.push_back(p);
+        } else {
+            sum += time;
+            lines.push_back(time);
+            int n = points.size();
+            points[n - 1] = p;
+            points.push_back(p * 2.0f - points[n - 2]);
+        }
+        return sum;
+    }
+};
+
+class CharacterImp : public SplineMotion, public KeyImp, public virtual Character {
     static const mat4 preTransform;
     static const mat4 invTransform;
 
@@ -80,7 +132,7 @@ public:
         LOG << "setup character";
 
         LOG << "setup basic motion & key";
-        BasicMotion::setup();
+        SplineMotion::setup();
         KeyImp::setup();
 
         const MMDModel *mModel = cModel->mmdModel();
@@ -103,7 +155,7 @@ public:
         LOG << "reset character";
 
         LOG << "reset basic motion & key";
-        BasicMotion::reset();
+        SplineMotion::reset();
         KeyImp::reset();
 
         LOG << "reset physics";
@@ -111,7 +163,7 @@ public:
     }
 
     void update() {
-        BasicMotion::update();
+        SplineMotion::update();
         KeyImp::update();
 
         motion->updateKey(frame());
@@ -131,11 +183,11 @@ public:
     }
 
     mat4 matrix() const {
-        return BasicMotion::matrix() * preTransform;
+        return SplineMotion::matrix() * preTransform;
     }
 
     void teleport(vec3 pos) {
-        BasicMotion::teleport(pos);
+        SplineMotion::teleport(pos);
         resetPhysics = true;
     }
 

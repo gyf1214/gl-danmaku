@@ -62,6 +62,39 @@ public:
         suwako->teleport(0.0f, -20.0f, 59.0f);
         suwako->lookAt(quat(vec3(0.0f, 0.0f, M_PI)));
         reimu->loop(10, 40);
+
+        await(5.0f);
+
+        light->point(vec3(0.0f, -20.0f, 60.0f), vec3(1.0f, 1.0f, 0.8f), 15.0f, 0.5f, 1.0f);
+
+        await(3.0f);
+        await(reimu->waypoint(1.0f, 20.0f, 59.0f, 0.8f) + 0.2f);
+        await(0.5f);
+        light->remove(2, 0.5f);
+
+        awaitUntil(15.0f);
+        // await(suwako->waypoint(3.0f, -18.0f, 59.0f, 1.0f));
+
+        light->point(vec3(0.0f, -10.0f, 60.0f), vec3(1.0f, 0.5f, 0.5f), 20.0f, 0.5f, 0.5f);
+
+        await(4.0f);
+        reimu->waypoint(-3.0f, 15.0f, 58.0f, 1.0f);
+        await(reimu->waypoint(-3.0f, 10.0f, 58.5f, 1.0f));
+        await(0.5f);
+        reimu->waypoint(-3.0f, 5.0f, 58.5f, 0.7f);
+        reimu->waypoint(-5.0f, 5.0f, 60.0f, 0.7f);
+
+        await(1.0f);
+        await(suwako->waypoint(4.0f, -20.0f, 59.0f, 0.8f) + 0.7f);
+        suwako->waypoint(6.0f, -23.0f, 59.0f, 0.7f);
+        await(suwako->waypoint(15.0f, -25.0f, 57.0f, 1.0f));
+
+        light->remove(2, 1.0f);
+        suwako->waypoint(18.0f, -15.0f, 57.5f, 1.0f);
+        suwako->waypoint(20.0f, -5.0f, 57.5f, 1.0f);
+        suwako->waypoint(22.0f,  5.0f, 58.0f, 1.0f);
+        await(suwako->waypoint(20.0f,  15.0f, 58.0f, 1.0f));
+
         // suwako->loop(10, 40);
         // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
         // await(reimu->playTo(60));

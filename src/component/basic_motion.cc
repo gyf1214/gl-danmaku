@@ -58,3 +58,8 @@ float BasicMotion::rotateLocal(quat r, float speed) {
 float BasicMotion::rotateGlobal(quat r, float speed) {
     return rotateTo(r * rot.now, speed);
 }
+
+float BasicMotion::waypoint(vec3 pos, float time) {
+    FAIL << "not implemented!";
+    return 0.0f;
+}

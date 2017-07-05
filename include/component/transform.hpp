@@ -19,6 +19,7 @@ public:
     virtual void teleport(vec3 pos) = 0;
     virtual void move(vec3 pos) = 0;
     virtual float moveTo(vec3 pos, float time) = 0;
+    virtual float waypoint(vec3 pos, float time) = 0;
 
     virtual void lookAt(glm::quat dir) = 0;
     virtual float rotateTo(glm::quat dir, float time) = 0;
@@ -27,6 +28,9 @@ public:
 
     void teleport(float x, float y, float z) { teleport(vec3(x, y, z)); }
     void move(float x, float y, float z) { move(vec3(x, y, z)); }
+    float waypoint(float x, float y, float z, float time) {
+        return waypoint(vec3(x, y, z), time);
+    }
     float moveTo(float x, float y, float z, float time) {
         return moveTo(vec3(x, y, z), time);
     }
