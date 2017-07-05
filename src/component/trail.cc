@@ -39,6 +39,7 @@ static void setupVertices() {
 class Trail : public ProgramParticle<TrailTransformProto> {
     Translate *bind;
     vec3 lastPos;
+    bool enabled;
 protected:
     void begin(GLenum mode) {
         glEnable(GL_RASTERIZER_DISCARD);
@@ -47,7 +48,7 @@ protected:
         glBeginTransformFeedback(mode);
     }
 public:
-    Trail(Translate *bind) : bind(bind) {}
+    Trail(Translate *bind) : bind(bind), enabled(false) {}
 
     void setup() {
         setupVertices();
@@ -62,8 +63,13 @@ public:
         bindProgram();
 
         glUniform1f(uniform[0], Application::elapse());
-        glUniform1f(uniform[2], 1.0f);
-        glUniform1f(uniform[4], 1.0f - Application::elapse());
+        if (enabled) {
+            glUniform1f(uniform[2], 1.0f);
+            glUniform1f(uniform[4], 1.0f - Application::elapse());
+        } else {
+            glUniform1f(uniform[2], 0.0f);
+            glUniform1f(uniform[4], 0.0f);
+        }
 
         glUniform3fv(uniform[3], 1, &lastPos[0]);
         glUniform3fv(uniform[1], 1, &bind->position()[0]);
@@ -79,6 +85,7 @@ public:
     GLuint outputBuffer() const { return buffer[0]; }
     int offset() const { return trailHead; }
     int size() const { return trailSize; }
+    void enable(bool e) { enabled = e; }
 };
 
 Particle *Particle::trail(Translate *translate) {

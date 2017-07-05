@@ -61,6 +61,7 @@ public:
     GLuint outputBuffer() const { return buffer[0]; }
     int offset() const { return 0; }
     int size() const { return count; }
+    void enable(bool e) {}
 };
 
 Particle *Particle::danmaku(Provider *provider) {
