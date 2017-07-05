@@ -10,7 +10,6 @@ public:
     void reset() { for (const auto &o : objects) Box::release(o); objects.clear(); }
     void render() { for (const auto &o : objects) o->render(); }
     void push(Object *o) { objects.push_back(o); }
-    void remove(Object *o) { removeVector(objects, o); }
 };
 
 class LayerRenderer : public BasicRenderer {

@@ -18,7 +18,6 @@ public:
 class Renderer : public virtual Object {
 public:
     virtual void push(Object *o) = 0;
-    virtual void remove(Object *o) = 0;
 };
 
 class Component : public virtual BaseObject {
