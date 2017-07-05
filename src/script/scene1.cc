@@ -74,22 +74,22 @@ public:
         // suwako close
         await(2.0f);
         center->teleport(0.2f, -18.5f, 60.5f);
-        lookat->teleport(0.0f, -20.0f, 60.5f);
+        lookat->teleport(0.0f, -20.0f, 60.6f);
 
         // reimu close
         await(1.5f);
         center->teleport(1.0f, 18.6f, 60.7f);
-        lookat->teleport(0.0f, 20.0f, 60.7f);
+        lookat->teleport(0.0f, 20.0f, 60.8f);
 
         // suwako close
         await(1.5f);
         center->teleport(0.2f, -18.5f, 60.5f);
-        lookat->teleport(0.0f, -20.0f, 60.5f);
+        lookat->teleport(0.0f, -20.0f, 60.6f);
 
         // move to reimu back
         await(0.5f);
         lookat->moveTo(0.0f, 0.0f, 60.0f, 0.5f);
-        center->waypoint(0.0f, 17.0f, 60.0f, 0.5f);
+        center->waypoint(0.1f, 17.0f, 60.1f, 0.5f);
         center->waypoint(3.0f, 30.0f, 62.0f, 1.0f);
 
         // 1-non light
@@ -99,23 +99,23 @@ public:
         // reimu close
         await(1.5f);
         center->teleport(0.7f, 18.5f, 60.7f);
-        lookat->teleport(0.0f, 20.0f, 60.7f);
+        lookat->teleport(0.0f, 20.0f, 60.6f);
 
         // reimu above
         await(0.7f);
         center->teleport(7.0f, 30.0f, 65.0f);
         lookat->teleport(0.0f, 16.0f, 60.0f);
 
-        // reimu to side
+        // move to reimu side
         awaitUntil(9.0f);
-        reimu->waypoint(2.0f, 20.0f, 60.0f, 0.8f);
+        reimu->waypoint(2.0f, 20.0f, 60.1f, 0.8f);
 
         // from reimu above to side over view
         await(0.5f);
-        center->waypoint(9.0f, 20.0f, 61.0f, 1.0f);
-        lookat->waypoint(0.0f, 20.0f, 61.0f, 1.0f);
-        center->waypoint(40.0f, 0.0f, 61.0f, 1.5f);
-        await(lookat->waypoint(0.0f, 0.0f, 60.0f, 1.5f));
+        center->waypoint(9.0f, 20.0f, 62.1f, 1.0f);
+        lookat->waypoint(0.0f, 19.0f, 61.0f, 1.0f);
+        center->waypoint(40.0f, 0.0f, 62.5f, 1.5f);
+        await(lookat->waypoint(0.0f, 0.0f, 62.0f, 1.5f));
 
         // 1-non end
         light->remove(2, 0.5f);
@@ -127,26 +127,53 @@ public:
 
         // suwako close
         await(1.2f);
-        center->teleport(0.2f, -18.5f, 60.5f);
+        center->teleport(0.2f, -18.5f, 60.4f);
         lookat->teleport(0.0f, -20.0f, 60.5f);
 
+        // suwako far
         await(2.0f);
         center->teleport(0.1f, 17.0f, 61.0f);
         lookat->teleport(0.0f, 0.0f, 60.0f);
 
         awaitUntil(17.0f);
-        // await(suwako->waypoint(3.0f, -18.0f, 59.0f, 1.0f));
+        light->point(vec3(0.0f, -10.0f, 60.0f), vec3(1.0f, 0.5f, 0.5f), 20.0f, 0.5f, 2.0f);
 
-        light->point(vec3(0.0f, -10.0f, 60.0f), vec3(1.0f, 0.5f, 0.5f), 20.0f, 0.5f, 0.5f);
-
-        await(4.0f);
-        reimu->waypoint(-3.0f, 15.0f, 58.0f, 1.0f);
-        await(reimu->waypoint(-3.0f, 10.0f, 58.5f, 1.0f));
+        // move to remimu back
         await(0.5f);
-        reimu->waypoint(-3.0f, 5.0f, 58.5f, 0.7f);
-        reimu->waypoint(-5.0f, 5.0f, 60.0f, 0.7f);
+        await(center->moveTo(0.1f, 30.0f, 66.0f, 1.0f));
+
+        // reimu close
+        await(0.5f);
+        center->moveTo(3.5f, 17.6f, 61.7f, 0.5f);
+        lookat->moveTo(2.0f, 20.0f, 61.8f, 0.5f);
+
+        // reimu side
+        awaitUntil(21.0f);
+        center->teleport(9.6f, 21.0f, 60.1f);
+        lookat->teleport(0.0f, 19.5f, 60.0f);
+
+        // spin camera with reimu
+        await(0.5f);
+        lookat->moveTo(0.0f, 10.0f, 58.5f, 1.5f);
+        reimu->waypoint(-3.0f, 15.0f, 58.0f, 0.75f);
+        await(reimu->waypoint(-3.0f, 10.0f, 58.5f, 0.75f));
+
+        // reimu close
+        await(0.5f);
+        center->teleport(-2.5f, 6.0f, 59.7f);
+        lookat->teleport(-3.0f, 10.0f, 59.5f);
 
         await(1.0f);
+        center->waypoint(3.0f, 15.0f, 59.8f, 0.5f);
+        lookat->waypoint(-6.0f, 5.0f, 59.2f, 0.5f);
+        center->waypoint(-3.0f, 20.0f, 60.1f, 0.5f);
+        await(lookat->waypoint(-1.5f, 0.0f, 59.0f, 0.5f));
+        await(0.5f);
+
+        // await(0.5f);
+        // reimu->waypoint(-3.0f, 5.0f, 58.5f, 0.7f);
+        // reimu->waypoint(-5.0f, 5.0f, 60.0f, 0.7f);
+
         await(suwako->waypoint(4.0f, -20.0f, 59.0f, 0.8f) + 0.7f);
         suwako->waypoint(6.0f, -23.0f, 59.0f, 0.7f);
         await(suwako->waypoint(15.0f, -25.0f, 57.0f, 1.0f));

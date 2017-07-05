@@ -50,7 +50,7 @@ static Chain utsuho_1_card() {
     Chain c1 = Chain(sphereSpread(0, 1))
         << type(0, 0, 16, 10.0f)
         << linearSpeed(0.8f, 0.0f)
-        << fadeIn(1.0f);
+        << fadeIn(2.0f);
 
     Chain c2 = Chain(generator(30))
         << generator(15)

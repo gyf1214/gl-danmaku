@@ -23,12 +23,11 @@ class TrailObject : public ProgramBase<TrailProto>, public virtual Object {
     float size;
     vec3 color;
 public:
-    TrailObject(Particle *particle, Camera *camera,
-                Layer *layer, float size, vec3 color)
-        : camera(camera), particle(particle), layer(layer),
-          size(size), color(color) {}
+    TrailObject(Particle *particle, Camera *camera, float size, vec3 color)
+        : camera(camera), particle(particle), size(size), color(color) {}
 
     void setup() {
+        layer = Layer::temp();
         ProgramBase::setup();
 
         glUniform3fv(uniform[4], 1, &color[0]);
@@ -36,8 +35,11 @@ public:
     }
 
     void render() {
-        // layer->select();
-        // Layer::clear(0.0f);
+        int fbo;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &fbo);
+
+        layer->select();
+        Layer::clear(0.0f);
 
         bindProgram();
         glEnable(GL_DEPTH_TEST);
@@ -65,6 +67,6 @@ public:
     }
 };
 
-Object *ObjectBox::trail(Particle *particle, Camera *camera, Layer *layer, float size, vec3 color) {
-    return Box::create<TrailObject>(particle, camera, layer, size, color);
+Object *ObjectBox::trail(Particle *particle, Camera *camera, float size, vec3 color) {
+    return Box::create<TrailObject>(particle, camera, size, color);
 }
