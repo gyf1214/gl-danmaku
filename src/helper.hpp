@@ -42,6 +42,25 @@ inline glm::quat degreeAxis(float d, float x, float y, float z) {
     return glm::angleAxis(glm::radians(d), normalize(vec3(x, y, z)));
 }
 
+inline vec3 catmullRom(vec3 a0, vec3 a1, vec3 a2, vec3 a3, float t) {
+    float factor = 0.5;
+    vec3 c0 = a1;
+    vec3 c1 = factor * (a2 - a0);
+    vec3 c2 =  3.0f * (a2 - a1) - factor * (a3 - a1) - 2.0f * factor * (a2 - a0);
+    vec3 c3 = -2.0f * (a2 - a1) + factor * (a3 - a1) + factor * (a2 - a0);
+
+    return c3 * t * t * t + c2 * t * t + c1 * t + c0;
+}
+
+inline vec3 catmullRomNorm(vec3 a0, vec3 a1, vec3 a2, vec3 a3, float t) {
+    float factor = 0.5;
+    vec3 c1 = factor * (a2 - a0);
+    vec3 c2 =  3.0f * (a2 - a1) - factor * (a3 - a1) - 2.0f * factor * (a2 - a0);
+    vec3 c3 = -2.0f * (a2 - a1) + factor * (a3 - a1) + factor * (a2 - a0);
+
+    return normalize(c3 * t * t * 3.0f + c2 * t * 2.0f + c1);
+}
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846264338327950288
 #endif

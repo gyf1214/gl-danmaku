@@ -25,7 +25,7 @@ public:
     }
     void point(vec3 pos, vec3 color, float radius, float alpha) {
         push(Light(vec4(pos, 1.0f), color, vec3(0.0f),
-                   vec4(1.0f, 0.0f, 0.0f, 0.0f)));
+                   vec4(alpha, 0.0f, (1 - alpha) / radius / radius, 0.0f)));
     }
     void parallel(vec3 dir, vec3 color) {
         push(Light(vec4(normalize(dir), 0.0f), color, vec3(0.0f), vec4(0.0f)));

@@ -9,8 +9,9 @@ public:
     static Scene *scene(Script *script);
 
     static Renderer *renderer(void);
-    static Renderer *opaque(LightManager *light);
-    static Renderer *layer(void);
+    static Renderer *opaque(LightManager *light, Layer *layer);
+    static Renderer *transparent(Layer *layer);
+    static Renderer *target(Layer *layer);
 
     static Object *character(Character *character, Camera *camera, LightManager *light);
     static Object *danmaku(Particle *particle, Camera *camera);

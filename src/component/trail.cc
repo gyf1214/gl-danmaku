@@ -8,7 +8,7 @@ static constexpr int trailSize = 10000;
 static constexpr int trailHead = 5;
 
 static Vertex vertex[trailSize + trailHead];
-static constexpr float elapse = Application::elapse * 0.5f;
+static constexpr float elapse = Application::constantElapse * 0.5f;
 
 proto(TrailTransform, Shader::trailTransform);
 

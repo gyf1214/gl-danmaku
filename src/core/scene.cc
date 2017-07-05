@@ -5,17 +5,12 @@ class BasicScene : public virtual Scene {
     Renderer *root;
     Script *script;
 public:
-    BasicScene(Script *script) : root(ObjectBox::renderer()), script(script) {}
-    ~BasicScene() { Box::release(root); }
+    BasicScene(Script *script) : script(script) {}
     void setup() {
-        script->createObjects(root);
+        root = script->createObjects();
         script->setup();
-        root->setup();
     }
-    void reset() {
-        root->reset();
-        script->reset();
-    }
+    void reset() { script->reset(); }
     void update() { script->update(); }
     void render() { root->render(); }
 };

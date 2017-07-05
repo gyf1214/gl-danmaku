@@ -30,26 +30,25 @@ void BasicMotion::teleport(vec3 p) { pos.now = p; }
 
 void BasicMotion::move(vec3 p) { pos.now = p; }
 
-float BasicMotion::moveTo(vec3 p, float speed) {
+float BasicMotion::moveTo(vec3 p, float time) {
     vec3 cur = pos.now;
-    pos.end = distance(p, cur) / speed / Application::elapse;
+    pos.end = time;
     pos.current = 0.0f;
     pos.origin = cur;
     pos.target = p;
     pos.playing = true;
-    return pos.end * Application::elapse;
+    return pos.end;
 }
 
 void BasicMotion::lookAt(quat dir) { rot.now = dir; }
 
-float BasicMotion::rotateTo(quat dir, float speed) {
-    float dis = acos(dot(dir, rot.now));
-    rot.end = dis / speed / Application::elapse;
+float BasicMotion::rotateTo(quat dir, float time) {
+    rot.end = time;
     rot.current = 0.0f;
     rot.origin = rot.now;
     rot.target = dir;
     rot.playing = true;
-    return rot.end * Application::elapse;
+    return rot.end;
 }
 
 float BasicMotion::rotateLocal(quat r, float speed) {

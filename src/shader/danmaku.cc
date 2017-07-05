@@ -42,7 +42,10 @@ static const char *gsh = R"(
         for (int i = 0; i < gl_in.length(); ++i) {
             if (show[i] == 1) {
                 vec4 vPosition = gl_in[i].gl_Position;
-                vec2 dir = normalize(velocityOut[i].xy);
+                vec2 dir = vec2(1.0, 0.0);
+                if (length(velocityOut[i].xy) > 0.0) {
+                    dir = normalize(velocityOut[i].xy);
+                }
                 vec2 norm = vec2(-dir.y, dir.x);
                 for (int j = 0; j < 4; ++j) {
                     uv = vec2(j % 2, j / 2);
@@ -65,10 +68,27 @@ static const char *fsh = R"(
     in vec2 uv;
     out vec4 fragColor;
     uniform sampler2D texture0;
+    uniform sampler2D color0;
+    uniform sampler2D depth0;
+    uniform sampler2D depth1;
+    uniform vec2 size;
 
     void main(void) {
         vec4 color = texture(texture0, uv);
-        fragColor = vec4(color.rgb * color.a, color.a / 2.0f);
+        if (color.a < 0.01) discard;
+
+        vec2 coord = gl_FragCoord.xy / size;
+
+        float d0 = texture(depth0, coord).x;
+        if (gl_FragCoord.z <= d0) discard;
+
+        float d1 = texture(depth1, coord).x;
+        if (gl_FragCoord.z > d1) discard;
+
+        vec4 c0 = texture(color0, coord);
+        if (c0.a < 0.01) discard;
+
+        fragColor = vec4(color.rgb * color.a, color.a);
     }
 )";
 

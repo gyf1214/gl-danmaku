@@ -14,7 +14,7 @@ struct MotionData {
         if (playing) {
             if (current < end) {
                 now = inter(origin, target, current / end);
-                ++current;
+                current += Application::elapse();
             } else {
                 now = target;
                 if (looping) {
@@ -43,12 +43,12 @@ public:
 
     void teleport(vec3 pos);
     void move(vec3 pos);
-    float moveTo(vec3 pos, float speed);
+    float moveTo(vec3 pos, float time);
 
     void lookAt(glm::quat dir);
-    float rotateTo(glm::quat dir, float speed);
-    float rotateLocal(glm::quat r, float speed);
-    float rotateGlobal(glm::quat r, float speed);
+    float rotateTo(glm::quat dir, float time);
+    float rotateLocal(glm::quat r, float time);
+    float rotateGlobal(glm::quat r, float time);
 };
 
 #endif

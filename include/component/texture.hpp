@@ -10,6 +10,9 @@ struct Texture {
     static GLuint loadTexture(const char *name,
         GLuint wraps = GL_CLAMP_TO_BORDER,
         GLuint wrapt = GL_CLAMP_TO_BORDER);
+    static GLuint genDepth();
+    static GLuint genScreen();
+
     static GLuint small();
     static GLuint etama();
     static GLuint wallNormal();

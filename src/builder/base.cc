@@ -8,7 +8,7 @@ namespace Builder {
         // Vertex *src;
     public:
         Source(vector<Vertex> &src) : src(src) {}
-        void pass(Vertex &v, int i) { src.push_back(v); }
+        void pass(Vertex v, int i) { src.push_back(v); }
     };
 
     class Generator : public Base {
@@ -18,10 +18,12 @@ namespace Builder {
         void generate() {
             for (int i = 0; i < cnt; ++i) {
                 Vertex v;
+                v.velocity = v.position = vec3(0.0f);
+                v.acceleration = v.time = vec4(0.0f);
                 emit(v, i);
             }
         }
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             for (int j = 0; j < cnt; ++j) { emit(v, j); }
         }
     };
@@ -31,7 +33,7 @@ namespace Builder {
     public:
         Emitter(float start, float interval)
             : start(start), interval(interval) {}
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             float t = start + interval * i;
             v.time = vec4(t, INFINITY, t, INFINITY);
             emit(v, i);
@@ -42,7 +44,7 @@ namespace Builder {
         vec3 pos;
     public:
         Point(const vec3 &pos) : pos(pos) {}
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             v.position = pos;
             emit(v, i);
         }
@@ -52,7 +54,7 @@ namespace Builder {
         vec3 dir;
     public:
         Direction(const vec3 &dir) : dir(dir) {}
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             v.velocity = dir;
             emit(v, i);
         }
@@ -70,7 +72,7 @@ namespace Builder {
             uv = vec4((float)color / 32.0f, (float)type / 32.0f,
                            (float)scale / 32.0f, size);
         }
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             v.uvIndex = uv;
             emit(v, i);
         }
@@ -80,7 +82,7 @@ namespace Builder {
         float delta;
     public:
         DieAfter(float delta) : delta(delta) {}
-        void pass(Vertex &v, int i) {
+        void pass(Vertex v, int i) {
             v.time[1] = v.time[3] = v.time[0] + delta;
             emit(v, i);
         }

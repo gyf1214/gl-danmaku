@@ -3,7 +3,7 @@
 
 using namespace glm;
 
-static constexpr float speed = 10.0f;
+static constexpr float speed = 20.0f;
 static constexpr float scrollSpeed = 5.0f;
 static constexpr float mouseSpeed = 0.1f;
 static constexpr double centerX = Application::width / 2;
@@ -29,8 +29,8 @@ public:
         Application::getCursor(posX, posY);
         Application::setCursor(centerX, centerY);
 
-        horizonAngle += mouseSpeed * Application::elapse * (centerX - posX);
-        verticalAngle += mouseSpeed * Application::elapse * (centerY - posY);
+        horizonAngle += mouseSpeed * Application::elapse() * (centerX - posX);
+        verticalAngle += mouseSpeed * Application::elapse() * (centerY - posY);
 
         dir = vec3(cos(verticalAngle) * cos(horizonAngle),
                         cos(verticalAngle) * sin(horizonAngle),
@@ -39,27 +39,27 @@ public:
         left = vec3(-sin(horizonAngle), cos(horizonAngle), 0.0f);
 
         if (Application::getKey(GLFW_KEY_W) == GLFW_PRESS){
-            pos += dir * Application::elapse * speed;
+            pos += dir * Application::elapse() * speed;
         }
 
         if (Application::getKey(GLFW_KEY_S) == GLFW_PRESS){
-            pos -= dir * Application::elapse * speed;
+            pos -= dir * Application::elapse() * speed;
         }
 
         if (Application::getKey(GLFW_KEY_D) == GLFW_PRESS){
-            pos -= left * Application::elapse * speed;
+            pos -= left * Application::elapse() * speed;
         }
 
         if (Application::getKey(GLFW_KEY_A) == GLFW_PRESS){
-            pos += left * Application::elapse * speed;
+            pos += left * Application::elapse() * speed;
         }
 
         if (Application::getKey(GLFW_KEY_E) == GLFW_PRESS) {
-            fov -= scrollSpeed * Application::elapse;
+            fov -= scrollSpeed * Application::elapse();
         }
 
         if (Application::getKey(GLFW_KEY_Q) == GLFW_PRESS) {
-            fov += scrollSpeed * Application::elapse;
+            fov += scrollSpeed * Application::elapse();
         }
 
         if (Application::getKey(GLFW_KEY_Z) == GLFW_PRESS) {

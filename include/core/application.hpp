@@ -10,7 +10,7 @@ class Application {
 public:
     static constexpr int width = 1024;
     static constexpr int height = 768;
-    static constexpr float elapse = 1.0f / 60.0f;
+    static constexpr float constantElapse = 1.0f / 60.0f;
     static int bufferWidth, bufferHeight;
     static void setup(void);
     static void mainLoop(void);
@@ -21,6 +21,7 @@ public:
     static void setCursor(double x, double y);
     static void getCursor(double &x, double &y);
     static int getKey(int key);
+    static float elapse(void);
 };
 
 #endif

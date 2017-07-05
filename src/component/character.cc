@@ -7,6 +7,8 @@
 using namespace std;
 using namespace glm;
 
+const static float mmdElapse = 1.0f / 30.0f;
+
 class KeyImp : private MotionData<float>, public virtual Keyframe {
     float doPlay(float start, float stop, float speed, bool loop) {
         playing = true;
@@ -14,8 +16,8 @@ class KeyImp : private MotionData<float>, public virtual Keyframe {
         origin = start;
         target = stop;
         current = 0.0f;
-        end = (stop - start) / speed;
-        return end * Application::elapse;
+        end = (stop - start) / speed * mmdElapse;
+        return end;
     }
 public:
     KeyImp() {
@@ -118,7 +120,7 @@ public:
             motion->resetPhysics();
             resetPhysics = false;
         }
-        motion->updatePhysics(Application::elapse);
+        motion->updatePhysics(Application::elapse());
 
         for (int i = 0; i < bones.size(); ++i) {
             bones[i] = motion->skin(i);

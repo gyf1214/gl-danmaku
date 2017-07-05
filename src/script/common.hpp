@@ -7,6 +7,7 @@
 class BasicScript : public virtual Script {
     static void doFiber(void *self);
 protected:
+    std::vector<BaseObject *> tracks;
     std::vector<Component *> coms;
     Fiber *fiber;
     float frame, nextEvent;
@@ -16,6 +17,7 @@ protected:
     LightManager *light;
     Renderer *root;
 
+    void pushBase(BaseObject *c);
     void pushBase(Component *c);
     void pushBase(Object *c);
 
@@ -29,7 +31,6 @@ public:
     void setup();
     void reset();
     void update();
-    void createObjects(Renderer *root);
 };
 
 #endif

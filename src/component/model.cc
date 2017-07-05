@@ -55,6 +55,13 @@ public:
 
     ~ModelImp() {
         LOG << "reset model: " << header.name;
+        int n = textureSlot.size();
+        LOG << "delete " << n << " textures";
+        for (int i = 0; i < n; ++i) {
+            LOG << "delete texture " << i << ": " << textureSlot[i];
+            glDeleteTextures(1, &textureSlot[i]);
+        }
+        textureSlot.clear();
         LOG << "delete morph texture: " << morphTex;
         glDeleteTextures(1, &morphTex);
         LOG << "delete morph buffer: " << morphBuf;
