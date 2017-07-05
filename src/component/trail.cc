@@ -48,7 +48,7 @@ protected:
         glBeginTransformFeedback(mode);
     }
 public:
-    Trail(Translate *bind) : bind(bind), enabled(false) {}
+    Trail(Translate *bind) : bind(bind), enabled(true) {}
 
     void setup() {
         setupVertices();

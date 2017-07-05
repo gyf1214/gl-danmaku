@@ -43,7 +43,6 @@ public:
 
         ProgramBase::setup();
 
-        glUniform3fv(uniform[4], 1, &color[0]);
         glUniform1i(uniform[2], 0);
     }
 
@@ -70,6 +69,7 @@ public:
                                 (2.0f * tan(camera->fovy() / 2.0f)));
         glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
         glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &camera->pMat()[0][0]);
+        glUniform3fv(uniform[4], 1, &color[0]);
 
         bindBuffer(particle->outputBuffer());
         bindTextures();

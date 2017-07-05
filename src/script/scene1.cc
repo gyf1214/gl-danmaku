@@ -2,10 +2,14 @@
 
 using namespace glm;
 
+static constexpr int trailCount = 4;
+
 class Scene1 : public BasicScript {
     Character *reimu, *suwako;
     Motion *center, *lookat;
     Renderer *transparent;
+    Particle *trails[trailCount];
+    Motion *trailBinds[trailCount];
 public:
     Renderer *createObjects() {
         LOG << "create objects for scene1";
@@ -37,6 +41,12 @@ public:
         Particle *trail2 = push(Particle::trail(
             push(reimu->bindPoint(-1, vec3( 6.5f, 13.8f, 0.3f)))));
 
+        for (int i = 0; i < trailCount; ++i) {
+            trailBinds[i] = push(Motion::spline());
+            trails[i] = push(Particle::trail(trailBinds[i]));
+            trails[i]->enable(false);
+        }
+
         Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
 
         LOG << "create opaque objects";
@@ -53,6 +63,11 @@ public:
         // Renderer *trail = push(ObjectBox::layer());
         transparent->push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
         transparent->push(ObjectBox::trail(trail2, camera, 0.1f, vec3(1.0f)));
+
+        for (int i = 0; i < trailCount; ++i) {
+            transparent->push(ObjectBox::trail(trails[i], camera,
+                                               0.2f, vec3(0.7f, 0.7f, 1.0f)));
+        }
 
         LOG << "create danmaku";
         transparent->push(ObjectBox::danmaku(danmaku, camera));
@@ -122,6 +137,10 @@ public:
         center->waypoint(40.0f, 0.0f, 62.5f, 1.5f);
         await(lookat->waypoint(0.0f, 0.0f, 62.0f, 1.5f));
 
+        trails[0]->enable(true);
+        trailBinds[0]->teleport(0.0f, 20.0f, 60.0f);
+        trailBinds[0]->moveTo(0.0f, -20.0f, 60.0f, 2.0f);
+
         // 1-non end
         light->remove(2, 0.5f);
 
@@ -134,6 +153,8 @@ public:
         await(1.2f);
         center->teleport(0.2f, -18.5f, 60.4f);
         lookat->teleport(0.0f, -20.0f, 60.5f);
+
+        trails[0]->enable(false);
 
         // suwako far
         await(2.0f);
