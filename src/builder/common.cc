@@ -12,6 +12,7 @@ namespace Builder {
         v.velocity = v.position = vec3(0.0f);
         v.acceleration = vec4(0.0f);
         v.time = vec4(0.0f, INFINITY, 0.0f, INFINITY);
+        v.fade = vec3(0.0f, 1000.0f, 1000.0f);
         pass(v, 0);
     }
     void Base::emit(const Vertex &v, int i) { next -> pass(v, i); }

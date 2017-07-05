@@ -9,6 +9,7 @@ typedef struct {
     vec3 velocity;
     vec4 acceleration;
     vec4 uvIndex;
+    vec3 fade;
 } Vertex;
 
 #endif

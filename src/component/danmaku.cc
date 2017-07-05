@@ -15,6 +15,7 @@ protoAttrib(DanmakuTransform) = {
     { "velocity0"    , Offset(Vertex, velocity[0])    , 3, sizeof(Vertex) },
     { "acceleration0", Offset(Vertex, acceleration[0]), 4, sizeof(Vertex) },
     { "uvIndex0"     , Offset(Vertex, uvIndex[0])     , 4, sizeof(Vertex) },
+    { "fade0"        , Offset(Vertex, fade[0])        , 3, sizeof(Vertex) },
 };
 
 protoUniform(DanmakuTransform) = { "elapse" };

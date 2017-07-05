@@ -20,6 +20,7 @@ namespace Builder {
                 Vertex v;
                 v.velocity = v.position = vec3(0.0f);
                 v.acceleration = v.time = vec4(0.0f);
+                v.fade = vec3(0.0f, 1000.0f, 1000.0f);
                 emit(v, i);
             }
         }
@@ -88,6 +89,16 @@ namespace Builder {
         }
     };
 
+    class FadeIn : public Base {
+        float fade;
+    public:
+        FadeIn(float fade) : fade(fade) {}
+        void pass(Vertex v, int i) {
+            v.fade[1] = fade;
+            emit(v, i);
+        }
+    };
+
     Base *source(vector<Vertex> &src) { return new Source(src); }
     Base *generator(int cnt) { return new Generator(cnt); }
     Base *emitter(float start, float interval) {
@@ -99,4 +110,5 @@ namespace Builder {
         return new Type(type, color, scale, size);
     }
     Base *dieAfter(float delta) { return new DieAfter(delta); }
+    Base *fadeIn(float time) { return new FadeIn(1.0f / time); }
 }

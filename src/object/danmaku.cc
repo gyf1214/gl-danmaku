@@ -10,6 +10,7 @@ protoAttrib(Danmaku) = {
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "velocity", Offset(Vertex, velocity[0]), 3, sizeof(Vertex) },
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
+    { "fade"    , Offset(Vertex, fade[0])    , 3, sizeof(Vertex) },
 };
 
 protoUniform(Danmaku) = {
