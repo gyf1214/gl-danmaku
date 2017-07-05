@@ -36,13 +36,13 @@ static Chain utsuho_1_non() {
         << dieAfter(20.0f);
 }
 
-static Chain self_1() {
+static Chain self_1(vec3 org, vec3 target) {
     return Chain(generator(3))
-        << line(vec3(-0.5f, 0.0f, 0.0f), vec3(0.5f, 0.0f, 0.0f))
+        << line(org - vec3(-0.5f, 0.0f, 0.0f), vec3(0.5f, 0.0f, 0.0f))
         << generator(20)
         << emitter(0.0f, 0.1f)
         << type(8, 16, 4, 0.5f)
-        << direction(vec3(0.0f, -20.0f, 0.0f))
+        << targetNorm(target, 20.0f)
         << dieAfter(2.0f);
 }
 
@@ -173,16 +173,16 @@ public:
 
         // KEEP: utsuho-1-non
 
-        now += 5.0f;
+        now += 6.0f;
 
         utsuho_1_non() << addPosition(0.0f, -20.0f, 60.0f)
                        << addTime(now) << dst;
 
         // KEEP: self-1
 
-        now += 4.0f;
+        now += 5.0f;
 
-        self_1() << addPosition(1.0f, 20.0f, 60.0f)
+        self_1(vec3(2.0f, 20.0f, 61.0f), vec3(0.0f, -20.0f, 60.0f))
                  << addTime(now) << dst;
 
         // KEEP: utsuho-1-card

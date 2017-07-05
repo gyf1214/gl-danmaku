@@ -14,8 +14,8 @@ void BasicMotion::setup() {}
 void BasicMotion::reset() {}
 
 void BasicMotion::update() {
-    pos.update((vec3 (*)(const vec3 &, const vec3 &, float))mix);
-    rot.update((quat (*)(const quat &, const quat &, float))slerp);
+    pos.update((InterVec3)mix, (InterFloat)smoothstep);
+    rot.update((InterQuat)slerp);
 }
 
 vec3 BasicMotion::position() const { return pos.now; }

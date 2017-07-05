@@ -34,6 +34,8 @@ public:
     float moveTo(float x, float y, float z, float time) {
         return moveTo(vec3(x, y, z), time);
     }
+
+    static Motion *spline();
 };
 
 #endif

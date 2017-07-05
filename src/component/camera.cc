@@ -1,5 +1,6 @@
 #include "../ext.hpp"
 #include "component/camera.hpp"
+#include "component/transform.hpp"
 
 using namespace glm;
 
@@ -77,6 +78,32 @@ public:
     mat4 pMat() const { return perspective(radians(fov), wh, 1.0f, 300.0f); }
 };
 
+class CameraTwo : public virtual Camera {
+    Translate *pos, *lookat;
+    float fov;
+    vec3 now, dir, left;
+public:
+    CameraTwo(Translate *pos, Translate *lookat, float fov)
+        : pos(pos), lookat(lookat), fov(fov) {}
+    void setup() { LOG << "setup two-node camera"; }
+    void reset() { LOG << "reset two-node camera"; }
+    void update() {
+        now = pos->position();
+        dir = normalize(lookat->position() - pos->position());
+        left = normalize(vec3(-dir.y, dir.x, 0.0f));
+    }
+
+    vec3 position() const { return now; }
+    vec3 direction() const { return dir; }
+    float fovy() const { return radians(fov); }
+    mat4 vMat() const { return lookAt(now, now + dir, cross(dir, left)); }
+    mat4 pMat() const { return perspective(radians(fov), wh, 1.0f, 300.0f); }
+};
+
 Camera *Camera::free(vec3 pos, float horizon, float vertical, float fov) {
     return Box::create<CameraFree>(pos, horizon, vertical, fov);
+}
+
+Camera *Camera::twoNode(Translate *pos, Translate *center, float fov) {
+    return Box::create<CameraTwo>(pos, center, fov);
 }

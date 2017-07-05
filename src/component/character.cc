@@ -28,7 +28,7 @@ public:
     void setup() {}
     void reset() {}
     void update() {
-        MotionData::update((float (*)(float, float, float))mix);
+        MotionData::update((InterFloat)mix);
     }
 
     float frame() const { return now; }
@@ -237,4 +237,8 @@ const mat4 CharacterImp::invTransform = inverse(preTransform);
 
 Character *Character::basic(Model *model, MMDMotion *motion) {
     return Box::create<CharacterImp>(model, motion);
+}
+
+Motion *Motion::spline() {
+    return Box::create<SplineMotion>();
 }

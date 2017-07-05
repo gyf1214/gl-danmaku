@@ -4,16 +4,26 @@
 #include "component/transform.hpp"
 
 template <typename T>
+struct InterFunc {
+    typedef T (*ref)(const T &, const T &, float);
+    typedef T (*val)(T, T, float);
+};
+
+typedef InterFunc<vec3>::ref InterVec3;
+typedef InterFunc<float>::val InterFloat;
+typedef InterFunc<glm::quat>::ref InterQuat;
+
+template <typename T>
 struct MotionData {
     T now, origin, target;
     float current, end;
     bool playing, looping;
 
-    template <typename U>
-    void update(U inter) {
+    template <typename U, typename V>
+    void update(U inter, V inter2) {
         if (playing) {
             if (current < end) {
-                now = inter(origin, target, current / end);
+                now = inter(origin, target, inter2(0.0f, end, current));
                 current += Application::elapse();
             } else {
                 now = target;
@@ -25,6 +35,9 @@ struct MotionData {
             }
         }
     }
+
+    template <typename U>
+    void update(U inter) { update(inter, (InterFloat)glm::mix); }
 };
 
 class BasicMotion : public virtual Motion {

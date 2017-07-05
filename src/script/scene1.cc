@@ -4,6 +4,7 @@ using namespace glm;
 
 class Scene1 : public BasicScript {
     Character *reimu, *suwako;
+    Motion *center, *lookat;
 public:
     Renderer *createObjects() {
         LOG << "create objects for scene1";
@@ -16,7 +17,10 @@ public:
         root = ObjectBox::target(layer1);
 
         LOG << "create camera & light";
-        camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
+        center = push(Motion::spline());
+        lookat = push(Motion::spline());
+        // camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
+        camera = push(Camera::twoNode(center, lookat, 45.0f));
         light = push(LightManager::basic());
         light->ambient(vec3(0.0f, 0.0f, 0.0f));
         light->point(vec3(0.0f, 0.0f, 0.0f), vec3(0.9f, 0.4f, 0.1f), 30.0f, 0.5f);
@@ -58,21 +62,79 @@ public:
     }
 
     void run() {
+        // reimu back
+        center->teleport(0.5f, 22.0f, 61.0f);
+        lookat->teleport(0.0f, 0.0f, 60.0f);
+
         reimu->teleport(0.0f, 20.0f, 59.0f);
         suwako->teleport(0.0f, -20.0f, 59.0f);
         suwako->lookAt(quat(vec3(0.0f, 0.0f, M_PI)));
         reimu->loop(10, 40);
 
-        await(5.0f);
+        // suwako close
+        await(2.0f);
+        center->teleport(0.2f, -18.5f, 60.5f);
+        lookat->teleport(0.0f, -20.0f, 60.5f);
 
+        // reimu close
+        await(1.5f);
+        center->teleport(1.0f, 18.6f, 60.7f);
+        lookat->teleport(0.0f, 20.0f, 60.7f);
+
+        // suwako close
+        await(1.5f);
+        center->teleport(0.2f, -18.5f, 60.5f);
+        lookat->teleport(0.0f, -20.0f, 60.5f);
+
+        // move to reimu back
+        await(0.5f);
+        lookat->moveTo(0.0f, 0.0f, 60.0f, 0.5f);
+        center->waypoint(0.0f, 17.0f, 60.0f, 0.5f);
+        center->waypoint(3.0f, 30.0f, 62.0f, 1.0f);
+
+        // 1-non light
+        await(0.5f);
         light->point(vec3(0.0f, -20.0f, 60.0f), vec3(1.0f, 1.0f, 0.8f), 15.0f, 0.5f, 1.0f);
 
-        await(3.0f);
-        await(reimu->waypoint(1.0f, 20.0f, 59.0f, 0.8f) + 0.2f);
+        // reimu close
+        await(1.5f);
+        center->teleport(0.7f, 18.5f, 60.7f);
+        lookat->teleport(0.0f, 20.0f, 60.7f);
+
+        // reimu above
+        await(0.7f);
+        center->teleport(7.0f, 30.0f, 65.0f);
+        lookat->teleport(0.0f, 16.0f, 60.0f);
+
+        // reimu to side
+        awaitUntil(9.0f);
+        reimu->waypoint(2.0f, 20.0f, 60.0f, 0.8f);
+
+        // from reimu above to side over view
         await(0.5f);
+        center->waypoint(9.0f, 20.0f, 61.0f, 1.0f);
+        lookat->waypoint(0.0f, 20.0f, 61.0f, 1.0f);
+        center->waypoint(40.0f, 0.0f, 61.0f, 1.5f);
+        await(lookat->waypoint(0.0f, 0.0f, 60.0f, 1.5f));
+
+        // 1-non end
         light->remove(2, 0.5f);
 
-        awaitUntil(15.0f);
+        // suwako side
+        await(1.3f);
+        center->teleport(15.0f, -10.0f, 59.5f);
+        lookat->teleport(0.0f, -20.0f, 60.0f);
+
+        // suwako close
+        await(1.2f);
+        center->teleport(0.2f, -18.5f, 60.5f);
+        lookat->teleport(0.0f, -20.0f, 60.5f);
+
+        await(2.0f);
+        center->teleport(0.1f, 17.0f, 61.0f);
+        lookat->teleport(0.0f, 0.0f, 60.0f);
+
+        awaitUntil(17.0f);
         // await(suwako->waypoint(3.0f, -18.0f, 59.0f, 1.0f));
 
         light->point(vec3(0.0f, -10.0f, 60.0f), vec3(1.0f, 0.5f, 0.5f), 20.0f, 0.5f, 0.5f);

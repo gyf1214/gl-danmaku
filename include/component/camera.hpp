@@ -12,6 +12,7 @@ public:
 
     // Factories
     static Camera *free(vec3 pos, float horizon, float vertical, float fov);
+    static Camera *twoNode(Translate *pos, Translate *center, float fov);
 };
 
 #endif
