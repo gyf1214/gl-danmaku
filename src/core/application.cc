@@ -41,7 +41,9 @@ void Application::setup() {
     window = glfwCreateWindow(width, height, "Test", NULL, NULL);
     CHECK(window) << "fail to create window";
     glfwMakeContextCurrent(window);
+#if !OUTPUT
     glfwSwapInterval(1);
+#endif
     glfwSetKeyCallback(window, keyboardCallback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
