@@ -55,11 +55,13 @@ class SplineMotion : public BasicMotion {
     vector<float> lines;
     float current, sum;
     int now;
+    bool autoDir;
 public:
     void setup() {
         points.clear();
         lines.clear();
         current = 0.0f;
+        autoDir = false;
 
         BasicMotion::setup();
     }
@@ -69,14 +71,20 @@ public:
 
         if (!lines.empty()) {
             current += Application::elapse();
-            for (; now < lines.size() && current > lines[now]; ++now) current -= lines[now];
-            if (now >= lines.size()) {
-                pos.now = points[lines.size() + 1];
+            int n = lines.size();
+            for (; now < n && current > lines[now]; ++now) current -= lines[now];
+            if (now >= n) {
+                current = lines[now];
+                now = n - 1;
                 lines.clear();
                 points.clear();
-            } else {
-                pos.now = catmullRom(points[now], points[now + 1], points[now + 2],
-                                     points[now + 3], current / lines[now]);
+            }
+            pos.now = catmullRom(points[now], points[now + 1], points[now + 2],
+                                 points[now + 3], current / lines[now]);
+            if (autoDir) {
+                vec3 dir = catmullRomNorm(points[now], points[now + 1],
+                           points[now + 2], points[now + 3], current / lines[now]);
+                rot.now = quat(vec3(0.0f, 0.0f, atan2(dir.x, -dir.y)));
             }
         }
     }
@@ -100,6 +108,8 @@ public:
         }
         return sum;
     }
+
+    void autoRot(bool e) { autoDir = e; }
 };
 
 class CharacterImp : public SplineMotion, public KeyImp, public virtual Character {

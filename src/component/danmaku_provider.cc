@@ -184,7 +184,7 @@ public:
 
         now += 5.0f;
 
-        self_1(vec3(2.0f, 20.0f, 61.0f), vec3(0.0f, -20.0f, 60.0f))
+        self_1(vec3(2.0f, 20.0f, 61.0f), vec3(0.0f, -20.0f, 60.5f))
                  << addTime(now) << dst;
 
         // KEEP: utsuho-1-card
@@ -196,7 +196,7 @@ public:
 
         // KEEP: utsuho-2-non
 
-        now += 12.5f;
+        now += 13.5f;
 
         vec3 p0(18.0f, -15.0f, 57.5f);
         vec3 p1(20.0f, -5.0f, 57.5f);

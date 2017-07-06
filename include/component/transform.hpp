@@ -26,6 +26,8 @@ public:
     virtual float rotateLocal(glm::quat r, float time) = 0;
     virtual float rotateGlobal(glm::quat r, float time) = 0;
 
+    virtual void autoRot(bool e) = 0;
+
     void teleport(float x, float y, float z) { teleport(vec3(x, y, z)); }
     void move(float x, float y, float z) { move(vec3(x, y, z)); }
     float waypoint(float x, float y, float z, float time) {

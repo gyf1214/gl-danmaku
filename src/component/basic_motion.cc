@@ -63,3 +63,7 @@ float BasicMotion::waypoint(vec3 pos, float time) {
     FAIL << "not implemented!";
     return 0.0f;
 }
+
+void BasicMotion::autoRot(bool e) {
+    FAIL << "not implemented!";
+}

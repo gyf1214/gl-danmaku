@@ -13,6 +13,10 @@ typedef InterFunc<vec3>::ref InterVec3;
 typedef InterFunc<float>::val InterFloat;
 typedef InterFunc<glm::quat>::ref InterQuat;
 
+inline linearStep(float a, float b, float x) {
+    return (x - a) / (b - a);
+}
+
 template <typename T>
 struct MotionData {
     T now, origin, target;
@@ -37,7 +41,7 @@ struct MotionData {
     }
 
     template <typename U>
-    void update(U inter) { update(inter, (InterFloat)glm::mix); }
+    void update(U inter) { update(inter, (InterFloat)linearStep); }
 };
 
 class BasicMotion : public virtual Motion {
@@ -59,6 +63,7 @@ public:
     void move(vec3 pos);
     float moveTo(vec3 pos, float time);
     float waypoint(vec3 pos, float time);
+    void autoRot(bool e);
 
     void lookAt(glm::quat dir);
     float rotateTo(glm::quat dir, float time);
