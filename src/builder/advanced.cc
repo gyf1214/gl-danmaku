@@ -47,7 +47,7 @@ namespace Builder {
         void pass(Vertex v, int t) {
             for (int i = -height; i <= height; ++i) {
                 float a0 = (float)i / (float)(height + 1) * M_PI / 2.0f;
-                int k = 4 * round(1.0f + (float)split * cos(a0));
+                int k = round((float)split * cos(a0));
                 float a1 = 2.0f * M_PI / (float)k;
                 for (int j = 0; j < k; ++j) {
                     float a2 = a1 * (float)j;

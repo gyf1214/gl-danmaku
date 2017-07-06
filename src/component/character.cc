@@ -96,7 +96,7 @@ public:
             lines.push_back(time);
             int n = points.size();
             points[n - 1] = p;
-            points.push_back(p * 2.0f - points[n - 2]);
+            points.push_back(p);
         }
         return sum;
     }

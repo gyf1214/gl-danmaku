@@ -28,7 +28,7 @@ public:
 };
 
 static Chain utsuho_1_non() {
-    return Chain(sphereSpread(10, 10))
+    return Chain(sphereSpread(40, 10))
         << generator(20)
         << emitter(0.0f, 0.1f)
         << type(0, 16, 8, 1.0f)
@@ -47,7 +47,7 @@ static Chain self_1(vec3 org, vec3 target) {
 }
 
 static Chain utsuho_1_card() {
-    Chain c1 = Chain(sphereSpread(0, 1))
+    Chain c1 = Chain(sphereSpread(5, 1))
         << type(0, 0, 16, 10.0f)
         << linearSpeed(0.8f, 0.0f)
         << fadeIn(2.0f);
@@ -56,7 +56,7 @@ static Chain utsuho_1_card() {
         << generator(15)
         << emitter(1.0f, 0.5f)
         << randomDirection()
-        << type(0, 24, 8, 2.0f)
+        << type(0, 24, 8, 1.5f)
         << linearSpeed(4.0f, 0.0f);
 
     return Chain(Multi() << c1 << c2)
@@ -89,26 +89,27 @@ static Chain utsuho_2_non_spline(const vec3 &p0, const vec3 &p1,
 
 static Chain utsuho_2_non_common() {
     return Chain(generator(15))
-        << type(8, 24, 8, 2.0f)
+        << type(8, 24, 8, 1.5f)
         << linearSpeed(0.5f, 0.8f)
         << dieAfter(100.0f);
 }
 
 static Chain utsuho_2_card() {
-    Chain c1 = Chain(generator(100))
-        << randomBox(vec3(-25.0f, -25.0f, 40.0f), vec3(25.0f, 25.0f, 50.0f))
-        << emitter(0.0f, 0.2f)
+    Chain c1 = Chain(generator(30))
+        << emitter(0.0f, 0.3f)
+        << randomBox(vec3(-15.0f, -15.0f, 40.0f), vec3(15.0f, 15.0f, 50.0f))
         << direction(0.0f, 0.0f, -10.0f)
+        << fadeIn(0.5f)
         << type(0, 0, 16, 10.0f);
 
-    Chain c2 = Chain(generator(50))
+    Chain c2 = Chain(generator(20))
         << randomBox(vec3(-10.0f, -10.0f, 40.0f), vec3(10.0f, 10.0f, 50.0f))
         << emitter(0.0f, 0.5f)
-        << generator(20)
+        << generator(10)
         << randomDirection()
         << linearSpeed(5.0f, 0.0f)
         << addVelocity(0.0f, 0.0f, -10.0f)
-        << type(0, 24, 8, 2.0f);
+        << type(0, 24, 8, 1.5f);
 
     return Chain(Multi() << c1 << c2)
         << dieAfter(30.0f);
@@ -190,12 +191,12 @@ public:
 
         now += 6.0f;
 
-        utsuho_1_card() << addPosition(0.0f, -10.0f, 60.0f)
+        utsuho_1_card() << addPosition(0.0f, 0.0f, 60.0f)
                         << addTime(now) << dst;
 
         // KEEP: utsuho-2-non
 
-        now += 12.0f;
+        now += 12.5f;
 
         vec3 p0(18.0f, -15.0f, 57.5f);
         vec3 p1(20.0f, -5.0f, 57.5f);
@@ -213,18 +214,12 @@ public:
         Chain(splines)
             << utsuho_2_non_common() << addTime(now) << dst;
 
-
-        // vec3 p0 = vec3(-60.0f,  10.0f, 60.0f);
-        // vec3 p1 = vec3(-30.0f, -20.0f, 60.0f);
-        // vec3 p2 = vec3( 30.0f, -20.0f, 60.0f);
-        // vec3 p3 = vec3( 60.0f,  10.0f, 60.0f);
-        // utsuho_2_non_spline(p0, p1, p2, p3, 10, 2.0f)
-        //     << utsuho_2_non_common() << addTime(2.0f) << dst;
-
         // KEEP: utsuho-2-card
 
-        // utsuho_2_card() << addPosition(0.0f, 0.0f, 60.0f)
-        //                 << addTime(2.0f) << dst;
+        now += 11.5f;
+
+        utsuho_2_card() << addPosition(6.0f, 12.5f, 30.0f)
+                        << addTime(now) << dst;
 
         // KEEP: utsuho-2-extra
 

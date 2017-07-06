@@ -15,7 +15,7 @@ void BasicScript::await() {
 
 void BasicScript::await(float x) {
     waiting = true;
-    nextEvent = frame + x;
+    nextEvent = nextEvent + x;
     Fiber::yield();
 }
 
