@@ -205,7 +205,7 @@ public:
 
         now += 5.0f;
 
-        self_1(vec3(2.0f, 19.0f, 61.0f), vec3(0.0f, -20.0f, 60.3f))
+        self_1(vec3(2.0f, 19.0f, 61.0f), vec3(0.0f, -20.0f, 60.0f))
                  << addTime(now) << dst;
         fx_1() << addPosition(0.0f, -19.5f, 60.3f) << addTime(now + 1.9f) << dst;
 
