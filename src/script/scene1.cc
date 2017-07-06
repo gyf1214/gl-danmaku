@@ -276,7 +276,24 @@ public:
         lookat->teleport(-13.0f, 7.5f, 62.5f);
         center->teleport(-16.0f, -5.0f, 65.5f);
         lookat->waypoint(-15.0f, 6.7f, 67.5f, 1.0f);
-        center->waypoint(-25.0f, 7.0f, 68.5f, 1.0f);
+        center->waypoint(-25.0f, 6.3f, 68.5f, 1.0f);
+        center->waypoint(-30.0f, 5.6f, 68.5f, 1.0f);
+
+        await(0.5f);
+        // trails[0]->enable(true);
+        // trails[1]->enable(true);
+        // trailBinds[0]->teleport(-3.4f, 10.0f, 59.0f);
+        // trailBinds[0]->waypoint(-3.4f, 10.0f, 61.0f, 0.5f);
+        // trailBinds[0]->waypoint(-3.8f,  5.0f, 63.0f, 0.5f);
+        // trailBinds[0]->waypoint(-2.0f, -10.0f, 60.0f, 0.5f);
+        // trailBinds[0]->waypoint(-0.0f, -20.0f, 60.0f, 0.5f);
+        // trailBinds[0]->waypoint( 6.0f, -50.0f, 60.0f, 1.0f);
+        // trailBinds[1]->teleport(-2.6f, 10.0f, 59.0f);
+        // trailBinds[1]->waypoint(-2.6f, 10.0f, 61.0f, 0.5f);
+        // trailBinds[1]->waypoint(0.0f, 4.0f, 60.5f, 0.5f);
+        // trailBinds[1]->waypoint(1.0f, -9.0f, 60.5f, 0.5f);
+        // trailBinds[1]->waypoint(0.0f, -20.0f, 60.5f, 0.5f);
+        // trailBinds[1]->waypoint(-4.6f, -50.0f, 60.5f, 1.0f);
 
         // suwako->loop(10, 40);
         // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
