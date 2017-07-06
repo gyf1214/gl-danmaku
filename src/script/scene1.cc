@@ -104,7 +104,8 @@ public:
 
         // reimu close
         await(1.5f);
-        reimu->play(70, 100);
+        // TODO: FIX it
+        reimu->play(70, 99.9);
         center->teleport(1.0f, 18.6f, 60.7f);
         lookat->teleport(0.0f, 20.0f, 60.8f);
 
