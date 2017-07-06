@@ -205,21 +205,22 @@ public:
 
         now += 5.0f;
 
-        self_1(vec3(2.0f, 19.0f, 61.0f), vec3(0.0f, -20.0f, 60.0f))
+        self_1(vec3(2.0f, 19.0f, 61.0f), vec3(0.0f, -20.0f, 60.2f))
                  << addTime(now) << dst;
-        fx_1() << addPosition(0.0f, -19.5f, 60.3f) << addTime(now + 1.9f) << dst;
+        fx_1() << addPosition(0.0f, -19.5f, 60.2f) << addTime(now + 1.9f) << dst;
 
         // KEEP: utsuho-1-card
 
         now += 6.0f;
 
-        utsuho_1_card() << addPosition(0.0f, 0.0f, 61.0f)
+        utsuho_1_card() << addPosition(0.0f, 0.0f, 60.5f)
                         << addTime(now) << dst;
 
         // KEEP: utsuho-2-non
 
-        now += 13.5f;
+        now += 14.2f;
 
+        vec3 pp(15.0f, -15.0f, 57.0f);
         vec3 p0(18.0f, -15.0f, 57.5f);
         vec3 p1(20.0f, -5.0f, 57.5f);
         vec3 p2(22.0f,  5.0f, 58.0f);
@@ -227,7 +228,7 @@ public:
 
         Multi splines;
 
-        splines << utsuho_2_non_spline(p0, p0, p1, p2, 2, 1.0f)
+        splines << utsuho_2_non_spline(pp, p0, p1, p2, 2, 1.0f)
                 << (Chain(utsuho_2_non_spline(p0, p1, p2, p3, 2, 1.0f))
                     << addTime(1.0f))
                 << (Chain(utsuho_2_non_spline(p1, p2, p3, p3, 2, 1.0f))
@@ -238,7 +239,7 @@ public:
 
         // KEEP: utsuho-2-card
 
-        now += 11.5f;
+        now += 10.8f;
 
         utsuho_2_card() << addPosition(6.0f, 12.5f, 30.0f)
                         << addTime(now) << dst;
