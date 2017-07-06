@@ -163,7 +163,7 @@ public:
         // suwako close
         await(1.2f);
         reimu->fix(175);
-        center->teleport(0.2f, -18.5f, 60.4f);
+        center->teleport(1.0f, -17.5f, 60.4f);
         lookat->teleport(0.0f, -20.0f, 60.5f);
         await(1.5f);
         await(suwako->playTo(140));

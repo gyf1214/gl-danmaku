@@ -89,12 +89,13 @@ namespace Builder {
         }
     };
 
-    class FadeIn : public Base {
-        float fade;
+    class Fade : public Base {
+        vec2 fade;
     public:
-        FadeIn(float fade) : fade(fade) {}
+        Fade(const vec2 &fade) : fade(fade) {}
         void pass(Vertex v, int i) {
-            v.fade[1] = fade;
+            v.fade.y = fade.x;
+            v.fade.z = fade.y;
             emit(v, i);
         }
     };
@@ -110,5 +111,6 @@ namespace Builder {
         return new Type(type, color, scale, size);
     }
     Base *dieAfter(float delta) { return new DieAfter(delta); }
-    Base *fadeIn(float time) { return new FadeIn(1.0f / time); }
+    Base *fadeIn(float time) { return new Fade(vec2(1.0f / time, 1000.0f)); }
+    Base *fadeOut(float time) { return new Fade(vec2(1000.0f, 1.0f / time)); }
 }

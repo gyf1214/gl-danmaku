@@ -72,6 +72,7 @@ namespace Builder {
     Base *source(std::vector<Vertex> &pool);
     Base *type(int type, int color, int scale, float size);
     Base *fadeIn(float time);
+    Base *fadeOut(float time);
 
     // Generators
     Base *generator(int cnt);
