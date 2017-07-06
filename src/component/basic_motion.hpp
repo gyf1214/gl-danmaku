@@ -13,7 +13,7 @@ typedef InterFunc<vec3>::ref InterVec3;
 typedef InterFunc<float>::val InterFloat;
 typedef InterFunc<glm::quat>::ref InterQuat;
 
-inline linearStep(float a, float b, float x) {
+inline float linearStep(float a, float b, float x) {
     return (x - a) / (b - a);
 }
 

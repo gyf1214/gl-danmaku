@@ -73,11 +73,11 @@ public:
             current += Application::elapse();
             int n = lines.size();
             for (; now < n && current > lines[now]; ++now) current -= lines[now];
+            bool flag = false;
             if (now >= n) {
-                current = lines[now];
                 now = n - 1;
-                lines.clear();
-                points.clear();
+                current = lines[now];
+                flag = true;
             }
             pos.now = catmullRom(points[now], points[now + 1], points[now + 2],
                                  points[now + 3], current / lines[now]);
@@ -86,6 +86,7 @@ public:
                            points[now + 2], points[now + 3], current / lines[now]);
                 rot.now = quat(vec3(0.0f, 0.0f, atan2(dir.x, -dir.y)));
             }
+            if (flag) { lines.clear(); points.clear(); }
         }
     }
 
