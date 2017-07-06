@@ -25,7 +25,7 @@ public:
 
         if (output || Application::getKey(GLFW_KEY_X) == GLFW_PRESS) {
             sprintf(str, "tmp/s_%04d.png", frame);
-            LOG << "sceneshot: " << str;
+            INFO << "render: " << str;
             Application::screenShot(str);
         }
 

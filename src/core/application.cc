@@ -1,3 +1,4 @@
+#include "config.hpp"
 #include "../ext.hpp"
 
 static Scene *currentScene = NULL;
@@ -120,6 +121,7 @@ void Application::screenShot(const char *name) {
 
     unsigned char *imageBuffer = new unsigned char[bufferWidth * bufferHeight * 3];
 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGB, GL_UNSIGNED_BYTE, imageBuffer);
 
     for (int y = 0; y < bufferHeight; ++y) {
@@ -145,6 +147,9 @@ int Application::getKey(int key) {
 }
 
 float Application::elapse() {
+#if REALTIME
     return now - last;
-    // return constantElapse;
+#else
+    return constantElapse;
+#endif
 }

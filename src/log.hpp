@@ -9,7 +9,9 @@ struct LogStream {
 
     LogStream(std::ostream &o, const char *file, int line, bool log, bool fail)
     : o(o), log(log), fail(fail) {
+#ifndef NDEBUG
         if (log) o << "[" << file << ":" << line << "]\t";
+#endif
     }
 
     ~LogStream() {

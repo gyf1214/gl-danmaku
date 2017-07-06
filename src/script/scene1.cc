@@ -7,7 +7,6 @@ static constexpr int trailCount = 4;
 class Scene1 : public BasicScript {
     Character *reimu, *suwako;
     Motion *center, *lookat;
-    Renderer *transparent;
     Particle *trails[trailCount];
     Motion *trailBinds[trailCount];
 public:
@@ -16,16 +15,16 @@ public:
 
         LOG << "create temp layers";
         Layer *layer1 = push(Layer::basic());
-        // Layer *layer2 = push(Layer::basic());
 
         LOG << "create root renderer";
-        root = ObjectBox::target(layer1);
-        // root = ObjectBox::renderer();
+        root = ObjectBox::renderer();
+
+        LOG << "create target renderer";
+        Renderer *target = push(ObjectBox::target(layer1));
 
         LOG << "create camera & light";
         center = push(Motion::spline());
         lookat = push(Motion::spline());
-        // camera = push(Camera::free(vec3(0.0f, 25.0f, 60.0f), -M_PI / 2.0f, 0.0f, 45.0f));
         camera = push(Camera::twoNode(center, lookat, 45.0f));
         light = push(LightManager::basic());
         light->ambient(vec3(0.0f, 0.0f, 0.0f));
@@ -50,17 +49,18 @@ public:
         Particle *danmaku = push(Particle::danmaku(Provider::danmaku1()));
 
         LOG << "create opaque objects";
-        Renderer *opaque = push(ObjectBox::opaque(light, layer1));
+        Renderer *opaque = ObjectBox::opaque(light, layer1);
+        target->push(opaque);
         opaque->push(ObjectBox::character(reimu, camera, light));
         opaque->push(ObjectBox::character(suwako, camera, light));
         opaque->push(ObjectBox::skybox(camera, light));
         opaque->push(ObjectBox::skybox_dynamic(camera, light));
 
         LOG << "create transparent objects";
-        transparent = push(ObjectBox::transparent(layer1));
+        Renderer *transparent = ObjectBox::transparent(layer1);
+        target->push(transparent);
 
         LOG << "create trail";
-        // Renderer *trail = push(ObjectBox::layer());
         transparent->push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
         transparent->push(ObjectBox::trail(trail2, camera, 0.1f, vec3(1.0f)));
 
@@ -72,25 +72,20 @@ public:
         LOG << "create danmaku";
         transparent->push(ObjectBox::danmaku(danmaku, camera));
 
-        // push(ObjectBox::trail(trail1, camera, 0.1f, vec3(1.0f)));
-
         LOG << "create other objects";
+#if OUTPUT
+        push(ObjectBox::debug(true));
+#else
         push(ObjectBox::debug());
+#endif
 
         tracks.push_back(root);
         return root;
     }
 
-    quat surfaceAngle(vec3 a, vec3 b) {
-        a.z = b.z = 0.0f;
-        a = normalize(a);
-        b = normalize(b);
-        float d = acos(dot(a, b));
-        float c = cross(a, b).z;
-        return quat(vec3(0.0f, 0.0f, c > 0.0f ? d : -d));
-    }
-
     void run() {
+        // put scripts here
+
         // reimu back
         center->teleport(0.5f, 22.0f, 61.0f);
         lookat->teleport(0.0f, 0.0f, 60.0f);
@@ -328,16 +323,7 @@ public:
         // trailBinds[1]->waypoint(0.0f, -20.0f, 60.5f, 0.5f);
         // trailBinds[1]->waypoint(-4.6f, -50.0f, 60.5f, 1.0f);
 
-        // suwako->loop(10, 40);
-        // await(reimu->rotateTo(degreeAxis(90.0f, 0.0f, 0.0f, 1.0f), 1.0f));
-        // await(reimu->playTo(60));
-        // await(reimu->moveTo(0.0f, 4.0f, 45.0f, 3.0f));
-        // reimu->fix(80);
-        // reimu->rotateLocal(degreeAxis(30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
-        // await(reimu->moveTo(4.0f, 4.0f, 45.0f, 3.0f));
-        // reimu->rotateLocal(degreeAxis(-30.0f, 1.0f, 0.0f, 0.0f), 1.0f);
-        // await(reimu->playTo(90));
-        // reimu->loop(10, 40);
+        // TODO
     }
 };
 
