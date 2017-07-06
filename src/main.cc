@@ -1,9 +1,8 @@
-#include <GL/glew.h>
-#include "application.hpp"
-#include "scene_box.hpp"
+#include "ext.hpp"
+#include "object_box.hpp"
 
 int main() {
-    Scene *scene1 = SceneBox::scene1();
+    Scene *scene1 = ObjectBox::scene(Script::scene1());
     Application::setScene(scene1);
     Application::run();
 }

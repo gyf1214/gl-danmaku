@@ -1,62 +1,72 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
+#include "ext.hpp"
 #include "vertex/danmaku.hpp"
-#include "transform_renderer.hpp"
-#include "program_renderer.hpp"
-#include "scene.hpp"
-#include "object_box.hpp"
-#include "shader.hpp"
-#include "texture.hpp"
-
-static const GLfloat pointSize[] = { 0.2f, 0.2f };
 
 proto(Danmaku, Shader::danmaku);
 
-protoBuffer = {
-    // { sizeof(uvData), uvData },
-};
+protoBuffer(Danmaku) = {};
 
-protoAttrib = {
+protoAttrib(Danmaku) = {
     { "time"    , Offset(Vertex, time[0])    , 4, sizeof(Vertex) },
     { "position", Offset(Vertex, position[0]), 3, sizeof(Vertex) },
     { "velocity", Offset(Vertex, velocity[0]), 3, sizeof(Vertex) },
     { "uvIndex" , Offset(Vertex, uvIndex[0]) , 4, sizeof(Vertex) },
+    { "fade"    , Offset(Vertex, fade[0])    , 3, sizeof(Vertex) },
 };
 
-protoUnifom = { "size", "vMat", "pMat", "texture0" };
+protoUniform(Danmaku) = {
+    "vMat", "pMat", "texture0",
+    "color0", "depth0", "depth1", "size"
+    // "depth0", "depth1", "size"
+};
 
-class Danmaku : public ProgramRenderer<Proto> {
-    GLuint texture0;
-    Transformer *transform;
+protoTexture(Danmaku) = { Texture::etama };
+
+class DanmakuObject : public ProgramBase<DanmakuProto>, public virtual Object {
+    Particle *particle;
+    Camera *camera;
 public:
-    Danmaku(Scene *scene, Transformer *trans)
-        : ProgramRenderer(scene), transform(trans) {}
+    DanmakuObject(Particle *particle, Camera *camera)
+        : particle(particle), camera(camera) {}
 
     void setup() {
-        ProgramRenderer::setup();
+        ProgramBase::setup();
 
-        glUniform1i(uniform[3], 0);
-        texture0 = Texture::etama();
+        glUniform1i(uniform[2], 0);
+        glUniform1i(uniform[3], 5);
+        glUniform1i(uniform[4], 6);
+        glUniform1i(uniform[5], 7);
 
-        glUniform2fv(uniform[0], 1, pointSize);
+        float size[] = {
+            (float)Application::bufferWidth,
+            (float)Application::bufferHeight
+        };
+        glUniform2fv(uniform[6], 1, size);
     }
 
     void render() {
         bindProgram();
 
-        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &scene -> vMat()[0][0]);
-        glUniformMatrix4fv(uniform[2], 1, GL_FALSE, &scene -> pMat()[0][0]);
+        // glEnable(GL_DEPTH_TEST);
+        // glDepthFunc(GL_LEQUAL);
+        // glEnable(GL_BLEND);
+        // glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        // glBlendEquation(GL_FUNC_ADD);
+        // glDepthMask(GL_FALSE);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture0);
+        glUniformMatrix4fv(uniform[0], 1, GL_FALSE, &camera->vMat()[0][0]);
+        glUniformMatrix4fv(uniform[1], 1, GL_FALSE, &camera->pMat()[0][0]);
 
-        bindBuffer(transform -> outputBuffer());
+        bindBuffer(particle->outputBuffer());
+        bindTextures();
 
-        glDrawArrays(GL_POINTS, 0, vertexSize);
+        glDrawArrays(GL_POINTS, particle->offset(), particle->size());
+
+        // glDepthMask(GL_TRUE);
+        // glDisable(GL_BLEND);
+        // glDisable(GL_DEPTH_TEST);
     }
 };
 
-
-Renderer *ObjectBox::danmaku(Scene *scene, Transformer *trans) {
-    return create<Danmaku>(scene, trans);
+Object *ObjectBox::danmaku(Particle *particle, Camera *camera) {
+    return Box::create<DanmakuObject>(particle, camera);
 }

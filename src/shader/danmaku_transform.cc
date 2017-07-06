@@ -1,13 +1,14 @@
-#include "shader.hpp"
+#include "component/shader.hpp"
 
 static GLuint program = 0;
 
-const char *varyings[] = {
+static const char *varyings[] = {
     "time",
     "position",
     "velocity",
     "acceleration",
     "uvIndex",
+    "fade",
 };
 
 static const char *vsh = R"(
@@ -17,33 +18,47 @@ static const char *vsh = R"(
     in vec4 time0;
     in vec3 position0;
     in vec3 velocity0;
-    in vec3 acceleration0;
+    in vec4 acceleration0;
     in vec4 uvIndex0;
+    in vec3 fade0;
     out vec4 time;
     out vec3 position;
     out vec3 velocity;
-    out vec3 acceleration;
+    out vec4 acceleration;
     out vec4 uvIndex;
+    out vec3 fade;
 
-    const float elapse = 1.0 / 60.0;
+    uniform float elapse;
 
     void main() {
         time = time0 - vec4(elapse);
         acceleration = acceleration0;
         uvIndex = uvIndex0;
-        if (time0.z <= 0.0 && time0.w > 0.0) {
-            velocity = velocity0 + acceleration0 * elapse;
-            position = position0 + (velocity0 + velocity) * 0.5 * elapse;
+        vec3 accel;
+        if (acceleration0.w == 0.0) {
+            accel = acceleration0.xyz;
         } else {
-            velocity = velocity0;
-            if (time0.z < elapse) {
-                velocity += acceleration0 * (elapse - time0.z);
-            }
-            position = position0;
-            if (time0.z < elapse) {
-                position += (velocity0 + velocity) * 0.5 * (elapse - time0.z);
-            }
+            accel = normalize(acceleration0.xyz - position0) * acceleration0.w;
         }
+
+        float ela = clamp(elapse - time0.z, 0.0, elapse);
+        ela = clamp(time0.w, 0.0, ela);
+
+        velocity = velocity0 + accel * ela;
+        position = position0 + (velocity0 + velocity) * 0.5 * ela;
+
+        fade = fade0;
+
+        ela = clamp(elapse - time0.x, 0.0, elapse);
+        ela = clamp(time0.y, 0.0, ela);
+        // ela = 1.0;
+        fade.x = fade.x + fade0.y * ela;
+
+        ela = clamp(-time0.y, 0.0, elapse);
+        // ela = 0.0;
+        fade.x = fade.x - fade0.z * ela;
+
+        fade.x = clamp(fade.x, 0.0, 1.0);
     }
 )";
 

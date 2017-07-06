@@ -1,14 +1,24 @@
 #ifndef __OBJECT_BOX
 #define __OBJECT_BOX
 
-#include "box.hpp"
-#include "renderer.hpp"
+#include "core.hpp"
+#include "component.hpp"
 
-class ObjectBox : public Box<Renderer> {
+class ObjectBox : public Box {
 public:
-    static Renderer *danmaku(Scene *scene, Transformer *trans);
-    static Transformer *danmakuTransform(Scene *scene);
-    static Renderer *skybox(Scene *scene);
+    static Scene *scene(Script *script);
+
+    static Renderer *renderer(void);
+    static Renderer *opaque(LightManager *light, Layer *layer);
+    static Renderer *transparent(Layer *layer);
+    static Renderer *target(Layer *layer);
+
+    static Object *character(Character *character, Camera *camera, LightManager *light);
+    static Object *danmaku(Particle *particle, Camera *camera);
+    static Object *skybox(Camera *camera, LightManager *light);
+    static Object *skybox_dynamic(Camera *camera, LightManager *light);
+    static Object *trail(Particle *particle, Camera *camera, float size, vec3 color);
+    static Object *debug(bool output = false);
 };
 
 #endif
